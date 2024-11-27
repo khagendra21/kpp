@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrollable Rules Frame</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .frame {
+            width: 90%;
+            max-width: 800px;
+            height: 70%;
+            padding: 20px;
+            border: 4px solid;
+            border-image-source: linear-gradient(45deg, #ff007f, #7f00ff, #00ffcc);
+            border-image-slice: 1;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.7);
+            text-align: center;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .frame h1 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            color: #ffcc00;
+        }
+
+        .frame h2 {
+            font-size: 1rem;
+            color: #fff;
+            text-transform: lowercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ff007f, #00ffcc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .frame .rule {
+            margin: 20px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .frame .rule span {
+            display: inline-block;
+            padding: 10px;
+            background: linear-gradient(45deg, #ff007f, #7f00ff);
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.7);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background: linear-gradient(45deg, #00ffcc, #7f00ff);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            transition: 0.3s;
+        }
+
+        .buttons a:hover {
+            background: linear-gradient(45deg, #ff007f, #00ffcc);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+        }
+
+        .outer-buttons {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            bottom: 20px;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .outer-buttons a {
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background: linear-gradient(45deg, #00ffcc, #7f00ff);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            transition: 0.3s;
+        }
+
+        .outer-buttons a:hover {
+            background: linear-gradient(45deg, #ff007f, #00ffcc);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .frame {
+                padding: 15px;
+            }
+
+            .frame h1 {
+                font-size: 1.5rem;
+            }
+
+            .frame h2 {
+                font-size: 0.9rem;
+            }
+
+            .frame .rule {
+                font-size: 0.9rem;
+            }
+
+            .buttons a, .outer-buttons a {
+                font-size: 0.9rem;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="frame">
+        <h2>Read and procedure to next</h2>
+        <h1>Rules</h1>
+        <div class="rule"><span>Rule 1: Follow the guidelines strictly.</span></div>
+        <div class="rule"><span>Rule 2: Maintain a respectful tone in discussions.</span></div>
+        <div class="rule"><span>Rule 3: Ensure all deadlines are met.</span></div>
+        <div class="rule"><span>Rule 4: Report any issues promptly.</span></div>
+        <div class="rule"><span>Rule 5: Stay organized and focused.</span></div>
+        <div class="rule"><span>Rule 6: Use resources responsibly.</span></div>
+        <div class="rule"><span>Rule 7: Adhere to safety protocols.</span></div>
+        <div class="rule"><span>Rule 8: Maintain confidentiality.</span></div>
+        <div class="rule"><span>Rule 9: Collaborate effectively with others.</span></div>
+        <div class="rule"><span>Rule 10: Strive for continuous improvement.</span></div>
+        <div class="buttons">
+            <a href="#" id="previous">Previous</a>
+            <a href="#" id="next">Next</a>
+        </div>
+    </div>
+    <div class="outer-buttons">
+        <a href="#" id="outer-previous">Previous</a>
+        <a href="#" id="outer-next">Next</a>
+    </div>
+</body>
+</html>

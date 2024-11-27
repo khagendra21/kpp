@@ -1,0 +1,3091 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentals of Nursing</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background-color: rgba(59, 47, 47, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background-color: rgba(255, 165, 0, 1); /* Vibrant orange */
+            
+        }
+
+        .feedback-frame {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .correct {
+            border: 3px solid #28a745;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .incorrect {
+            border: 3px solid #dc3545;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            gap: 10px;
+        }
+
+        .timer-icon {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: green;
+            width: 100%;
+            border-radius: 10px;
+            animation: countdown 10s linear forwards;
+        }
+
+        @keyframes countdown {
+            0% {
+                width: 100%;
+            }
+            100% {
+                width: 0%;
+                background-color: red;
+            }
+        }
+
+        .navigation-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        p{
+            color:ye
+        }
+        .result-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .btn-result {
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-result:hover {
+            background-color: #218838;
+        }
+
+        /* Stop button */
+        .btn-stop {
+            padding: 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-stop:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design for small screens */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 95%;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .answer-btn {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .feedback-frame {
+                font-size: 1em;
+            }
+
+            .timer {
+                font-size: 1.2em;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Display Question Number -->
+        
+        <div class="question-number" id="question-number">Question 1 of 6</div>
+
+        <div class="timer">
+           
+            
+        </div>
+
+        <div class="question-container">
+            <div class="question" id="question-text">Question will appear here</div>
+            <div class="answers">
+                <button class="answer-btn" id="btn1" onclick="checkAnswer(0)">Option 1</button>
+                <button class="answer-btn" id="btn2" onclick="checkAnswer(1)">Option 2</button>
+                <button class="answer-btn" id="btn3" onclick="checkAnswer(2)">Option 3</button>
+                <button class="answer-btn" id="btn4" onclick="checkAnswer(3)">Option 4</button>
+            </div>
+            <div class="feedback-frame" id="feedback"></div>
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+            <button class="btn-result" id="viewResultBtn" onclick="showResults()" style="display:none;">View Result</button>
+            <button class="btn-stop" id="stopBtn" onclick="stopQuiz()">Stop Quiz</button>
+        </div>
+
+        <div class="result">
+            <div class="result-header">Quiz Results</div>
+            <div id="finalScore">Score: 0</div>
+            <div id="percentage">Percentage: 0%</div>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+     <script>
+   const questions = [
+   {
+    question: "What is the term used for the physical expression of genes in an organism?",
+    answers: [
+      "Genotype",
+      "Phenotype",
+      "Allele",
+      "Chromosome"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the primary purpose of hand hygiene in nursing?",
+    answers: [
+      "To prevent infection",
+      "To clean the skin",
+      "To sterilize equipment",
+      "To prevent dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is an example of a nosocomial infection?",
+    answers: [
+      "Common cold",
+      "Food poisoning",
+      "Hospital-acquired pneumonia",
+      "Influenza"
+    ],
+    correct: 2
+  },
+  {
+    question: "What is the most appropriate method to assess a patient's level of consciousness?",
+    answers: [
+      "Glasgow Coma Scale",
+      "Pulse rate",
+      "Respiratory rate",
+      "Skin temperature"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is an indication for using an intravenous (IV) catheter?",
+    answers: [
+      "To administer fluids or medications",
+      "To monitor blood pressure",
+      "To check blood sugar levels",
+      "To perform a blood transfusion"
+    ],
+    correct: 0
+  },
+  {
+    question: "When should a nurse use the aseptic technique?",
+    answers: [
+      "During a surgical procedure",
+      "For cleaning a wound",
+      "For administering medication",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the first step in the nursing process?",
+    answers: [
+      "Assessment",
+      "Diagnosis",
+      "Planning",
+      "Evaluation"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should a nurse do if they notice a sudden change in a patient's vital signs?",
+    answers: [
+      "Ignore it if the patient seems fine",
+      "Notify the healthcare provider immediately",
+      "Give the patient water",
+      "Reassure the patient"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which of the following is a sign of hypoglycemia?",
+    answers: [
+      "Excessive thirst",
+      "Shaking or sweating",
+      "Increased urination",
+      "Blurred vision"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the appropriate nursing intervention for a patient experiencing dyspnea?",
+    answers: [
+      "Administer oxygen therapy",
+      "Increase the patient's fluid intake",
+      "Encourage deep breathing exercises",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "Which of the following is the primary responsibility of a nurse in administering medication?",
+    answers: [
+      "To assess the patient's condition",
+      "To administer the correct dosage",
+      "To monitor for side effects",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "When should a nurse perform patient education?",
+    answers: [
+      "Only when the patient asks questions",
+      "As soon as the patient is admitted",
+      "Before and after procedures, or whenever necessary",
+      "At discharge only"
+    ],
+    correct: 2
+  },
+  {
+    question: "What is the most common site for administering an intramuscular injection?",
+    answers: [
+      "Deltoid muscle",
+      "Gluteal muscle",
+      "Vastus lateralis muscle",
+      "Abdominal wall"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the purpose of using a stethoscope during a physical assessment?",
+    answers: [
+      "To measure blood pressure",
+      "To listen to heart and lung sounds",
+      "To check for a fever",
+      "To assess the patient's pulse rate"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which of the following best describes the process of auscultation?",
+    answers: [
+      "Inspecting the body visually",
+      "Listening to internal sounds of the body",
+      "Palpating the body for abnormalities",
+      "Measuring body temperature"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the normal range for adult respiratory rate?",
+    answers: [
+      "10-12 breaths per minute",
+      "12-20 breaths per minute",
+      "20-30 breaths per minute",
+      "30-40 breaths per minute"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which of the following is a potential complication of immobility?",
+    answers: [
+      "Deep vein thrombosis",
+      "Pneumonia",
+      "Pressure ulcers",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the best way to prevent the spread of infection in a hospital setting?",
+    answers: [
+      "Hand hygiene",
+      "Wearing gloves",
+      "Using face masks",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What should a nurse do when caring for a patient with an intravenous line?",
+    answers: [
+      "Check for patency and signs of infection",
+      "Leave the site undisturbed",
+      "Only change the dressing when the IV is no longer needed",
+      "Avoid monitoring the site for complications"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is an example of non-verbal communication in nursing?",
+    answers: [
+      "Writing a note to the patient",
+      "Using hand gestures to communicate",
+      "Talking to the patient about their condition",
+      "None of the above"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the purpose of performing a focused assessment on a patient?",
+    answers: [
+      "To evaluate specific issues related to the patient’s current condition",
+      "To check the patient's vital signs",
+      "To identify potential risks for the patient’s health",
+      "All of the above"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following should be the first intervention for a patient with chest pain?",
+    answers: [
+      "Administer pain medication",
+      "Apply oxygen therapy",
+      "Perform CPR",
+      "Call for emergency help"
+    ],
+    correct: 3
+  }, {
+        question: "What is the term used to describe the involuntary contraction of muscles?",
+        answers: ["Spasm", "Tremor", "Contracture", "Cramps"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of dehydration?",
+        answers: ["Increased urination", "Dry mouth and skin", "Excessive sweating", "Increased appetite"],
+        correct: 1
+    },
+    {
+        question: "Which of the following should be monitored for a patient on intravenous fluids?",
+        answers: ["Pulse rate", "Respiratory rate", "Intravenous site", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first step in wound care?",
+        answers: ["Cleaning the wound", "Applying a dressing", "Assessing the wound", "Administering pain medication"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is an example of a subjective finding?",
+        answers: ["Blood pressure measurement", "Temperature reading", "Patient’s description of pain", "Pulse rate"],
+        correct: 2
+    },
+    {
+        question: "What is the correct position for a patient recovering from surgery?",
+        answers: ["Prone position", "Supine position", "Fowler's position", "Lateral position"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a critical step when giving medication via an IV route?",
+        answers: ["Checking the medication expiration date", "Flushing the IV line", "Confirming the patient’s identity", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What does a Glasgow Coma Scale score of 15 indicate?",
+        answers: ["Severe impairment", "Moderate impairment", "Mild impairment", "Normal neurological function"],
+        correct: 3
+    },
+    {
+        question: "Which of the following should be checked before administering an injection?",
+        answers: ["Expiration date of medication", "Proper syringe size", "Patient’s allergies", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should the nurse do if a patient experiences an allergic reaction after a medication administration?",
+        answers: ["Document the reaction", "Notify the doctor", "Administer an antihistamine", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the normal range for adult blood pressure?",
+        answers: ["80/60 mmHg", "120/80 mmHg", "140/90 mmHg", "100/70 mmHg"],
+        correct: 1
+    },
+    {
+        question: "Which is the most common complication of uncontrolled diabetes?",
+        answers: ["Heart failure", "Diabetic ketoacidosis", "Hypertension", "Stroke"],
+        correct: 1
+    },
+    {
+        question: "How often should the nurse assess a patient’s vital signs after surgery?",
+        answers: ["Every 10 minutes", "Every hour", "Every 4 hours", "Once a day"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is an appropriate nursing intervention for a patient with constipation?",
+        answers: ["Administer a laxative", "Increase fluid intake", "Encourage ambulation", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first step in preparing to administer medication?",
+        answers: ["Verify the patient’s ID", "Check the medication order", "Prepare the equipment", "Wash hands"],
+        correct: 1
+    },
+    {
+        question: "What does the term 'aseptic technique' refer to?",
+        answers: ["The use of clean gloves", "Sterile technique to prevent infection", "Hand washing", "Using antiseptics for wound care"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is the most common site for an intramuscular injection?",
+        answers: ["Deltoid muscle", "Vastus lateralis", "Gluteus medius", "Trapezius muscle"],
+        correct: 0
+    },
+    {
+        question: "What is the most appropriate action when a patient’s oxygen saturation drops below 90%?",
+        answers: ["Increase oxygen supply", "Reassess the patient after 10 minutes", "Administer pain medication", "Notify the healthcare provider immediately"],
+        correct: 0
+    },
+    {
+        question: "What is the most important part of patient education?",
+        answers: ["Providing written instructions", "Assessing the patient’s understanding", "Giving verbal instructions", "Demonstrating procedures"],
+        correct: 1
+    },
+    {
+        question: "What is the best position for a patient with shortness of breath?",
+        answers: ["Prone", "Supine", "Semi-Fowler's", "Sitting upright"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do when a patient is showing signs of shock?",
+        answers: ["Administer fluids and oxygen", "Monitor vital signs only", "Administer medication", "Encourage the patient to walk around"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of an infection?",
+        answers: ["Increase in body temperature", "Decreased pulse rate", "Improved appetite", "Reduced redness at the wound site"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the main purpose of a catheter?",
+        answers: ["To help with urinary retention", "To administer fluids", "To administer medication", "To measure blood pressure"],
+        correct: 0
+    },
+    {
+        question: "What does 'orthopnea' refer to?",
+        answers: ["Difficulty breathing when lying down", "Excessive coughing", "Inability to breathe through the nose", "Shortness of breath at night"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of a nursing care plan?",
+        answers: ["To outline the care to be provided to the patient", "To determine the patient’s discharge date", "To schedule routine assessments", "To evaluate staff performance"],
+        correct: 0
+    },
+    {
+        question: "What is the proper method for measuring a patient’s blood pressure?",
+        answers: ["Using a stethoscope and sphygmomanometer", "Using a thermometer", "Using a pulse oximeter", "Using a thermometer and pulse oximeter"],
+        correct: 0
+    },
+    {
+        question: "What should a nurse do if they make a medication error?",
+        answers: ["Report it to the supervisor", "Document the error", "Notify the patient", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the proper nursing intervention for a patient with a fever?",
+        answers: ["Provide a cool compress", "Increase the patient's fluids", "Administer antipyretic medication", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a complication of long-term bed rest?",
+        answers: ["Decreased risk of pressure ulcers", "Improved circulation", "Decreased muscle strength", "Increased mobility"],
+        correct: 2
+    },
+    {
+        question: "What is the normal adult body temperature?",
+        answers: ["36.0°C - 37.5°C", "36.0°C - 38.0°C", "37.5°C - 39.0°C", "36.5°C - 37.0°C"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is considered an abnormal finding when assessing bowel sounds?",
+        answers: ["Hyperactive bowel sounds", "Normal bowel sounds", "Hypoactive bowel sounds", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following should be considered when administering medications to elderly patients?",
+        answers: ["Renal function", "Liver function", "Polypharmacy", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the proper method of administering a subcutaneous injection?",
+        answers: ["Insert the needle at a 90-degree angle", "Insert the needle at a 45-degree angle", "Administer the medication rapidly", "Use a longer needle"],
+        correct: 1
+    },
+    {
+        question: "What is a key nursing action when performing chest compressions during CPR?",
+        answers: ["Perform compressions at a rate of 100-120 per minute", "Give breaths first", "Perform compressions at a rate of 60 per minute", "Administer shock immediately after each compression"],
+        correct: 0
+    },
+    {
+        question: "What is a primary nursing responsibility when caring for a patient with a feeding tube?",
+        answers: ["Check tube placement before each feeding", "Administer medications through the tube every hour", "Monitor vital signs every 24 hours", "Change the feeding tube every 7 days"],
+        correct: 0
+    },
+    {
+        question: "When should a nurse document a patient's pain level?",
+        answers: ["After administering medication", "Before performing a procedure", "After every assessment", "Before and after giving pain medication"],
+        correct: 3
+    }, {
+        question: "What is the primary goal of nursing care?",
+        answers: ["To promote health and wellness", "To administer medications", "To assist with daily activities", "To monitor vital signs"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a nursing diagnosis?",
+        answers: ["Fever", "Acute pain", "Hypertension", "Anemia"],
+        correct: 1
+    },
+    {
+        question: "What is the most important part of patient assessment?",
+        answers: ["Patient history", "Physical examination", "Laboratory results", "Vital signs"],
+        correct: 0
+    },
+    {
+        question: "What is a common complication in post-operative patients?",
+        answers: ["Dehydration", "Nausea", "Infection", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an example of non-verbal communication?",
+        answers: ["Writing a message", "Gesturing with the hands", "Speaking clearly", "Reading body language"],
+        correct: 1
+    },
+    {
+        question: "What is the normal pulse rate for an adult?",
+        answers: ["60-100 beats per minute", "50-80 beats per minute", "90-120 beats per minute", "80-100 beats per minute"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an appropriate action when administering medications to a pediatric patient?",
+        answers: ["Calculate the correct dosage based on weight", "Administer the adult dosage", "Give medication only once a day", "Always crush the tablets"],
+        correct: 0
+    },
+    {
+        question: "What should the nurse do first when a patient exhibits signs of a stroke?",
+        answers: ["Check the patient's airway", "Administer oxygen", "Call for emergency help", "Take the patient's vital signs"],
+        correct: 2
+    },
+    {
+        question: "What is the normal respiratory rate for an adult?",
+        answers: ["12-20 breaths per minute", "15-30 breaths per minute", "20-30 breaths per minute", "10-15 breaths per minute"],
+        correct: 0
+    },
+    {
+        question: "What is the primary purpose of a sterile dressing?",
+        answers: ["To protect the wound from infection", "To reduce pain", "To promote healing", "To keep the wound clean"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse assess a patient's pain?",
+        answers: ["Ask the patient to describe the pain", "Check vital signs", "Observe for behavioral changes", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a symptom of hypoglycemia?",
+        answers: ["Shaking", "Nausea", "Dry mouth", "Slow heartbeat"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of a blood transfusion?",
+        answers: ["To increase the oxygen carrying capacity of blood", "To improve blood circulation", "To reduce blood clotting", "To increase red blood cell production"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a method of ensuring patient privacy?",
+        answers: ["Sharing patient information with other professionals", "Discussing patient care in public areas", "Using patient identifiers in communication", "Storing patient records securely"],
+        correct: 3
+    },
+    {
+        question: "What is the correct way to administer an oral medication?",
+        answers: ["Place the tablet in the patient's hand", "Administer the tablet with a full glass of water", "Crush the tablet before administration", "Give the tablet with any drink"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a sign of dehydration?",
+        answers: ["Dry skin", "Swelling of the ankles", "Increased urination", "Vomiting"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended position for a patient in shock?",
+        answers: ["Supine with legs elevated", "Sitting upright", "Lateral position", "Prone position"],
+        correct: 0
+    },
+    {
+        question: "What should be done before administering intravenous medications?",
+        answers: ["Check the patient’s ID and medication order", "Prepare the medication and sterile equipment", "Check for allergies", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct procedure for removing gloves after patient care?",
+        answers: ["Peel them off starting from the wrist", "Turn them inside out and dispose of them", "Pull them off by the fingertips", "Dispose of them in a biohazard bag"],
+        correct: 1
+    },
+    {
+        question: "Which of the following should be assessed during a neurological examination?",
+        answers: ["Motor response", "Pupil reaction", "Level of consciousness", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common site for checking a pulse?",
+        answers: ["Radial artery", "Brachial artery", "Femoral artery", "Carotid artery"],
+        correct: 0
+    },
+    {
+        question: "How often should a nurse assess a postoperative patient's vital signs?",
+        answers: ["Every hour", "Every 30 minutes", "Every 4 hours", "Once a day"],
+        correct: 0
+    },
+    {
+        question: "What is the first action in an emergency situation?",
+        answers: ["Call for help", "Check the patient's pulse", "Perform CPR", "Assess the environment for safety"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an example of a patient’s subjective symptom?",
+        answers: ["Pain", "Fever", "Swelling", "Redness"],
+        correct: 0
+    },
+    {
+        question: "What should a nurse do if a medication is administered incorrectly?",
+        answers: ["Notify the healthcare provider", "Monitor the patient closely", "Report the incident", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is a common sign of infection at the surgical site?",
+        answers: ["Increased redness", "Decreased swelling", "Improved mobility", "Reduced warmth"],
+        correct: 0
+    },
+    {
+        question: "What is the normal blood pressure range for an adult?",
+        answers: ["120/80 mmHg", "100/60 mmHg", "140/90 mmHg", "130/85 mmHg"],
+        correct: 0
+    },
+    {
+        question: "What should be checked before administering medication to a patient?",
+        answers: ["The medication's expiration date", "The patient’s allergy history", "The correct dosage", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a method for preventing pressure ulcers?",
+        answers: ["Frequent repositioning", "Using a soft pillow", "Administering antibiotics", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following should be done before inserting a catheter?",
+        answers: ["Sterilize the equipment", "Ensure patient privacy", "Assess for allergies", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of monitoring input and output (I&O) in a patient?",
+        answers: ["To check for kidney function", "To evaluate fluid balance", "To assess hydration status", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of hypoxia?",
+        answers: ["Airway obstruction", "Low hemoglobin levels", "Excessive fluid intake", "Impaired circulation"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of hypovolemic shock?",
+        answers: ["Increased heart rate", "Hypotension", "Cold skin", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the priority intervention for a patient in respiratory distress?",
+        answers: ["Administer oxygen", "Assess vital signs", "Prepare for intubation", "Notify the doctor"],
+        correct: 0
+    },
+    {
+        question: "What is the standard procedure for sterile technique?",
+        answers: ["Wear gloves", "Maintain a sterile field", "Avoid touching sterile items", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of informed consent in nursing?",
+        answers: ["To ensure the patient agrees to the procedure", "To protect the healthcare provider from liability", "To ensure legal documentation", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a risk factor for pressure ulcers?",
+        answers: ["Limited mobility", "Poor nutrition", "Incontinence", "All of the above"],
+        correct: 3
+    }, {
+        question: "What is the most common site for an intramuscular injection?",
+        answers: ["Deltoid", "Vastus lateralis", "Gluteus medius", "Biceps"],
+        correct: 1
+    },
+    {
+        question: "What is the correct procedure for taking an oral temperature?",
+        answers: ["Place the thermometer under the tongue", "Place the thermometer in the armpit", "Place the thermometer in the ear", "Place the thermometer in the rectum"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a priority nursing intervention for a patient with chest pain?",
+        answers: ["Administer oxygen", "Administer pain medication", "Perform an EKG", "Assess for anxiety"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an appropriate action when a patient has a wound infection?",
+        answers: ["Apply an antibiotic ointment", "Cover the wound with a sterile dressing", "Leave the wound exposed to air", "Clean the wound with alcohol"],
+        correct: 1
+    },
+    {
+        question: "What is the correct way to assess a patient's pain level?",
+        answers: ["Use a numeric pain scale", "Observe the patient's behavior", "Check vital signs", "Ask the family member about pain"],
+        correct: 0
+    },
+    {
+        question: "What should the nurse do if a patient is experiencing an allergic reaction to medication?",
+        answers: ["Stop the medication and notify the doctor", "Administer antihistamines", "Monitor vital signs", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an early sign of hypoxia?",
+        answers: ["Cyanosis", "Confusion", "Bradycardia", "Low blood pressure"],
+        correct: 1
+    },
+    {
+        question: "What should the nurse do if a patient falls while getting out of bed?",
+        answers: ["Call for help", "Help the patient back into bed", "Assess for injury", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an appropriate action when a patient is on a fall precaution?",
+        answers: ["Keep the bed in the lowest position", "Place a chair next to the bed", "Ensure the patient's room is free of clutter", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should the nurse do if a patient complains of nausea after receiving chemotherapy?",
+        answers: ["Administer antiemetics as prescribed", "Encourage the patient to drink fluids", "Check for signs of dehydration", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the normal range for blood glucose levels in a healthy adult?",
+        answers: ["70-99 mg/dL", "60-120 mg/dL", "100-150 mg/dL", "120-180 mg/dL"],
+        correct: 0
+    },
+    {
+        question: "What is the first action to take when a patient is suspected of having a heart attack?",
+        answers: ["Administer oxygen", "Call for help", "Perform CPR", "Check the pulse"],
+        correct: 1
+    },
+    {
+        question: "What is the correct way to administer a subcutaneous injection?",
+        answers: ["Insert the needle at a 90-degree angle", "Insert the needle at a 45-degree angle", "Inject slowly into the muscle", "None of the above"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a key sign of dehydration?",
+        answers: ["Increased thirst", "Dry skin", "Decreased urine output", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the most common complication of bed rest?",
+        answers: ["Deep vein thrombosis", "Pneumonia", "Pressure ulcers", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary goal when caring for a patient with a terminal illness?",
+        answers: ["To cure the disease", "To provide comfort and support", "To prolong life", "To prepare for surgery"],
+        correct: 1
+    },
+    {
+        question: "How often should a nurse reposition a patient in bed to prevent pressure ulcers?",
+        answers: ["Every 1-2 hours", "Every 4 hours", "Every 8 hours", "Once a day"],
+        correct: 0
+    },
+    {
+        question: "What is the correct way to assess the neurological status of a patient?",
+        answers: ["Monitor the patient's level of consciousness", "Assess pupil response to light", "Check the patient's motor function", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an important aspect of infection control?",
+        answers: ["Hand hygiene", "Wearing gloves", "Using sterile equipment", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most important safety measure when administering medications to a patient?",
+        answers: ["Verify the patient's identity", "Check the medication label", "Ensure the patient is seated comfortably", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct technique for inserting an indwelling urinary catheter?",
+        answers: ["Use sterile technique", "Lubricate the catheter before insertion", "Insert the catheter until urine flow is observed", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should the nurse do if a patient begins to cough and choke during meals?",
+        answers: ["Encourage the patient to drink fluids", "Stop the meal and assess the patient's airway", "Administer a breathing treatment", "All of the above"],
+        correct: 1
+    },
+    {
+        question: "What is the correct way to administer a blood transfusion?",
+        answers: ["Ensure the patient has given consent", "Use a 20-gauge or larger needle", "Monitor for adverse reactions", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a sign of a possible allergic reaction to a medication?",
+        answers: ["Rash", "Swelling of the face", "Difficulty breathing", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of the patient’s bill of rights?",
+        answers: ["To ensure the patient’s dignity", "To protect the patient’s privacy", "To provide clear information about the patient's treatment", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the best way to prevent the spread of infection in a healthcare setting?",
+        answers: ["Proper handwashing", "Wearing personal protective equipment", "Disinfecting surfaces", "All of the above"],
+        correct: 3
+    },{
+        question: "What is the primary purpose of a nurse's assessment?",
+        answers: ["To diagnose diseases", "To plan patient care", "To administer medications", "To educate patients"],
+        correct: 1
+    },
+    {
+        question: "What is the best position for a patient in respiratory distress?",
+        answers: ["Supine", "Prone", "Fowler's position", "Lithotomy position"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a major goal of wound care?",
+        answers: ["Promote healing", "Prevent infection", "Control bleeding", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the normal range for a pulse rate in an adult?",
+        answers: ["60-100 bpm", "70-120 bpm", "80-110 bpm", "50-80 bpm"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an essential component of a nursing care plan?",
+        answers: ["Patient's diagnosis", "Patient's history", "Nursing interventions", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do before administering medication?",
+        answers: ["Check the patient’s identification", "Check the medication label", "Check the dose", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the most appropriate response to a patient complaining of pain?",
+        answers: ["Assess the pain level", "Administer pain medication", "Inform the doctor", "Both A and B"],
+        correct: 3
+    },
+    {
+        question: "What should be done if a patient falls while getting out of bed?",
+        answers: ["Help the patient back into bed", "Call for help", "Assess for injuries", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a symptom of hypoglycemia?",
+        answers: ["Tremors", "Dry mouth", "Increased thirst", "Increased urination"],
+        correct: 0
+    },
+    {
+        question: "What is the normal range for systolic blood pressure in adults?",
+        answers: ["90-120 mmHg", "100-140 mmHg", "110-160 mmHg", "120-160 mmHg"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a key feature of person-centered care?",
+        answers: ["Involving the patient in decision-making", "Providing standard care for all patients", "Ignoring patient preferences", "Restricting patient autonomy"],
+        correct: 0
+    },
+    {
+        question: "What is the most important consideration when planning patient discharge?",
+        answers: ["Patient education", "Follow-up care", "Medication management", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for the process of cleaning a wound to remove debris and foreign matter?",
+        answers: ["Debridement", "Sterilization", "Dressing", "Suturing"],
+        correct: 0
+    },
+    {
+        question: "What is the first step in a nursing process?",
+        answers: ["Assessment", "Diagnosis", "Planning", "Implementation"],
+        correct: 0
+    },
+    {
+        question: "What is a major responsibility of a nurse when handling patient records?",
+        answers: ["Ensure patient confidentiality", "Record all communications with patients", "Provide a copy to patients", "Both A and B"],
+        correct: 3
+    },
+    {
+        question: "What should the nurse do if a patient is having an allergic reaction to a medication?",
+        answers: ["Stop the medication", "Administer epinephrine", "Call for emergency assistance", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the main purpose of a therapeutic communication?",
+        answers: ["To encourage the patient to express feelings", "To provide medical advice", "To talk to the family", "To explain procedures to the patient"],
+        correct: 0
+    },
+    {
+        question: "What is the most important safety measure when transporting a patient in a wheelchair?",
+        answers: ["Ensure the brakes are locked", "Ensure the patient is positioned upright", "Always push the wheelchair from behind", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the primary method of preventing the spread of infection?",
+        answers: ["Hand hygiene", "Wearing gloves", "Using antiseptics", "None of the above"],
+        correct: 0
+    },
+    {
+        question: "Which position is most commonly used for a patient receiving a rectal examination?",
+        answers: ["Prone", "Sims", "Lithotomy", "Supine"],
+        correct: 1
+    },
+    {
+        question: "What is the role of a nurse in medication administration?",
+        answers: ["To ensure the right medication is given", "To assess the patient for side effects", "To educate the patient about the medication", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first action when dealing with a patient in cardiac arrest?",
+        answers: ["Call for help", "Start chest compressions", "Perform CPR", "Check the pulse"],
+        correct: 1
+    },
+    {
+        question: "What is the primary purpose of using a sterile technique?",
+        answers: ["Prevent infection", "Ensure quick healing", "Minimize pain", "Control bleeding"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common complication of immobility?",
+        answers: ["Pressure ulcers", "Blood clots", "Dehydration", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary method to assess a patient's neurological status?",
+        answers: ["Glasgow Coma Scale", "Blood pressure measurements", "Pulse oximetry", "Electrocardiogram"],
+        correct: 0
+    },
+    {
+        question: "Which action is most important in preventing falls in hospitalized patients?",
+        answers: ["Providing fall mats", "Checking vital signs regularly", "Ensuring a clutter-free environment", "Providing pain relief"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a sign of sepsis?",
+        answers: ["Fever", "Low blood pressure", "Increased heart rate", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "How often should a nurse reposition a bedridden patient?",
+        answers: ["Every 2 hours", "Every 4 hours", "Every 6 hours", "Once a day"],
+        correct: 0
+    },
+    {
+        question: "What is the first step in the nursing process for a patient with new symptoms?",
+        answers: ["Diagnosis", "Assessment", "Intervention", "Evaluation"],
+        correct: 1
+    },
+    {
+        question: "What is the normal respiratory rate for an adult at rest?",
+        answers: ["12-20 breaths per minute", "20-30 breaths per minute", "10-15 breaths per minute", "15-25 breaths per minute"],
+        correct: 0
+    },
+    {
+        question: "What is the best method to assess hydration status in a patient?",
+        answers: ["Check skin turgor", "Monitor fluid intake", "Measure urine output", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the best practice for preventing medication errors?",
+        answers: ["Double-check the medication", "Follow the five rights of medication administration", "Verify the dose with the patient", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "When should a nurse begin discharge planning for a patient?",
+        answers: ["Upon admission", "During the patient's stay", "On the day of discharge", "After the patient is discharged"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a priority when caring for a patient with a fever?",
+        answers: ["Administer antipyretics", "Monitor vital signs", "Encourage fluids", "All of the above"],
+        correct: 3
+    }, {
+        question: "What is the correct order of steps in the nursing process?",
+        answers: ["Assessment, Diagnosis, Planning, Implementation, Evaluation", "Diagnosis, Assessment, Implementation, Planning, Evaluation", "Planning, Diagnosis, Assessment, Implementation, Evaluation", "Implementation, Assessment, Diagnosis, Planning, Evaluation"],
+        correct: 0
+    },
+    {
+        question: "What is the normal range for adult respiratory rate?",
+        answers: ["12-20 breaths per minute", "10-16 breaths per minute", "18-25 breaths per minute", "20-30 breaths per minute"],
+        correct: 0
+    },
+    {
+        question: "What is the first step in infection control?",
+        answers: ["Hand hygiene", "Use of protective equipment", "Sterilization of equipment", "Disposal of waste properly"],
+        correct: 0
+    },
+    {
+        question: "What is the most important factor to assess in a patient with chest pain?",
+        answers: ["Pain severity", "Pain location", "Pain duration", "Pain radiation"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is the priority action when a patient is in shock?",
+        answers: ["Administer oxygen", "Elevate the patient's legs", "Monitor vital signs", "Administer fluids"],
+        correct: 3
+    },
+    {
+        question: "What is the correct position for a patient undergoing a lumbar puncture?",
+        answers: ["Prone position", "Fowler's position", "Lateral recumbent position", "Supine position"],
+        correct: 2
+    },
+    {
+        question: "What should be done if a patient develops a pressure ulcer?",
+        answers: ["Administer antibiotics", "Notify the physician", "Reposition the patient", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a sign of anaphylaxis?",
+        answers: ["Swelling of the tongue", "Hives", "Wheezing", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the normal range for adult blood pressure?",
+        answers: ["90/60 mmHg to 120/80 mmHg", "100/70 mmHg to 130/90 mmHg", "120/80 mmHg to 140/90 mmHg", "130/80 mmHg to 150/100 mmHg"],
+        correct: 0
+    },
+    {
+        question: "What is the first action a nurse should take when a fire alarm sounds in the hospital?",
+        answers: ["Evacuate patients", "Call the fire department", "Activate the fire alarm", "Ensure the safety of patients"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a contraindication for administering a vaccine?",
+        answers: ["Mild fever", "History of allergies", "Severe allergic reaction to a component", "Recent cold symptoms"],
+        correct: 2
+    },
+    {
+        question: "What is the purpose of a sterile dressing?",
+        answers: ["To prevent infection", "To protect the wound from environmental contaminants", "To promote wound healing", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following should be assessed when performing a neurologic check?",
+        answers: ["Level of consciousness", "Pupillary response", "Motor response", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the most accurate method of taking body temperature?",
+        answers: ["Oral", "Rectal", "Axillary", "Ear"],
+        correct: 1
+    },
+    {
+        question: "What is the most appropriate response when a patient expresses anxiety before surgery?",
+        answers: ["Ignore the patient's concerns", "Administer anti-anxiety medication", "Reassure the patient and provide information", "Ask the physician to speak with the patient"],
+        correct: 2
+    },
+    {
+        question: "What is the recommended frequency for repositioning a patient who is immobile?",
+        answers: ["Every hour", "Every two hours", "Every four hours", "Every six hours"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do if a patient is refusing medication?",
+        answers: ["Force the patient to take the medication", "Call the physician", "Document the refusal and inform the physician", "Administer the medication secretly"],
+        correct: 2
+    },
+    {
+        question: "What is the most important consideration when caring for a patient with a catheter?",
+        answers: ["Maintaining sterile technique", "Ensuring patient comfort", "Flushing the catheter", "Changing the catheter regularly"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of patient education?",
+        answers: ["To promote understanding of health conditions", "To encourage compliance with treatment", "To empower patients to make informed decisions", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an indicator of dehydration?",
+        answers: ["Increased urine output", "Dry mucous membranes", "Cool, moist skin", "Increased blood pressure"],
+        correct: 1
+    },
+    {
+        question: "What is the most common site for taking a pulse in an adult patient?",
+        answers: ["Radial artery", "Brachial artery", "Femoral artery", "Carotid artery"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the primary goal of pain management?",
+        answers: ["Complete pain relief", "Reduction of pain to a manageable level", "Elimination of pain", "Decreasing the need for medication"],
+        correct: 1
+    },
+    {
+        question: "What is the primary focus of palliative care?",
+        answers: ["Cure the disease", "Provide comfort and symptom relief", "Perform invasive treatments", "Improve the patient's quality of life"],
+        correct: 1
+    },
+    {
+        question: "What is the most appropriate action when a patient exhibits signs of an asthma attack?",
+        answers: ["Administer oxygen", "Encourage the patient to drink fluids", "Administer bronchodilators", "All of the above"],
+        correct: 2
+    },
+    {
+        question: "What is the correct method of performing chest compressions during CPR?",
+        answers: ["Place hands on the upper chest", "Place hands on the lower chest", "Place hands on the sternum", "Place hands above the abdomen"],
+        correct: 2
+    },
+    {
+        question: "What is the first step when performing an assessment of a patient's wound?",
+        answers: ["Clean the wound", "Check for signs of infection", "Assess the size and depth", "Apply a dressing"],
+        correct: 2
+    },
+    {
+        question: "What is the most important action when preventing falls in elderly patients?",
+        answers: ["Ensure proper lighting", "Encourage the use of walking aids", "Keep the environment clutter-free", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most effective method to prevent pressure ulcers?",
+        answers: ["Reposition the patient regularly", "Use special mattresses", "Encourage adequate hydration", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a key component of infection control?",
+        answers: ["Hand hygiene", "Wearing gloves", "Use of sterile equipment", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following actions should be taken when a patient experiences a seizure?",
+        answers: ["Hold the patient down to prevent movement", "Place a tongue depressor in the mouth", "Ensure the patient’s safety by clearing the area", "Provide fluids immediately after the seizure"],
+        correct: 2
+    },
+    {
+        question: "What is the most common symptom of a urinary tract infection (UTI)?",
+        answers: ["Fever", "Increased thirst", "Painful urination", "Headache"],
+        correct: 2
+    },
+    {
+        question: "What is the priority action when a patient with diabetes shows signs of hypoglycemia?",
+        answers: ["Administer insulin", "Give the patient sugar or glucose", "Give the patient water", "Call the physician"],
+        correct: 1
+    },
+    {
+        question: "What is the best way to prevent hospital-acquired infections?",
+        answers: ["Hand hygiene", "Administer antibiotics prophylactically", "Use disposable equipment", "Encourage patients to wear masks"],
+        correct: 0
+    },
+    {
+        question: "What is the most important consideration when caring for a patient with a chest tube?",
+        answers: ["Maintain patency of the tube", "Encourage the patient to breathe deeply", "Monitor for signs of infection", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do when a patient is scheduled for surgery?",
+        answers: ["Explain the procedure", "Assess the patient's understanding", "Ensure the patient is NPO", "All of the above"],
+        correct: 3
+    },{
+        question: "What is the term used for the study of the structure and function of the human body?",
+        answers: ["Anatomy", "Physiology", "Pathophysiology", "Biochemistry"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an example of a vital sign?",
+        answers: ["Blood pressure", "Heart rate", "Temperature", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of a patient's medical history?",
+        answers: ["To identify potential risk factors", "To determine treatment options", "To document past illnesses", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the most common cause of hypovolemic shock?",
+        answers: ["Blood loss", "Dehydration", "Burns", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a common symptom of pneumonia?",
+        answers: ["Shortness of breath", "Fever", "Cough with sputum", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should be included in a complete health assessment?",
+        answers: ["Physical examination", "Health history", "Laboratory tests", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most appropriate action when a patient shows signs of a stroke?",
+        answers: ["Call for immediate medical assistance", "Administer oxygen", "Monitor vital signs", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common sign of infection?",
+        answers: ["Redness at the site", "Swelling", "Increased warmth", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of maintaining a sterile field?",
+        answers: ["To prevent contamination", "To provide comfort to the patient", "To ensure the procedure is performed correctly", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the correct order for performing CPR on an adult?",
+        answers: ["Check for responsiveness, call for help, provide chest compressions, deliver rescue breaths", "Check for responsiveness, provide chest compressions, deliver rescue breaths, call for help", "Call for help, check for responsiveness, provide chest compressions, deliver rescue breaths", "Call for help, deliver rescue breaths, check for responsiveness, provide chest compressions"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most common cause of heart failure?",
+        answers: ["Hypertension", "Coronary artery disease", "Myocardial infarction", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the best way to reduce the risk of falls in elderly patients?",
+        answers: ["Ensuring proper lighting", "Using non-slip footwear", "Encouraging regular exercise", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary purpose of patient education?",
+        answers: ["To increase the patient's understanding of their health condition", "To improve patient compliance with treatment", "To empower patients to make informed decisions", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the best method for promoting effective communication with patients?",
+        answers: ["Active listening", "Asking open-ended questions", "Providing clear explanations", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most effective way to prevent the spread of infection in a healthcare setting?",
+        answers: ["Hand hygiene", "Wearing personal protective equipment", "Using sterilized equipment", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct position for a patient in shock?",
+        answers: ["Supine with legs elevated", "Prone", "Sitting upright", "On their side"],
+        correct: 0
+    },
+    {
+        question: "What is the most important factor in preventing pressure ulcers?",
+        answers: ["Repositioning the patient regularly", "Using specialized mattresses", "Maintaining good nutrition", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the most common site for taking a pulse in an adult?",
+        answers: ["Radial artery", "Femoral artery", "Brachial artery", "Carotid artery"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the first action when a patient is found unresponsive?",
+        answers: ["Check the airway", "Check for a pulse", "Call for help", "Start chest compressions"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a symptom of dehydration?",
+        answers: ["Dry mouth", "Dark-colored urine", "Dizziness", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most important consideration when administering medication to a patient?",
+        answers: ["Correct medication and dosage", "Administering on time", "Ensuring the patient understands the medication", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary goal of pain management?",
+        answers: ["Eliminating all pain", "Minimizing pain to a manageable level", "Avoiding the use of medication", "None of the above"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is the most appropriate action when a patient complains of chest pain?",
+        answers: ["Administer pain medication", "Call for emergency help", "Reassure the patient", "Monitor vital signs"],
+        correct: 1
+    },
+    {
+        question: "What should be done if a patient refuses treatment?",
+        answers: ["Respect the patient's decision", "Administer treatment anyway", "Force the patient to accept treatment", "Notify the family immediately"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common sign of an allergic reaction?",
+        answers: ["Itchy skin", "Swelling of the lips or tongue", "Rash", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the priority when caring for a patient with a severe burn?",
+        answers: ["Stop the burning process", "Administer pain medication", "Apply sterile dressings", "Assess the extent of the burn"],
+        correct: 0
+    },
+    {
+        question: "What is the most appropriate action when a patient develops an embolism?",
+        answers: ["Administer oxygen", "Call for emergency assistance", "Provide pain relief", "Reposition the patient"],
+        correct: 1
+    },
+    {
+        question: "What is the correct procedure for taking a patient's blood pressure?",
+        answers: ["Place the cuff on the upper arm", "Use a stethoscope to listen for the pulse", "Ensure the arm is at heart level", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most important action when administering an IV?",
+        answers: ["Check for any signs of infection", "Ensure proper placement of the catheter", "Ensure that the IV fluids are infusing properly", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the primary consideration when performing a wound assessment?",
+        answers: ["Assess the size and depth of the wound", "Check for signs of infection", "Ensure the wound is properly cleaned", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an indicator of a stroke?",
+        answers: ["Sudden weakness on one side of the body", "Severe headache", "Loss of balance", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do when a patient shows signs of hypoglycemia?",
+        answers: ["Give the patient glucose or sugar", "Administer insulin", "Reassure the patient", "Encourage the patient to drink water"],
+        correct: 0
+    },
+    {
+        question: "What is the primary goal of palliative care?",
+        answers: ["To cure the disease", "To provide comfort and symptom relief", "To extend life", "To provide a cure for the patient"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is the most common method for taking temperature?",
+        answers: ["Oral thermometer", "Rectal thermometer", "Axillary thermometer", "Ear thermometer"],
+        correct: 0
+    },
+    {
+        question: "What should be done if a patient is not responding to pain management?",
+        answers: ["Increase the dosage", "Notify the physician", "Administer another pain medication", "Monitor for side effects"],
+        correct: 1
+    },
+    {
+        question: "What is the first step when caring for a patient with a wound?",
+        answers: ["Clean the wound", "Assess the wound for infection", "Apply a sterile dressing", "Position the patient"],
+        correct: 1
+    },{
+        question: "What is the most common method for preventing pressure ulcers?",
+        answers: ["Repositioning the patient every 2 hours", "Using a special mattress", "Keeping the patient hydrated", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an example of a non-pharmacological pain management technique?",
+        answers: ["Massage", "Heat therapy", "Distraction", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first step in the nursing process?",
+        answers: ["Assessment", "Diagnosis", "Planning", "Implementation"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of the Glasgow Coma Scale?",
+        answers: ["To assess a patient's level of consciousness", "To determine pain levels", "To assess memory loss", "To monitor vital signs"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of dehydration?",
+        answers: ["Skin turgor", "Dry mouth", "Dark urine", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most important thing to monitor in a patient receiving IV fluids?",
+        answers: ["Fluid balance", "Temperature", "Pulse rate", "Respiratory rate"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a potential complication of uncontrolled hypertension?",
+        answers: ["Stroke", "Heart failure", "Kidney damage", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a normal finding during a physical exam?",
+        answers: ["Heart rate of 60 bpm", "Respiratory rate of 16 breaths per minute", "Blood pressure of 120/80 mmHg", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the best way to prevent the spread of infection in a healthcare setting?",
+        answers: ["Hand hygiene", "Wearing gloves", "Disinfecting surfaces", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "When should a nurse administer a blood transfusion?",
+        answers: ["When the patient's hemoglobin is low", "When the patient's blood type is mismatched", "When the patient is in shock", "When the doctor orders it"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an appropriate action for a nurse to take when a patient is experiencing a seizure?",
+        answers: ["Place the patient in a recovery position", "Administer medication to stop the seizure", "Place something in the patient's mouth", "Restrict the patient's movements"],
+        correct: 0
+    },
+    {
+        question: "Which of the following best describes the function of the kidneys?",
+        answers: ["Regulate fluid and electrolyte balance", "Produce insulin", "Store bile", "Produce red blood cells"],
+        correct: 0
+    },
+    {
+        question: "What should be done if a patient refuses a prescribed medication?",
+        answers: ["Document the refusal", "Inform the healthcare provider", "Educate the patient about the medication", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a common side effect of opioid medications?",
+        answers: ["Constipation", "Dizziness", "Nausea", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first thing a nurse should do when a patient shows signs of respiratory distress?",
+        answers: ["Check the patient's oxygen levels", "Administer oxygen", "Call for emergency assistance", "Assess the patient's airway"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do when a patient is experiencing anaphylaxis?",
+        answers: ["Administer epinephrine", "Monitor the patient's vital signs", "Place the patient in a lying down position", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of an abdominal assessment?",
+        answers: ["To assess for abdominal pain", "To check for signs of infection", "To assess the function of abdominal organs", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most important factor in preventing healthcare-associated infections?",
+        answers: ["Hand hygiene", "Proper use of personal protective equipment", "Vaccination", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an example of a droplet precaution?",
+        answers: ["Wearing a surgical mask", "Wearing gloves", "Wearing an N95 mask", "Isolating the patient in a negative pressure room"],
+        correct: 0
+    },
+    {
+        question: "What is the most common method for assessing a patient's pulse?",
+        answers: ["Radial artery", "Carotid artery", "Brachial artery", "Femoral artery"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a potential side effect of using corticosteroids?",
+        answers: ["Weight gain", "High blood pressure", "Increased risk of infection", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do when a patient experiences a fainting episode?",
+        answers: ["Help the patient lie down", "Check for signs of injury", "Monitor vital signs", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary function of white blood cells?",
+        answers: ["Fight infection", "Transport oxygen", "Clot blood", "Regulate blood pressure"],
+        correct: 0
+    },
+    {
+        question: "What is a common sign of hypoglycemia?",
+        answers: ["Sweating", "Shakiness", "Confusion", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the recommended site for an intramuscular injection in an adult?",
+        answers: ["Deltoid muscle", "Vastus lateralis", "Gluteus muscle", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do if a patient develops a wound infection?",
+        answers: ["Notify the healthcare provider", "Administer antibiotics", "Clean the wound", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the most effective way to monitor a patient's fluid status?",
+        answers: ["Monitor urine output", "Check for edema", "Assess skin turgor", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the normal range for an adult's blood pressure?",
+        answers: ["90/60 mmHg to 120/80 mmHg", "120/80 mmHg to 140/90 mmHg", "140/90 mmHg to 160/100 mmHg", "Above 160/100 mmHg"],
+        correct: 0
+    }, {
+        question: "What is the best way to assess a patient's level of consciousness?",
+        answers: ["Using the Glasgow Coma Scale", "Checking the pupils", "Assessing vital signs", "Conducting a physical exam"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an early sign of hypoxia?",
+        answers: ["Cyanosis", "Restlessness", "Decreased heart rate", "Cold extremities"],
+        correct: 1
+    },
+    {
+        question: "What is the proper technique for taking a radial pulse?",
+        answers: ["Using the thumb", "Using the index and middle fingers", "Using the palm", "Using the wrist"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a common cause of nosocomial infections?",
+        answers: ["Poor hand hygiene", "Overuse of antibiotics", "Contaminated medical equipment", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the primary cause of pressure ulcers?",
+        answers: ["Poor nutrition", "Prolonged pressure on the skin", "Dehydration", "Infection"],
+        correct: 1
+    },
+    {
+        question: "Which of the following conditions is associated with increased intracranial pressure (ICP)?",
+        answers: ["Cerebral edema", "Hypotension", "Hypoxia", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "When caring for a patient with a central venous catheter, what is the nurse's priority?",
+        answers: ["Monitoring for signs of infection", "Administering fluids", "Checking the catheter for kinks", "Changing the dressing"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a priority when caring for a patient in shock?",
+        answers: ["Maintaining airway", "Administering pain medication", "Administering IV fluids", "Monitoring vital signs"],
+        correct: 2
+    },
+    {
+        question: "What is the first intervention for a patient experiencing a myocardial infarction (heart attack)?",
+        answers: ["Administer aspirin", "Administer oxygen", "Monitor vital signs", "Prepare for surgery"],
+        correct: 1
+    },
+    {
+        question: "What is the correct procedure for performing hand hygiene in a healthcare setting?",
+        answers: ["Washing hands with soap and water for at least 20 seconds", "Using hand sanitizer for 5 seconds", "Wearing gloves", "Using a hand wipe"],
+        correct: 0
+    },
+    {
+        question: "What is the proper position for a patient who is experiencing difficulty breathing?",
+        answers: ["Fowler's position", "Prone position", "Supine position", "Trendelenburg position"],
+        correct: 0
+    },
+    {
+        question: "What is the most important assessment to make after administering IV medication?",
+        answers: ["Assess for allergic reactions", "Monitor fluid balance", "Check for signs of infection", "Assess the IV site for complications"],
+        correct: 3
+    },
+    {
+        question: "What should the nurse do when a patient is receiving chemotherapy and complains of nausea?",
+        answers: ["Administer anti-nausea medication", "Encourage fluids", "Give a light meal", "Call the doctor immediately"],
+        correct: 0
+    },
+    {
+        question: "Which of the following conditions is associated with low blood sodium levels?",
+        answers: ["Hypertension", "Hyponatremia", "Hyperkalemia", "Hypoglycemia"],
+        correct: 1
+    },
+    {
+        question: "What is the normal range for adult respiratory rate?",
+        answers: ["12-20 breaths per minute", "20-30 breaths per minute", "15-25 breaths per minute", "18-28 breaths per minute"],
+        correct: 0
+    },
+    {
+        question: "When performing a physical assessment, which of the following should the nurse assess first?",
+        answers: ["General appearance", "Breathing pattern", "Skin color", "Temperature"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the primary purpose of performing a neurological assessment?",
+        answers: ["To assess the level of consciousness", "To check for signs of infection", "To assess skin condition", "To monitor vital signs"],
+        correct: 0
+    },
+    {
+        question: "What is the most common symptom of diabetic ketoacidosis (DKA)?",
+        answers: ["Polyuria", "Polydipsia", "Fruity-smelling breath", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most important nursing action when a patient is admitted with a suspected stroke?",
+        answers: ["Complete a neurological assessment", "Administer IV fluids", "Check blood pressure", "Administer oxygen"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended position for a patient with a head injury?",
+        answers: ["Flat, with the head elevated", "Prone, with the head elevated", "Flat, with the head turned to the side", "High Fowler's position"],
+        correct: 2
+    },
+    {
+        question: "What is the first step in preventing medication errors?",
+        answers: ["Verify the patient's identity", "Review the medication order", "Double-check the medication dose", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct way to administer an intramuscular injection?",
+        answers: ["At a 90-degree angle to the skin", "At a 45-degree angle to the skin", "In the deltoid muscle only", "In the upper leg only"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a risk factor for developing deep vein thrombosis (DVT)?",
+        answers: ["Immobilization", "Obesity", "History of smoking", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary goal of wound care for a patient with a chronic ulcer?",
+        answers: ["To promote healing", "To prevent infection", "To reduce pain", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do if a patient shows signs of an allergic reaction to a medication?",
+        answers: ["Stop the medication", "Administer an antihistamine", "Call the doctor", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the primary function of the gastrointestinal system?",
+        answers: ["To digest food", "To regulate body temperature", "To transport nutrients", "To produce hormones"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of hyperglycemia?",
+        answers: ["Shakiness", "Polydipsia", "Tachycardia", "All of the above"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do if a patient shows signs of an overdose?",
+        answers: ["Administer activated charcoal", "Notify the healthcare provider immediately", "Perform CPR", "Monitor vital signs"],
+        correct: 1
+    }, {
+        question: "What is the first action a nurse should take in the event of a fire in the hospital?",
+        answers: ["Evacuate patients", "Alert the fire department", "Activate the fire alarm", "Use a fire extinguisher"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is the primary purpose of aseptic technique?",
+        answers: ["To prevent cross-contamination", "To improve the patient's comfort", "To increase drug absorption", "To save time"],
+        correct: 0
+    },
+    {
+        question: "Which of the following positions is recommended for a patient with difficulty breathing?",
+        answers: ["Supine position", "Fowler's position", "Prone position", "Trendelenburg position"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do if a patient experiences sudden chest pain?",
+        answers: ["Reposition the patient", "Administer oxygen", "Allow the patient to rest", "Notify the physician immediately"],
+        correct: 3
+    },
+    {
+        question: "What is the most common method for administering medication through the skin?",
+        answers: ["Oral medication", "Topical medication", "Injection", "Inhalation"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is an early sign of dehydration?",
+        answers: ["Dry skin", "Increased urine output", "Hypertension", "Dilated pupils"],
+        correct: 0
+    },
+    {
+        question: "When measuring a patient's blood pressure, what is the first step?",
+        answers: ["Place the cuff on the upper arm", "Check for patient comfort", "Locate the brachial artery", "Inflate the cuff to 180 mmHg"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a common side effect of opioid medications?",
+        answers: ["Constipation", "Diarrhea", "Insomnia", "Tachycardia"],
+        correct: 0
+    },
+    {
+        question: "What is the normal range for a healthy adult's heart rate?",
+        answers: ["60-100 beats per minute", "50-80 beats per minute", "80-120 beats per minute", "100-120 beats per minute"],
+        correct: 0
+    },
+    {
+        question: "When giving a patient an injection, which of the following should be avoided?",
+        answers: ["Injecting into a muscle with good circulation", "Using a new needle for each injection", "Injecting into the muscle near a major nerve", "Using aseptic technique"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a critical assessment when caring for a patient with an open wound?",
+        answers: ["Wound size", "Amount of blood loss", "Signs of infection", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "How often should a nurse assess the pain level of a patient?",
+        answers: ["Once a day", "Every shift", "When the patient requests medication", "At regular intervals based on the patient's condition"],
+        correct: 3
+    },
+    {
+        question: "What is the first action the nurse should take after noticing a patient has a high fever?",
+        answers: ["Administer antipyretics", "Take a culture of blood", "Assess the patient's temperature", "Monitor vital signs frequently"],
+        correct: 2
+    },
+    {
+        question: "What is the most appropriate action when preparing an IV line for medication administration?",
+        answers: ["Use sterile gloves", "Check the medication order", "Ensure the patient is in a comfortable position", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an example of a nursing intervention for a patient with anxiety?",
+        answers: ["Providing emotional support", "Encouraging deep breathing", "Offering medication", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the correct procedure when removing gloves after patient care?",
+        answers: ["Pull gloves off from the outside", "Remove gloves without touching the outside", "Touch the inside of the gloves", "Both 1 and 2 are correct"],
+        correct: 3
+    },
+    {
+        question: "What is the key principle when performing patient-centered care?",
+        answers: ["Involving the patient in decision-making", "Following standard protocols", "Ensuring the comfort of the patient", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following symptoms requires immediate reporting for a post-surgical patient?",
+        answers: ["Mild nausea", "Fever", "Sudden pain and swelling in one leg", "Dry mouth"],
+        correct: 2
+    },
+    {
+        question: "What is the primary cause of hypovolemic shock?",
+        answers: ["Excessive blood loss", "Severe allergic reaction", "Heart failure", "Infection"],
+        correct: 0
+    },
+    {
+        question: "What is a potential complication when administering IV fluids too rapidly?",
+        answers: ["Fluid overload", "Electrolyte imbalance", "Infection", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct technique for performing a nasogastric tube insertion?",
+        answers: ["Apply lubricating gel to the tube", "Measure the tube length before insertion", "Insert the tube with the patient's head tilted back", "Insert the tube quickly"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a nursing priority when caring for a post-operative patient?",
+        answers: ["Wound care", "Pain management", "Respiratory assessment", "All of the above"],
+        correct: 3
+    }, {
+        question: "What is the most important action for a nurse to take when a patient is experiencing an allergic reaction?",
+        answers: ["Administer antihistamines", "Notify the physician immediately", "Assess the airway", "Apply a cold compress"],
+        correct: 2
+    },
+    {
+        question: "What should be done when a patient is in a state of shock?",
+        answers: ["Elevate the patient's legs", "Administer high-flow oxygen", "Monitor vital signs frequently", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the appropriate first step in cardiopulmonary resuscitation (CPR)?",
+        answers: ["Check for a pulse", "Begin chest compressions", "Call for help", "Open the airway"],
+        correct: 2
+    },
+    {
+        question: "What is the correct action for a nurse to take when a patient is showing signs of a stroke?",
+        answers: ["Administer aspirin", "Position the patient flat", "Call for immediate medical assistance", "Administer oxygen immediately"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is an example of a standard precaution in infection control?",
+        answers: ["Wearing gloves when handling blood", "Washing hands after patient contact", "Using a sterile technique during invasive procedures", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "How should a nurse dispose of a used needle?",
+        answers: ["Place it in a regular trash can", "Dispose of it in a biohazard sharps container", "Bend the needle before disposal", "Soak it in disinfectant solution"],
+        correct: 1
+    },
+    {
+        question: "Which of the following should a nurse monitor closely in a patient who is receiving IV fluids?",
+        answers: ["Electrolyte levels", "Urine output", "Respiratory rate", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do if a patient develops a pressure ulcer?",
+        answers: ["Increase the frequency of repositioning", "Increase the patient's fluid intake", "Apply a wet dressing", "Monitor for fever"],
+        correct: 0
+    },
+    {
+        question: "What is the first action when a nurse detects that a patient has a fever?",
+        answers: ["Administer antipyretics", "Assess the patient’s comfort", "Check the temperature regularly", "Notify the healthcare provider"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do if a patient experiences a seizure?",
+        answers: ["Restrict the patient's movements", "Place a bite block in the patient's mouth", "Ensure the patient is in a safe position", "Administer oxygen immediately"],
+        correct: 2
+    },
+    {
+        question: "What is the most important precaution when performing a dressing change for a surgical wound?",
+        answers: ["Clean the wound with saline", "Use sterile gloves and equipment", "Apply pressure to stop any bleeding", "Assess the wound for signs of infection"],
+        correct: 1
+    },
+    {
+        question: "What should the nurse monitor when administering blood transfusion?",
+        answers: ["Vital signs every 15 minutes", "The color of the blood bag", "The patient’s emotional state", "The length of the transfusion process"],
+        correct: 0
+    },
+    {
+        question: "What is the primary goal of a nurse in the care of a patient with a respiratory condition?",
+        answers: ["To relieve pain", "To restore normal respiratory function", "To monitor oxygen levels", "To educate the patient about disease management"],
+        correct: 1
+    },
+    {
+        question: "When should a nurse begin the process of discharge planning for a patient?",
+        answers: ["As soon as the patient is admitted", "After the patient's diagnosis is confirmed", "Once the patient shows improvement", "At the time of discharge"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most common complication after surgery?",
+        answers: ["Nausea", "Bleeding", "Infection", "Hypotension"],
+        correct: 2
+    },
+    {
+        question: "What is the recommended position for a patient after a lumbar puncture?",
+        answers: ["Flat on the back", "Sitting upright", "Lying on the side", "Knees drawn to the chest"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse check for proper placement of a nasogastric tube?",
+        answers: ["Auscultate the stomach", "Inject air into the tube", "X-ray confirmation", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct procedure for collecting a urine sample from a patient?",
+        answers: ["Clean the genital area with an antiseptic wipe", "Obtain the first voided urine of the day", "Obtain the midstream urine", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do when caring for a patient with an indwelling catheter?",
+        answers: ["Keep the drainage bag below the level of the bladder", "Check for kinks in the catheter tubing", "Ensure proper hygiene and sterile technique", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should the nurse do if a patient shows signs of a hypoglycemic reaction?",
+        answers: ["Administer insulin", "Administer a sugary drink or snack", "Increase the patient's fluid intake", "Prepare the patient for surgery"],
+        correct: 1
+    }, {
+        question: "What is the primary purpose of infection control in a healthcare setting?",
+        answers: ["To reduce the risk of healthcare-associated infections", "To maintain patient comfort", "To ensure proper medication administration", "To increase staff productivity"],
+        correct: 0
+    },
+    {
+        question: "What is the first step in performing hand hygiene?",
+        answers: ["Wet hands with water", "Apply soap to dry hands", "Rub hands together for 15 seconds", "Apply alcohol-based hand sanitizer"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of hypovolemic shock?",
+        answers: ["Increased blood pressure", "Warm, flushed skin", "Rapid, weak pulse", "Slow breathing rate"],
+        correct: 2
+    },
+    {
+        question: "What is the proper technique for performing chest compressions during CPR?",
+        answers: ["Place hands on the chest below the sternum and press down with both hands", "Place hands over the stomach and press", "Use one hand to compress the chest", "Push the chest at a slow rate of 30 per minute"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse care for a patient with a nasogastric tube?",
+        answers: ["Keep the tube clean and check placement regularly", "Remove the tube after each feeding", "Flush the tube with water every 12 hours", "Only replace the tube when it is clogged"],
+        correct: 0
+    },
+    {
+        question: "What should be done if a patient with a catheter experiences urinary retention?",
+        answers: ["Increase fluid intake", "Massaging the bladder area", "Notify the healthcare provider", "Continue to monitor and recheck later"],
+        correct: 2
+    },
+    {
+        question: "What is the normal range for adult respiratory rate?",
+        answers: ["10-15 breaths per minute", "12-20 breaths per minute", "16-24 breaths per minute", "18-25 breaths per minute"],
+        correct: 1
+    },
+    {
+        question: "What is the first action when caring for a patient with a suspected stroke?",
+        answers: ["Administer aspirin", "Notify the healthcare provider immediately", "Perform a neurological assessment", "Elevate the head of the bed"],
+        correct: 1
+    },
+    {
+        question: "What is the primary responsibility of a nurse in the prevention of pressure ulcers?",
+        answers: ["Monitor skin condition", "Use a special mattress", "Reposition the patient regularly", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a sign of dehydration in an adult?",
+        answers: ["Increased appetite", "Cool, dry skin", "Excessive urination", "Increased sweating"],
+        correct: 1
+    },
+    {
+        question: "When administering IV fluids, what should be monitored?",
+        answers: ["Flow rate", "Site of infusion", "Patient’s response", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct procedure for performing a wound dressing change?",
+        answers: ["Wear clean gloves and remove the old dressing", "Use sterile technique to apply a new dressing", "Cleanse the wound with antiseptic", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first action a nurse should take when a patient is in cardiac arrest?",
+        answers: ["Begin chest compressions", "Administer oxygen", "Check the pulse", "Call for emergency assistance"],
+        correct: 0
+    },
+    {
+        question: "What is the correct order of steps in the nursing process?",
+        answers: ["Diagnosis, Assessment, Planning, Implementation, Evaluation", "Assessment, Diagnosis, Planning, Implementation, Evaluation", "Planning, Diagnosis, Assessment, Implementation, Evaluation", "Diagnosis, Planning, Assessment, Implementation, Evaluation"],
+        correct: 1
+    },
+    {
+        question: "What should be done if a nurse suspects a patient is experiencing an adverse reaction to a medication?",
+        answers: ["Stop the medication immediately", "Monitor the patient closely", "Notify the healthcare provider", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most important nursing action when caring for a patient with an IV line?",
+        answers: ["Change the IV site every 48 hours", "Check the IV site for signs of infection", "Flush the IV line after every dose", "All of the above"],
+        correct: 1
+    },
+    {
+        question: "What is the normal temperature range for an adult?",
+        answers: ["97.6-99.6°F", "98.0-100.4°F", "99.0-101.2°F", "100.2-102.4°F"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse respond to a patient who is complaining of chest pain?",
+        answers: ["Administer pain medication", "Evaluate the pain severity", "Notify the healthcare provider immediately", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct procedure when taking a blood pressure measurement?",
+        answers: ["Place the cuff over the elbow", "Ensure the arm is at heart level", "Inflate the cuff to 120 mmHg", "All of the above"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do if a patient develops an allergic reaction to a medication?",
+        answers: ["Administer antihistamines", "Call for immediate medical help", "Discontinue the medication", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common symptom of a urinary tract infection (UTI) in older adults?",
+        answers: ["Fever", "Frequent urination", "Confusion", "Painful urination"],
+        correct: 2
+    },
+    {
+        question: "What should a nurse do if a patient experiences a seizure?",
+        answers: ["Restrict the patient’s movements", "Place a bite block in the mouth", "Ensure the patient is in a safe position", "All of the above"],
+        correct: 2
+    },
+    {
+        question: "What is the primary purpose of a nursing care plan?",
+        answers: ["To establish a diagnosis", "To provide patient care instructions", "To plan and document patient care", "To ensure medication administration"],
+        correct: 2
+    },
+    {
+        question: "What should a nurse do if a patient has difficulty breathing?",
+        answers: ["Elevate the patient’s head", "Administer oxygen", "Assess the respiratory rate", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should be monitored when administering blood transfusions?",
+        answers: ["Vital signs every 15 minutes", "The color of the blood bag", "The patient’s emotional state", "The length of the transfusion process"],
+        correct: 0
+    },
+    {
+        question: "What is the proper procedure for administering oral medications?",
+        answers: ["Give medications with water", "Ensure the patient is sitting upright", "Confirm the patient's identification", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do if a patient refuses medication?",
+        answers: ["Administer the medication anyway", "Document the refusal and notify the healthcare provider", "Try to convince the patient to take the medication", "Leave the medication at the bedside"],
+        correct: 1
+    },  {
+        question: "What should be the first step when a nurse is preparing to administer an injection?",
+        answers: ["Wash hands", "Gather supplies", "Prepare the medication", "Ask the patient about allergies"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most effective method to prevent the spread of infections in healthcare settings?",
+        answers: ["Hand hygiene", "Wearing gloves", "Disinfecting surfaces", "Vaccination"],
+        correct: 0
+    },
+    {
+        question: "What is the proper method for lifting a patient from the bed to a chair?",
+        answers: ["Use the lifting equipment", "Lift with your back", "Pull the patient by the arms", "Use a wheelchair for transfer"],
+        correct: 0
+    },
+    {
+        question: "What is the correct way to assess a patient's pain level?",
+        answers: ["Ask the patient to rate their pain on a scale of 1 to 10", "Observe the patient's facial expression", "Take the patient's vital signs", "Ask family members about the patient's pain level"],
+        correct: 0
+    },
+    {
+        question: "How often should a nurse reposition a patient who is bedridden to prevent pressure ulcers?",
+        answers: ["Every hour", "Every 2 hours", "Every 4 hours", "Every 6 hours"],
+        correct: 1
+    },
+    {
+        question: "What is the primary function of a pulse oximeter?",
+        answers: ["Measure blood pressure", "Measure oxygen saturation in the blood", "Measure heart rate", "Measure body temperature"],
+        correct: 1
+    },
+    {
+        question: "What is the most important consideration when administering oral medications to a patient?",
+        answers: ["Confirm the patient’s identification", "Ensure the patient is sitting upright", "Ask the patient to take the medication with water", "Check the expiration date of the medication"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do when a patient is having difficulty breathing?",
+        answers: ["Elevate the head of the bed", "Administer oxygen", "Assess the respiratory rate", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the normal blood pressure range for an adult?",
+        answers: ["90/60 to 120/80 mmHg", "100/70 to 130/90 mmHg", "120/80 to 140/90 mmHg", "130/80 to 160/100 mmHg"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most common sign of a heart attack in women?",
+        answers: ["Chest pain", "Shortness of breath", "Nausea and vomiting", "Pain in the left arm"],
+        correct: 2
+    },
+    {
+        question: "What is the most important factor when performing a medication error report?",
+        answers: ["Provide details about the medication error", "Report the error immediately", "Inform the healthcare provider", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do if a patient exhibits signs of dehydration?",
+        answers: ["Monitor vital signs", "Increase oral intake", "Notify the healthcare provider", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct method for performing a head-to-toe physical assessment?",
+        answers: ["Start with the head and move downward", "Start with the legs and move upward", "Assess vital signs first", "Begin with the respiratory system"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of using a sterile dressing on a wound?",
+        answers: ["To absorb drainage", "To protect the wound from infection", "To promote healing", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is an essential step in performing CPR?",
+        answers: ["Checking the pulse", "Assessing the airway", "Providing chest compressions", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct procedure for administering an intramuscular injection?",
+        answers: ["Inject at a 45-degree angle", "Inject at a 90-degree angle", "Massage the area after injection", "None of the above"],
+        correct: 1
+    },
+    {
+        question: "What is the normal range for adult respiratory rate?",
+        answers: ["10-15 breaths per minute", "12-20 breaths per minute", "16-24 breaths per minute", "18-25 breaths per minute"],
+        correct: 1
+    },
+    {
+        question: "What is the proper position for a patient with a nasogastric tube?",
+        answers: ["Flat on their back", "Head elevated at 30-45 degrees", "On their side", "In a sitting position with feet flat on the floor"],
+        correct: 1
+    },
+    {
+        question: "How should a nurse care for a patient with a urinary catheter?",
+        answers: ["Empty the bag every 12 hours", "Keep the catheter tubing below the bladder level", "Change the catheter every week", "Ensure the catheter is secured to the patient’s leg"],
+        correct: 1
+    },
+    {
+        question: "What is the correct action if a patient has an allergic reaction to a medication?",
+        answers: ["Administer antihistamines", "Stop the medication immediately", "Notify the healthcare provider", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should be the first step when caring for a patient with a wound?",
+        answers: ["Wash hands and wear gloves", "Clean the wound with antiseptic", "Apply a sterile dressing", "Assess the wound for signs of infection"],
+        correct: 0
+    },
+    {
+        question: "What is the correct procedure for taking a blood pressure measurement?",
+        answers: ["Place the cuff over the elbow", "Ensure the arm is at heart level", "Inflate the cuff to 120 mmHg", "All of the above"],
+        correct: 1
+    },
+    {
+        question: "What is the most important factor in preventing pressure ulcers in bedridden patients?",
+        answers: ["Administer pain medication", "Reposition the patient regularly", "Use a special mattress", "Monitor nutritional intake"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is the best method for assessing a patient's hydration status?",
+        answers: ["Check for skin turgor", "Monitor urine output", "Weigh the patient regularly", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct procedure for administering an oral medication?",
+        answers: ["Place the medication under the tongue", "Crush the medication and mix it with food", "Give the medication with water", "Give the medication with juice"],
+        correct: 2
+    },
+    {
+        question: "What should a nurse do if a patient has difficulty swallowing pills?",
+        answers: ["Crush the medication", "Notify the healthcare provider", "Administer the pill with a thickened liquid", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first step when caring for a patient in shock?",
+        answers: ["Administer oxygen", "Elevate the patient's legs", "Establish an IV line", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of monitoring vital signs?",
+        answers: ["To assess the patient's current health status", "To detect changes in the patient's condition", "To evaluate the effectiveness of treatments", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do when a patient refuses a prescribed medication?",
+        answers: ["Administer the medication anyway", "Document the refusal and inform the healthcare provider", "Leave the medication at the bedside", "Convince the patient to take the medication"],
+        correct: 1
+    },
+    {
+        question: "What is the most common sign of a myocardial infarction (heart attack)?",
+        answers: ["Chest pain", "Shortness of breath", "Pain in the left arm", "Nausea and vomiting"],
+        correct: 0
+    },
+    {
+        question: "What is the proper way to lift a patient with a mechanical lift?",
+        answers: ["Lift the patient slowly", "Use the lift according to the manufacturer's instructions", "Lift the patient without support", "Ensure the patient is fully conscious before lifting"],
+        correct: 1
+    },
+    {
+        question: "How should a nurse care for a patient with a tracheostomy tube?",
+        answers: ["Ensure the tube is always kept dry", "Clean the tracheostomy site regularly", "Change the tracheostomy tube every week", "All of the above"],
+        correct: 1
+    },
+    {
+        question: "What is the correct procedure for removing a glove after performing a sterile procedure?",
+        answers: ["Pull the glove off from the wrist", "Touch the outside of the glove", "Remove the gloves from the inside", "Remove both gloves at the same time"],
+        correct: 2
+    },{
+        question: "What is the first priority when caring for a patient in respiratory distress?",
+        answers: ["Administer oxygen", "Check the airway", "Administer medications", "Perform CPR"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a common complication of immobilization in patients?",
+        answers: ["Pressure ulcers", "Hypertension", "Severe dehydration", "Septicemia"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the proper technique for handwashing?",
+        answers: ["Wash hands for 10 seconds", "Use soap and water", "Rub hands only with dry towel", "Wash hands only with water"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do first if a patient falls in the hospital?",
+        answers: ["Notify the doctor", "Assess for injuries", "Help the patient to their feet", "Call for assistance"],
+        correct: 1
+    },
+    {
+        question: "What is the purpose of the Glasgow Coma Scale?",
+        answers: ["To assess a patient's oxygen level", "To measure pain levels", "To evaluate a patient's level of consciousness", "To check heart rate"],
+        correct: 2
+    },
+    {
+        question: "Which of the following vital signs is most closely associated with an infection?",
+        answers: ["Blood pressure", "Temperature", "Heart rate", "Respiratory rate"],
+        correct: 1
+    },
+    {
+        question: "How often should a nurse check on a patient receiving IV fluids?",
+        answers: ["Every 4 hours", "Every hour", "Every 15 minutes", "Every 30 minutes"],
+        correct: 1
+    },
+    {
+        question: "What should be included in a patient’s discharge teaching for wound care?",
+        answers: ["Change dressing regularly", "Avoid movement around the wound", "Apply ice to the wound", "Keep the wound covered at all times"],
+        correct: 0
+    },
+    {
+        question: "When should a nurse report a medication error?",
+        answers: ["Within 24 hours", "As soon as possible", "When the patient complains", "After the medication takes effect"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do to prepare a patient for a chest X-ray?",
+        answers: ["Ensure the patient has no metal objects", "Inject contrast into the patient", "Give the patient water", "Have the patient lie on their stomach"],
+        correct: 0
+    },
+    {
+        question: "What is the best way to prevent catheter-associated urinary tract infections?",
+        answers: ["Ensure good hygiene and proper insertion technique", "Change the catheter every week", "Limit fluid intake", "Use antibiotics regularly"],
+        correct: 0
+    },
+    {
+        question: "What is the proper procedure for administering an oral medication?",
+        answers: ["Place the pill under the tongue", "Have the patient chew the pill", "Have the patient swallow the pill with water", "Crush the pill into powder"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a sign of dehydration?",
+        answers: ["Dry mouth", "Increased urination", "Swollen ankles", "Cold hands"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse assess the pulse of a patient in an emergency?",
+        answers: ["Check the radial pulse", "Check the carotid pulse", "Check the femoral pulse", "Check the popliteal pulse"],
+        correct: 1
+    },
+    {
+        question: "What is the normal range for adult body temperature?",
+        answers: ["36.0 - 37.0°C", "37.5 - 38.0°C", "35.5 - 36.5°C", "38.5 - 39.0°C"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of hyperglycemia?",
+        answers: ["Increased thirst", "Frequent urination", "Blurred vision", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should the nurse do when administering insulin to a diabetic patient?",
+        answers: ["Ensure the patient eats before injection", "Mix the insulin before administering", "Inject in the thigh", "Administer insulin with food only"],
+        correct: 0
+    },
+    {
+        question: "What is the first step in caring for a burn wound?",
+        answers: ["Apply ice directly to the burn", "Cover the wound with a clean cloth", "Rinse the wound with cold water", "Apply ointment to the burn"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a complication of immobility?",
+        answers: ["Pressure ulcers", "Diarrhea", "Hypertension", "Constipation"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an indication for suctioning a patient?",
+        answers: ["Excessive saliva in the mouth", "Loss of appetite", "Increased blood pressure", "Frequent urination"],
+        correct: 0
+    },
+    {
+        question: "What is the best way to reduce the risk of infection in a wound?",
+        answers: ["Change the dressing regularly", "Use antibiotic ointment", "Keep the wound open to the air", "Apply heat to the wound"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of a sterile dressing?",
+        answers: ["To protect the wound from infection", "To absorb the wound exudate", "To keep the wound moist", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following actions is most effective in preventing the spread of healthcare-associated infections?",
+        answers: ["Hand hygiene", "Wearing gloves", "Using hand sanitizers", "Wearing a mask"],
+        correct: 0
+    },
+    {
+        question: "What is the correct way to assess a patient's pain?",
+        answers: ["Ask the patient to rate the pain on a scale from 1 to 10", "Observe the patient’s facial expressions", "Measure the patient's vital signs", "Check for muscle tension"],
+        correct: 0
+    },
+    {
+        question: "What is the primary function of the lymphatic system?",
+        answers: ["Transport oxygen", "Remove waste products from cells", "Produce hormones", "Fight infections"],
+        correct: 3
+    },
+    {
+        question: "What should be done before administering an injection?",
+        answers: ["Check the expiration date of the medication", "Clean the vial with alcohol", "Both 1 and 2", "None of the above"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a common side effect of opioid pain medications?",
+        answers: ["Nausea", "Constipation", "Drowsiness", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct procedure for taking a blood pressure measurement?",
+        answers: ["Place the cuff over the wrist", "Use the stethoscope to listen for the pulse", "Inflate the cuff until the pulse disappears", "Place the cuff on the upper arm and inflate"],
+        correct: 3
+    },
+    {
+        question: "How often should a nurse monitor the IV site for complications?",
+        answers: ["Every 2 hours", "Every 4 hours", "Every 30 minutes", "Every hour"],
+        correct: 1
+    },
+    {
+        question: "What should the nurse do when a patient has a history of falls?",
+        answers: ["Assess the patient's gait", "Place a fall risk bracelet on the patient", "Review medications", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "How can a nurse prevent aspiration in a patient during meal times?",
+        answers: ["Ensure the patient is sitting upright", "Offer small bites of food", "Monitor swallowing closely", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the correct action when a nurse notices signs of infection at an IV site?",
+        answers: ["Remove the IV immediately", "Apply an antibiotic ointment", "Document the findings and report to the healthcare provider", "Change the dressing"],
+        correct: 2
+    },
+    {
+        question: "What is the best way to assess a patient's level of consciousness?",
+        answers: ["Ask the patient to respond to questions", "Check for pupils' response to light", "Monitor for involuntary movements", "Assess the patient's vital signs"],
+        correct: 0
+    },
+    {
+        question: "Which of the following actions would help prevent deep vein thrombosis in bedridden patients?",
+        answers: ["Encourage leg exercises", "Administer anticoagulant medication", "Elevate the legs", "All of the above"],
+        correct: 3
+    },{
+        question: "What is the purpose of a nursing care plan?",
+        answers: ["To record the patient's medical history", "To document patient vitals", "To outline patient goals and interventions", "To administer medication"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is the most common cause of hospital-acquired infections?",
+        answers: ["Improper hand hygiene", "Overuse of antibiotics", "Contaminated equipment", "Improper disposal of waste"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of an intravenous (IV) line?",
+        answers: ["To monitor blood pressure", "To administer fluids and medications", "To assess oxygen levels", "To take blood samples"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a primary responsibility of a nurse when administering medication?",
+        answers: ["Ensure the correct medication is given", "Administer medications based on the patient's request", "Skip a dose if the patient is uncooperative", "Give medication to the wrong patient if they insist"],
+        correct: 0
+    },
+    {
+        question: "Which of the following should a nurse do when performing a sterile dressing change?",
+        answers: ["Wear gloves", "Touch the wound with bare hands", "Keep the dressing wet", "Use expired supplies"],
+        correct: 0
+    },
+    {
+        question: "What is the most important action when caring for a patient with a tracheostomy?",
+        answers: ["Monitor the patient's airway", "Keep the area dry", "Change the tracheostomy tube every day", "Administer antibiotics regularly"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the correct order of steps when performing CPR on an adult?",
+        answers: ["Check pulse, clear the airway, compress chest", "Clear the airway, check pulse, compress chest", "Perform chest compressions, check pulse, clear airway", "Check pulse, compress chest, clear the airway"],
+        correct: 2
+    },
+    {
+        question: "How often should a nurse assess a patient’s wound for signs of infection?",
+        answers: ["Every hour", "Every 2 hours", "Once a day", "At least once every shift"],
+        correct: 3
+    },
+    {
+        question: "What should the nurse do if a patient experiences sudden chest pain?",
+        answers: ["Administer pain medication immediately", "Monitor the patient without intervention", "Notify the healthcare provider and perform an ECG", "Ask the patient to rest and wait for relief"],
+        correct: 2
+    },
+    {
+        question: "What is the normal respiratory rate for an adult?",
+        answers: ["12-20 breaths per minute", "8-12 breaths per minute", "16-24 breaths per minute", "20-30 breaths per minute"],
+        correct: 0
+    },
+    {
+        question: "What is a nurse's first priority when caring for a patient in shock?",
+        answers: ["Administer oxygen", "Elevate the legs", "Ensure the airway is clear", "Assess vital signs"],
+        correct: 2
+    },
+    {
+        question: "What is the first step in performing a physical assessment?",
+        answers: ["Inspect the patient", "Ask about medical history", "Palpate the abdomen", "Check vital signs"],
+        correct: 1
+    },
+    {
+        question: "Which of the following signs would indicate that a patient is experiencing hypoxia?",
+        answers: ["Confusion, shortness of breath", "Restlessness, hypertension", "Pale skin, high blood pressure", "Excessive sweating, fatigue"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse position a patient with a stroke to prevent complications?",
+        answers: ["Keep the patient in a prone position", "Turn the patient every 2 hours", "Keep the patient in a supine position", "Position the patient with their head elevated"],
+        correct: 3
+    },
+    {
+        question: "When should a nurse measure the blood pressure of a patient?",
+        answers: ["Before administering medications", "After physical activity", "After the patient has rested for at least 5 minutes", "Any time the patient requests it"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a sign of dehydration?",
+        answers: ["Increased urination", "Dry skin", "Clear urine", "Moist mucous membranes"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is the correct technique for suctioning a patient’s airway?",
+        answers: ["Insert the catheter into the patient's mouth and apply suction for 10-15 seconds", "Insert the catheter into the patient's nose", "Suction continuously for 30 seconds", "Never suction a patient's airway"],
+        correct: 0
+    },
+    {
+        question: "What is the proper technique for measuring a patient's temperature using an oral thermometer?",
+        answers: ["Place the thermometer under the tongue", "Place the thermometer in the ear", "Place the thermometer in the armpit", "Place the thermometer on the forehead"],
+        correct: 0
+    },
+    {
+        question: "What should a nurse do if a patient is allergic to a medication?",
+        answers: ["Stop the medication immediately and notify the healthcare provider", "Give the patient the medication with food", "Continue the medication as usual", "Administer an antihistamine without notifying the doctor"],
+        correct: 0
+    },
+    {
+        question: "What is the most appropriate action when caring for a patient with an IV line that has become dislodged?",
+        answers: ["Apply pressure to stop the bleeding", "Insert the IV back into the vein", "Flush the line", "Stop the infusion and notify the healthcare provider"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the best way to ensure effective communication with a non-English-speaking patient?",
+        answers: ["Use gestures and body language", "Speak loudly", "Use an interpreter or translation service", "Give the patient written instructions only"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a key sign of early-stage hypovolemic shock?",
+        answers: ["Increased heart rate and weak pulse", "Increased blood pressure", "Decreased heart rate", "Pink and warm skin"],
+        correct: 0
+    },
+    {
+        question: "What is the most appropriate intervention for a patient at risk of falling?",
+        answers: ["Provide the patient with a walking aid", "Encourage the patient to stay in bed", "Place the patient in a high-back chair", "Allow the patient to walk independently"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse respond to a patient who is experiencing anxiety?",
+        answers: ["Encourage the patient to express their concerns", "Avoid discussing their anxiety", "Ignore the symptoms", "Tell the patient to calm down"],
+        correct: 0
+    },
+    {
+        question: "What is the main purpose of patient teaching regarding medication?",
+        answers: ["To educate the patient on the side effects", "To ensure that the patient follows the prescribed treatment", "To discourage the patient from asking questions", "To educate the patient on diet restrictions only"],
+        correct: 1
+    },
+    {
+        question: "What is the appropriate action when a nurse encounters a patient with a suspected allergic reaction?",
+        answers: ["Administer the prescribed antihistamine", "Monitor the patient's symptoms", "Stop the offending medication and notify the healthcare provider", "Ignore the symptoms if they are mild"],
+        correct: 2
+    },
+    {
+        question: "What is the best way to prevent deep vein thrombosis (DVT) in a postoperative patient?",
+        answers: ["Encourage the patient to ambulate", "Limit fluid intake", "Administer pain medication", "Keep the patient's legs elevated at all times"],
+        correct: 0
+    },
+    {
+        question: "What is the appropriate intervention for a patient showing signs of respiratory distress?",
+        answers: ["Encourage deep breathing", "Administer oxygen as prescribed", "Check the patient's blood pressure", "Offer the patient food and fluids"],
+        correct: 1
+    },
+    {
+        question: "What should a nurse do if a patient's blood glucose level is critically high?",
+        answers: ["Administer insulin as prescribed", "Administer oral glucose", "Increase the patient's fluid intake", "Encourage the patient to eat more carbohydrates"],
+        correct: 0
+    },
+    {
+        question: "What is the proper procedure for administering an intramuscular injection?",
+        answers: ["Inject at a 45-degree angle", "Use a 1-2 inch needle", "Inject in the vein", "Inject subcutaneously"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is an example of a non-verbal communication technique?",
+        answers: ["Using an interpreter", "Speaking in a loud voice", "Making eye contact", "Giving written instructions"],
+        correct: 2
+    },
+    {
+        question: "What should a nurse do if a patient refuses a medication?",
+        answers: ["Administer the medication anyway", "Ask the patient why they refuse", "Ignore the refusal", "Notify the healthcare provider immediately"],
+        correct: 1
+    }, {
+        question: "What is the correct method of performing hand hygiene?",
+        answers: ["Use soap and water for 20 seconds", "Rub hands together for 5 seconds", "Use alcohol-based hand sanitizer for 10 seconds", "Rinse hands quickly under water"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a primary responsibility of a nurse during patient admission?",
+        answers: ["Complete patient documentation", "Administer medications immediately", "Prepare the patient for surgery", "Discharge the patient"],
+        correct: 0
+    },
+    {
+        question: "What is the primary purpose of auscultation in nursing assessment?",
+        answers: ["To listen for abnormal lung or heart sounds", "To measure the blood pressure", "To check the patient's temperature", "To evaluate the patient's gait"],
+        correct: 0
+    },
+    {
+        question: "What is the most common sign of infection in a postoperative patient?",
+        answers: ["Increased body temperature", "Decreased heart rate", "Increased appetite", "Clear urine output"],
+        correct: 0
+    },
+    {
+        question: "What is the best method to prevent pressure ulcers in bedridden patients?",
+        answers: ["Reposition the patient every 2 hours", "Use a soft mattress", "Encourage the patient to stay in bed", "Increase fluid intake"],
+        correct: 0
+    },
+    {
+        question: "When should a nurse assess the pain level of a patient?",
+        answers: ["Before and after administering pain medication", "Only when the patient complains of pain", "Once every 24 hours", "At the time of discharge"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most common side effect of opioid pain medications?",
+        answers: ["Constipation", "Diarrhea", "Increased appetite", "Increased energy"],
+        correct: 0
+    },
+    {
+        question: "Which action is appropriate for a nurse when caring for a patient with a urinary catheter?",
+        answers: ["Keep the catheter tubing free of kinks", "Leave the catheter tubing disconnected from the drainage bag", "Ensure the catheter is removed after 24 hours", "Avoid monitoring the patient’s urine output"],
+        correct: 0
+    },
+    {
+        question: "What is the primary purpose of the nurse assessing a patient's vital signs?",
+        answers: ["To monitor the patient's health status", "To provide the patient with medications", "To determine the need for physical therapy", "To calculate the patient's body mass index"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse perform an abdominal assessment?",
+        answers: ["Inspect, auscultate, palpate, percuss", "Palpate, percuss, inspect, auscultate", "Auscultate, percuss, inspect, palpate", "Inspect, palpate, auscultate, percuss"],
+        correct: 0
+    },
+    {
+        question: "What is the most appropriate intervention for a patient with a suspected drug overdose?",
+        answers: ["Administer activated charcoal", "Give the patient water", "Perform CPR immediately", "Administer a sedative"],
+        correct: 0
+    },
+    {
+        question: "What is the standard procedure for measuring blood pressure?",
+        answers: ["Place the cuff 2 inches above the elbow", "Place the cuff on the forearm", "Use a stethoscope to listen to heartbeats", "Do not inflate the cuff completely"],
+        correct: 0
+    },
+    {
+        question: "How often should a nurse check the insertion site of a peripheral intravenous (IV) line?",
+        answers: ["Every hour", "Every 4 hours", "Every 12 hours", "Every shift"],
+        correct: 1
+    },
+    {
+        question: "What is the most appropriate response if a nurse notices a patient's oxygen saturation level has dropped?",
+        answers: ["Increase the oxygen flow rate", "Notify the physician and assess the patient's respiratory status", "Reassure the patient and continue monitoring", "Administer a sedative to calm the patient"],
+        correct: 1
+    },
+    {
+        question: "What is the correct technique for measuring a patient’s temperature using a tympanic thermometer?",
+        answers: ["Place the thermometer in the ear canal", "Place the thermometer under the tongue", "Place the thermometer on the forehead", "Place the thermometer under the armpit"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse assess for the presence of peripheral edema?",
+        answers: ["Press gently on the skin over the tibia", "Observe the patient’s overall posture", "Palpate the patient’s abdomen", "Auscultate the lungs for abnormal sounds"],
+        correct: 0
+    },
+    {
+        question: "What is the primary goal of patient education regarding medications?",
+        answers: ["To ensure compliance with prescribed therapy", "To avoid any adverse effects", "To promote patient comfort", "To prevent medication errors"],
+        correct: 0
+    },
+    {
+        question: "What should a nurse do if a patient exhibits signs of an allergic reaction to medication?",
+        answers: ["Stop the medication and notify the physician immediately", "Administer a dose of antihistamine", "Continue the medication as ordered", "Wait for the symptoms to subside on their own"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a potential complication of deep vein thrombosis (DVT)?",
+        answers: ["Pulmonary embolism", "Hypotension", "Stroke", "Dehydration"],
+        correct: 0
+    },
+    {
+        question: "What is the appropriate action if a nurse finds a patient's IV infusion site swollen and cool to the touch?",
+        answers: ["Stop the infusion, elevate the limb, and notify the healthcare provider", "Change the IV site immediately", "Continue the infusion at a slower rate", "Administer pain medication"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the primary intervention for preventing aspiration pneumonia in a patient with difficulty swallowing?",
+        answers: ["Encourage the patient to eat slowly and in an upright position", "Give the patient soft foods only", "Administer thickened liquids", "Avoid giving the patient any fluids"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of a nurse assessing the patient's body mass index (BMI)?",
+        answers: ["To determine the patient's nutritional status", "To calculate the ideal body weight", "To assess the patient's exercise routine", "To estimate the patient's risk for respiratory failure"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of wound infection?",
+        answers: ["Bacteria", "Fungal growth", "Viruses", "Parasites"],
+        correct: 0
+    },
+    {
+        question: "When performing a chest assessment, which technique should be performed first?",
+        answers: ["Inspection", "Palpation", "Percussion", "Auscultation"],
+        correct: 0
+    },
+    {
+        question: "What is the first step in responding to a patient in respiratory distress?",
+        answers: ["Ensure the airway is open", "Give the patient oxygen", "Administer pain medication", "Perform chest compressions"],
+        correct: 0
+    },
+    {
+        question: "Which of the following actions is essential for ensuring patient privacy?",
+        answers: ["Closing the patient's door during assessments", "Providing patients with their medical records", "Discussing patient care in public areas", "Sharing information with family members without consent"],
+        correct: 0
+    },
+    {
+        question: "What is the appropriate technique for removing an indwelling urinary catheter?",
+        answers: ["Lubricate the catheter and slowly pull it out", "Deflate the balloon and pull the catheter out", "Cut the catheter and remove it piece by piece", "Withdraw the catheter without deflating the balloon"],
+        correct: 1
+    },
+    {
+        question: "What is the primary role of a nurse when assisting with patient hygiene?",
+        answers: ["To ensure patient comfort and maintain dignity", "To clean the patient quickly", "To delegate hygiene tasks to other staff members", "To ensure that the patient follows a bathing schedule"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an appropriate nursing action for a patient with a history of falls?",
+        answers: ["Place the patient in a low bed", "Reassure the patient and allow them to move freely", "Administer sedatives to calm the patient", "Limit the patient's mobility to the bed"],
+        correct: 0
+    },
+    {
+        question: "What is the appropriate nursing intervention for a patient experiencing nausea?",
+        answers: ["Offer small, frequent meals", "Encourage the patient to lie down flat", "Administer anti-nausea medication without consulting the doctor", "Provide large meals with spicy foods"],
+        correct: 0
+    },
+    {
+        question: "What should a nurse do before administering a blood transfusion?",
+        answers: ["Verify the patient's identity and blood type", "Administer pain relief first", "Change the IV line to a new one", "Ask the patient about their previous transfusions"],
+        correct: 0
+    }, {
+        question: "What is the primary purpose of sterile technique during nursing procedures?",
+        answers: ["To prevent infection", "To make the procedure quicker", "To improve patient comfort", "To avoid blood loss"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the correct sequence for assessing a patient's vital signs?",
+        answers: ["Temperature, pulse, respiration, blood pressure", "Pulse, temperature, respiration, blood pressure", "Blood pressure, pulse, respiration, temperature", "Respiration, temperature, pulse, blood pressure"],
+        correct: 0
+    },
+    {
+        question: "What is the normal range for an adult's respiratory rate?",
+        answers: ["12-20 breaths per minute", "10-15 breaths per minute", "20-30 breaths per minute", "15-25 breaths per minute"],
+        correct: 0
+    },
+    {
+        question: "When measuring blood pressure, what is the correct procedure for deflating the cuff?",
+        answers: ["Deflate slowly and steadily", "Deflate quickly", "Deflate after taking the first reading", "Deflate abruptly after the second reading"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an example of subjective data?",
+        answers: ["Patient's complaint of pain", "Blood pressure reading", "Temperature reading", "Weight measurement"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a priority intervention for a patient with an open wound?",
+        answers: ["Clean the wound and apply a sterile dressing", "Administer pain medication", "Monitor vital signs", "Provide fluids to the patient"],
+        correct: 0
+    },
+    {
+        question: "What is the most important action a nurse should take before administering medications?",
+        answers: ["Verify the patient's identity", "Prepare the medication in advance", "Check the expiration date of the medication", "Administer the medication without delay"],
+        correct: 0
+    },
+    {
+        question: "What should a nurse do if a patient refuses medication?",
+        answers: ["Respect the patient's wishes and inform the healthcare provider", "Force the medication on the patient", "Document the refusal and proceed", "Encourage the patient to take the medication forcefully"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an appropriate response when a patient is experiencing shortness of breath?",
+        answers: ["Place the patient in a semi-Fowler's position", "Administer pain medication", "Provide the patient with a glass of water", "Reassure the patient and allow them to lie flat"],
+        correct: 0
+    },
+    {
+        question: "What is the best way to prevent the spread of infections in a healthcare setting?",
+        answers: ["Follow proper hand hygiene procedures", "Wear gloves at all times", "Clean surfaces with alcohol", "Use antibiotics for all patients"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most important action when caring for a patient with an indwelling catheter?",
+        answers: ["Keep the drainage bag below the level of the bladder", "Change the catheter every 24 hours", "Place the catheter in a sterile container", "Administer antibiotics regularly"],
+        correct: 0
+    },
+    {
+        question: "What is the primary goal of patient education?",
+        answers: ["To promote health and prevent illness", "To ensure compliance with hospital policies", "To provide entertainment during hospitalization", "To teach the patient's family about medical procedures"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of shock?",
+        answers: ["Cool, pale skin", "High blood pressure", "Rapid, deep breathing", "Increased urine output"],
+        correct: 0
+    },
+    {
+        question: "What is the appropriate intervention for a patient with a pressure ulcer?",
+        answers: ["Reposition the patient frequently", "Apply an ice pack to the ulcer", "Administer pain medication", "Increase the patient's fluid intake"],
+        correct: 0
+    },
+    {
+        question: "What is the most important safety measure when using oxygen therapy for a patient?",
+        answers: ["Ensure the patient does not smoke", "Provide the patient with extra blankets", "Ensure the oxygen tank is always upright", "Administer oxygen only at night"],
+        correct: 0
+    },
+    {
+        question: "Which of the following should be monitored in a patient receiving intravenous (IV) fluids?",
+        answers: ["Fluid balance", "Skin temperature", "Weight", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of using a sterile dressing on a wound?",
+        answers: ["To protect the wound from infection", "To prevent blood loss", "To decrease the swelling", "To help the wound heal faster"],
+        correct: 0
+    },
+    {
+        question: "How should a nurse administer oral medications to a patient with difficulty swallowing?",
+        answers: ["Crush the medication and mix it with food", "Administer the medication with a small sip of water", "Place the medication under the tongue", "Ask the patient to swallow without water"],
+        correct: 1
+    },
+    {
+        question: "What is the first step when performing a physical assessment?",
+        answers: ["Wash your hands", "Ask the patient about their symptoms", "Inspect the patient", "Check the patient's vital signs"],
+        correct: 0
+    },
+    {
+        question: "Which of the following should be included in a nursing care plan?",
+        answers: ["Patient's health goals", "Patient's medical history", "Patient's personal preferences", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most effective way to prevent the spread of healthcare-associated infections?",
+        answers: ["Wash hands frequently", "Use antibiotics for every patient", "Wear a mask at all times", "Administer vaccines to staff"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most appropriate action for a nurse when encountering a patient with chest pain?",
+        answers: ["Administer oxygen and call for emergency help", "Provide the patient with a painkiller", "Reassure the patient and monitor their vital signs", "Have the patient rest in a reclining position"],
+        correct: 0
+    },
+    {
+        question: "What is the correct technique for administering an intramuscular injection?",
+        answers: ["Insert the needle at a 90-degree angle", "Insert the needle at a 45-degree angle", "Insert the needle at a 30-degree angle", "Insert the needle at a 75-degree angle"],
+        correct: 0
+    },
+    {
+        question: "What should a nurse do if a patient has a wound infection?",
+        answers: ["Clean the wound and apply an appropriate dressing", "Leave the wound open to drain", "Administer antibiotics without consulting a doctor", "Ignore the infection and monitor for signs of healing"],
+        correct: 0
+    },
+    {
+        question: "What is the most effective method to manage a patient’s pain after surgery?",
+        answers: ["Administer prescribed pain medication regularly", "Encourage the patient to avoid movement", "Apply a heating pad to the surgical area", "Administer pain medication only when the patient complains"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a primary nursing responsibility when caring for a post-surgical patient?",
+        answers: ["Monitor for signs of infection", "Assist with physical therapy", "Administer pain medications", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which action is essential when performing a venipuncture for blood collection?",
+        answers: ["Clean the area with alcohol", "Insert the needle at a shallow angle", "Wait for the patient to stop bleeding", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What should a nurse do if a patient develops a rash after taking a new medication?",
+        answers: ["Stop the medication and report the reaction", "Apply topical steroids", "Give the patient an antihistamine", "Continue the medication and monitor the patient"],
+        correct: 0
+    },
+    {
+        question: "What is the first step in managing a patient with a head injury?",
+        answers: ["Ensure the patient has an open airway", "Administer oxygen immediately", "Apply pressure to any bleeding site", "Perform a neurological assessment"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of using a restraint on a patient?",
+        answers: ["To prevent the patient from harming themselves or others", "To keep the patient in bed", "To prevent the patient from getting out of bed", "None of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a primary goal of nursing care for elderly patients?",
+        answers: ["Promote independence and dignity", "Ensure complete rest", "Restrict patient movement", "None of the above"],
+        correct: 0
+    }
+];
+
+
+  
+
+
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    
+    const questionText = document.getElementById('question-text');
+    const answerBtns = document.querySelectorAll('.answer-btn');
+    const feedback = document.getElementById('feedback');
+    const questionNumber = document.getElementById('question-number');
+    const finalScore = document.getElementById('finalScore');
+    const percentage = document.getElementById('percentage');
+    const resultContainer = document.querySelector('.result');
+    const viewResultBtn = document.getElementById('viewResultBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    
+    
+    
+    function displayQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionText.textContent = currentQuestion.question;
+        for (let i = 0; i < currentQuestion.answers.length; i++) {
+            answerBtns[i].textContent = currentQuestion.answers[i];
+        }
+        questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        feedback.textContent = "";
+        startTimer();
+    }
+    
+    function checkAnswer(selectedIndex) {
+        const currentQuestion = questions[currentQuestionIndex];
+        clearTimeout(timer);
+        if (selectedIndex === currentQuestion.correct) {
+            score++;
+            feedback.textContent = "Correct!";
+            feedback.className = "feedback-frame correct";
+        } else {
+            feedback.textContent = "Incorrect!";
+            feedback.className = "feedback-frame incorrect";
+        }
+        setTimeout(() => {
+            nextQuestion();
+        }, 1500);
+    }
+    
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+        }
+    }
+    
+    function showResults() {
+        const percentageScore = (score / questions.length) * 100;
+        finalScore.textContent = `Score: ${score} / ${questions.length}`;
+        percentage.textContent = `Percentage: ${percentageScore.toFixed(2)}%`;
+        
+        // Display the result section and hide the quiz
+        resultContainer.style.display = 'block';
+        document.querySelector('.question-container').style.display = 'none';
+        
+        // Chart.js for visual representation (pie and bar charts)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                    data: [score, questions.length - score],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            }
+        });
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Score'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [score],
+                    backgroundColor: '#28a745'
+                }]
+            }
+        });
+
+        viewResultBtn.style.display = 'none';
+    }
+
+    function stopQuiz() {
+        
+       
+        showResults();
+    }
+    
+    // Initialize the quiz
+    displayQuestion();
+    function checkAnswer(selectedIndex) {
+    const currentQuestion = questions[currentQuestionIndex];
+    clearInterval(timer);
+
+    // Check if the selected answer is correct
+    if (selectedIndex === currentQuestion.correct) {
+        score++;
+        feedback.textContent = "Correct!";
+        feedback.className = "feedback-frame correct";
+    } else {
+        feedback.textContent = `Incorrect! The correct answer is:   ${currentQuestion.answers[currentQuestion.correct]}`;
+        feedback.className = "feedback-frame incorrect";
+    }
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 1500);
+}
+
+</script>
+
+
+
+  
+
+</body>
+</html> 

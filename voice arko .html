@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Typing System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
+      transition: all 0.3s ease;
+    }
+
+    .text-area-container {
+      flex: 1;
+      padding: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s ease;
+    }
+
+    textarea:focus {
+      border-color: #4caf50;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .language-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .language-buttons button {
+      margin: 5px;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .language-buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    .selected-language {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #e2e2e2;
+      border-radius: 5px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .stop-button {
+      background-color: #f44336;
+    }
+
+    .stop-button:hover {
+      background-color: #d32f2f;
+    }
+
+    .sound-wave-container {
+      flex: 0 0 100px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .sound-wave {
+      width: 10px;
+      height: 50px;
+      background-color: #4caf50;
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    .sound-wave:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .sound-wave:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .sound-wave:nth-child(4) {
+      animation-delay: 0.6s;
+    }
+
+    .sound-wave:nth-child(5) {
+      animation-delay: 0.8s;
+    }
+
+    @keyframes wave {
+      0%, 100% {
+        height: 50px;
+      }
+      50% {
+        height: 80px;
+      }
+    }
+
+    .listen-button {
+      position: fixed;
+      right: 20px;
+      top: 20px;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .listen-button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+        max-width: 90%;
+      }
+
+      textarea {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 8px 16px;
+      }
+
+      .language-buttons button {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      .sound-wave-container {
+        margin-top: 10px;
+      }
+
+      .listen-button {
+        right: 10px;
+        top: 10px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .container {
+        max-width: 100%;
+      }
+
+      textarea {
+        font-size: 12px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+
+      .language-buttons button {
+        font-size: 12px;
+        padding: 6px;
+      }
+
+      .listen-button {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="text-area-container">
+      <h1>Voice Typing System</h1>
+      <textarea id="textArea" rows="10" cols="30" placeholder="कृपया आफ्नो आवाज लेख्नका लागि प्रयोग गर्नुहोस्..."></textarea>
+      
+      <button id="startBtn">Start Voice Typing</button>
+      <button id="stopBtn" class="stop-button" style="display: none;">Stop Voice Typing</button>
+      
+      <div class="language-buttons">
+        <button id="nepaliBtn">Nepali</button>
+        <button id="englishBtn">English</button>
+      </div>
+      
+      <div class="selected-language" id="selectedLanguage">Selected Language: Nepali</div>
+    </div>
+
+    <div class="sound-wave-container">
+      <div class="sound-wave"></div>
+      <div class="sound-wave"></div>
+      <div class="sound-wave"></div>
+      <div class="sound-wave"></div>
+      <div class="sound-wave"></div>
+    </div>
+  </div>
+
+  <!-- Listen Button -->
+  <button class="listen-button" id="listenBtn">Listen to Text</button>
+
+  <script>
+    // Check if the browser supports SpeechRecognition
+    if (!('webkitSpeechRecognition' in window)) {
+      alert("Your browser does not support voice typing. Please use a compatible browser like Chrome.");
+    } else {
+      const recognition = new webkitSpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      
+      const startButton = document.getElementById('startBtn');
+      const stopButton = document.getElementById('stopBtn');
+      const textArea = document.getElementById('textArea');
+      const nepaliButton = document.getElementById('nepaliBtn');
+      const englishButton = document.getElementById('englishBtn');
+      const selectedLanguageDisplay = document.getElementById('selectedLanguage');
+      const soundWaveContainer = document.querySelector('.sound-wave-container');
+      const listenButton = document.getElementById('listenBtn'); // Listen button
+
+      let selectedLanguage = 'ne-NP'; // Default to Nepali
+
+      // Button to select Nepali Language
+      nepaliButton.addEventListener('click', () => {
+        selectedLanguage = 'ne-NP'; // Set Nepali language
+        recognition.lang = selectedLanguage;
+        selectedLanguageDisplay.textContent = 'Selected Language: Nepali';
+      });
+
+      // Button to select English Language
+      englishButton.addEventListener('click', () => {
+        selectedLanguage = 'en-US'; // Set English language
+        recognition.lang = selectedLanguage;
+        selectedLanguageDisplay.textContent = 'Selected Language: English';
+      });
+
+      // Start voice typing when button is clicked
+      startButton.addEventListener('click', () => {
+        recognition.lang = selectedLanguage; // Ensure correct language is selected before starting
+        recognition.start();
+        startButton.disabled = true; // Disable button while listening
+        startButton.textContent = 'Listening...';
+        stopButton.style.display = 'inline-block'; // Show Stop button
+        soundWaveContainer.style.display = 'flex'; // Show sound wave animation
+      });
+
+      // Stop voice typing when stop button is clicked
+      stopButton.addEventListener('click', () => {
+        recognition.stop(); // Stop the speech recognition
+        startButton.disabled = false; // Re-enable start button
+        startButton.textContent = 'Start Voice Typing'; // Change the button text
+        stopButton.style.display = 'none'; // Hide Stop button
+        soundWaveContainer.style.display = 'none'; // Hide sound wave animation
+      });
+
+      recognition.onstart = function () {
+        console.log('Voice typing started');
+      };
+
+      recognition.onresult = function (event) {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        textArea.value = transcript; // Update the textarea with the speech-to-text result
+      };
+
+      recognition.onerror = function (event) {
+        console.log('Error occurred: ' + event.error);
+      };
+
+      // Listen to the text
+      listenButton.addEventListener('click', () => {
+        const utterance = new SpeechSynthesisUtterance(textArea.value);
+        speechSynthesis.speak(utterance);
+      });
+    }
+  </script>
+</body>
+</html>

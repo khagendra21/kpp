@@ -1,0 +1,3176 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gynecology</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background-color: rgba(59, 47, 47, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background-color: rgba(255, 165, 0, 1); /* Vibrant orange */
+            
+        }
+
+        .feedback-frame {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .correct {
+            border: 3px solid #28a745;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .incorrect {
+            border: 3px solid #dc3545;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            gap: 10px;
+        }
+
+        .timer-icon {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: green;
+            width: 100%;
+            border-radius: 10px;
+            animation: countdown 10s linear forwards;
+        }
+
+        @keyframes countdown {
+            0% {
+                width: 100%;
+            }
+            100% {
+                width: 0%;
+                background-color: red;
+            }
+        }
+
+        .navigation-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        p{
+            color:ye
+        }
+        .result-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .btn-result {
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-result:hover {
+            background-color: #218838;
+        }
+
+        /* Stop button */
+        .btn-stop {
+            padding: 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-stop:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design for small screens */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 95%;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .answer-btn {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .feedback-frame {
+                font-size: 1em;
+            }
+
+            .timer {
+                font-size: 1.2em;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Display Question Number -->
+        
+        <div class="question-number" id="question-number">Question 1 of 6</div>
+
+        <div class="timer">
+           
+            
+        </div>
+
+        <div class="question-container">
+            <div class="question" id="question-text">Question will appear here</div>
+            <div class="answers">
+                <button class="answer-btn" id="btn1" onclick="checkAnswer(0)">Option 1</button>
+                <button class="answer-btn" id="btn2" onclick="checkAnswer(1)">Option 2</button>
+                <button class="answer-btn" id="btn3" onclick="checkAnswer(2)">Option 3</button>
+                <button class="answer-btn" id="btn4" onclick="checkAnswer(3)">Option 4</button>
+            </div>
+            <div class="feedback-frame" id="feedback"></div>
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+            <button class="btn-result" id="viewResultBtn" onclick="showResults()" style="display:none;">View Result</button>
+            <button class="btn-stop" id="stopBtn" onclick="stopQuiz()">Stop Quiz</button>
+        </div>
+
+        <div class="result">
+            <div class="result-header">Quiz Results</div>
+            <div id="finalScore">Score: 0</div>
+            <div id="percentage">Percentage: 0%</div>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+     <script>
+   const questions = [
+  
+    {
+        question: "What is the most common cause of abnormal uterine bleeding in women of reproductive age?",
+        answers: ["Polycystic ovary syndrome (PCOS)", "Endometrial cancer", "Uterine fibroids", "Cervical cancer"],
+        correct: 0
+    },
+    {
+        question: "What is the primary cause of ovarian cancer?",
+        answers: ["Genetic mutations", "Chronic pelvic infections", "Hormonal imbalance", "Age"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a treatment for endometriosis?",
+        answers: ["Surgical removal of endometrial tissue", "Hormonal therapy", "Pain management", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common method of birth control for women over 40?",
+        answers: ["Sterilization", "Oral contraceptives", "IUD", "Condoms"],
+        correct: 2
+    },
+    {
+        question: "What is the main role of the luteal phase in the menstrual cycle?",
+        answers: ["Ovulation", "Endometrial thickening", "Progesterone secretion", "Menstruation"],
+        correct: 2
+    },
+    {
+        question: "What is the main symptom of a ruptured ectopic pregnancy?",
+        answers: ["Severe abdominal pain", "Fever", "Headache", "Swollen legs"],
+        correct: 0
+    },
+    {
+        question: "Which test is commonly used to diagnose breast cancer?",
+        answers: ["Mammography", "Pap smear", "Colposcopy", "Laparoscopy"],
+        correct: 0
+    },
+    {
+        question: "Which condition is characterized by excessive hair growth in women?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Uterine fibroids", "Cervical cancer"],
+        correct: 0
+    },
+    {
+        question: "What is the most effective way to reduce the risk of cervical cancer?",
+        answers: ["Regular Pap smears", "Vaccination against HPV", "Use of oral contraceptives", "Condom use during intercourse"],
+        correct: 1
+    },
+    {
+        question: "What hormone is primarily responsible for regulating the menstrual cycle?",
+        answers: ["Estrogen", "Progesterone", "Testosterone", "Luteinizing hormone"],
+        correct: 0
+    },
+    {
+        question: "What is the primary method of diagnosing a sexually transmitted infection (STI)?",
+        answers: ["Blood tests", "Urine tests", "Physical exam", "Swab tests"],
+        correct: 3
+    },
+    {
+        question: "What is the most common treatment for premenstrual syndrome (PMS)?",
+        answers: ["Dietary changes", "Antidepressants", "Hormonal therapy", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which condition is most commonly associated with pelvic pain and infertility in women?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Ovarian cysts", "Uterine fibroids"],
+        correct: 1
+    },
+    {
+        question: "What is the most common symptom of uterine fibroids?",
+        answers: ["Heavy menstrual bleeding", "Painful urination", "Hot flashes", "Breast tenderness"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most common cause of pelvic inflammatory disease (PID)?",
+        answers: ["Chlamydia", "Endometriosis", "Polycystic ovary syndrome", "Cervical cancer"],
+        correct: 0
+    },
+    {
+        question: "Which procedure is used to diagnose and treat cervical dysplasia?",
+        answers: ["Pap smear", "Colposcopy", "Endometrial biopsy", "Laparoscopy"],
+        correct: 1
+    },
+    {
+        question: "Which hormone is primarily responsible for the development of the female reproductive system?",
+        answers: ["Estrogen", "Progesterone", "Testosterone", "Oxytocin"],
+        correct: 0
+    },
+    {
+        question: "What is the primary method of preventing preterm labor?",
+        answers: ["Steroids", "Bed rest", "Progesterone therapy", "Antibiotics"],
+        correct: 2
+    },
+    {
+        question: "What condition is defined by the inability to become pregnant after one year of regular unprotected sex?",
+        answers: ["Infertility", "Polycystic ovary syndrome", "Endometriosis", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the main purpose of an intrauterine device (IUD)?",
+        answers: ["Preventing pregnancy", "Treating endometriosis", "Alleviating menstrual pain", "Regulating the menstrual cycle"],
+        correct: 0
+    },
+    {
+        question: "What is the main cause of secondary amenorrhea?",
+        answers: ["Pregnancy", "Anorexia", "Polycystic ovary syndrome", "Thyroid dysfunction"],
+        correct: 0
+    },
+    {
+        question: "What is the primary function of oxytocin during childbirth?",
+        answers: ["Stimulating uterine contractions", "Increasing milk production", "Regulating menstrual cycle", "Inducing ovulation"],
+        correct: 0
+    },
+    {
+        question: "What is a common sign of polycystic ovary syndrome?",
+        answers: ["Irregular periods", "Excessive hair growth", "Acne", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is used to treat infertility in women with polycystic ovary syndrome (PCOS)?",
+        answers: ["Clomiphene citrate", "Metformin", "Laparoscopic surgery", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of vaginal infections?",
+        answers: ["Candida (yeast)", "Trichomonas", "Chlamydia", "Herpes simplex virus"],
+        correct: 0
+    },
+    {
+        question: "What is the most common form of contraception worldwide?",
+        answers: ["Oral contraceptives", "Condoms", "Intrauterine device", "Sterilization"],
+        correct: 1
+    },
+    {
+        question: "What is the primary treatment for a uterine prolapse?",
+        answers: ["Pelvic floor exercises", "Surgical repair", "Hormonal therapy", "Oral contraceptives"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a sign of menopause?",
+        answers: ["Hot flashes", "Vaginal dryness", "Irregular periods", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which condition involves the growth of tissue similar to the uterine lining outside the uterus?",
+        answers: ["Endometriosis", "Polycystic ovary syndrome", "Uterine fibroids", "Cervical dysplasia"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended screening test for ovarian cancer?",
+        answers: ["Ultrasound", "Pap smear", "CA-125 blood test", "Colposcopy"],
+        correct: 2
+    },
+    {
+        question: "Which method of contraception is considered permanent?",
+        answers: ["Oral contraceptives", "Condoms", "Tubal ligation", "IUD"],
+        correct: 2
+    },
+    {
+        question: "What is the most common cause of menstrual irregularities?",
+        answers: ["Stress", "Polycystic ovary syndrome", "Thyroid imbalance", "Uterine fibroids"],
+        correct: 1
+    },
+    {
+        question: "What is the main goal of hormone replacement therapy (HRT) in postmenopausal women?",
+        answers: ["Prevent osteoporosis", "Regulate the menstrual cycle", "Increase fertility", "Reduce ovarian cancer risk"],
+        correct: 0
+    },
+    {
+        question: "What is the condition called when a woman has excessive bleeding during menstruation?",
+        answers: ["Menorrhagia", "Amenorrhea", "Oligomenorrhea", "Metrorrhagia"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is most commonly associated with cervical cancer?",
+        answers: ["HPV (Human papillomavirus)", "Herpes simplex virus", "Chlamydia infection", "Endometriosis"],
+        correct: 0
+    },
+    {
+        question: "Which condition is commonly treated with oral contraceptives to regulate menstruation?",
+        answers: ["Polycystic ovary syndrome", "Uterine fibroids", "Cervical dysplasia", "Endometrial cancer"],
+        correct: 0
+    },
+    {
+        question: "What is the main symptom of a molar pregnancy?",
+        answers: ["Heavy bleeding", "Absence of fetal heartbeat", "Excessive morning sickness", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the condition in which a woman has difficulty achieving pregnancy after one year of trying?",
+        answers: ["Primary infertility", "Secondary infertility", "Endometriosis", "Polycystic ovary syndrome"],
+        correct: 0
+    },{
+        question: "What is the most common type of cancer in women?",
+        answers: ["Breast cancer", "Cervical cancer", "Ovarian cancer", "Uterine cancer"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of menopause?",
+        answers: ["Hot flashes", "Vaginal dryness", "Mood swings", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What hormone regulates the menstrual cycle?",
+        answers: ["Progesterone", "Estrogen", "Testosterone", "Insulin"],
+        correct: 1
+    },
+    {
+        question: "Which is the most common method of sterilization in women?",
+        answers: ["Tubal ligation", "Hysterectomy", "IUD", "Contraceptive injections"],
+        correct: 0
+    },
+    {
+        question: "What is the common cause of pelvic inflammatory disease (PID)?",
+        answers: ["Chlamydia", "Gonorrhea", "Herpes", "Syphilis"],
+        correct: 0
+    },
+    {
+        question: "Which procedure is used to remove the uterus?",
+        answers: ["Hysterectomy", "Oophorectomy", "Laparotomy", "Cauterization"],
+        correct: 0
+    },
+    {
+        question: "What is the first sign of pregnancy?",
+        answers: ["Missed period", "Morning sickness", "Breast tenderness", "Fatigue"],
+        correct: 0
+    },
+    {
+        question: "Which test is used to screen for cervical cancer?",
+        answers: ["Pap smear", "Ultrasound", "Mammogram", "Biopsy"],
+        correct: 0
+    },
+    {
+        question: "What is the most common form of contraception in the United States?",
+        answers: ["Oral contraceptives", "IUD", "Condoms", "Sterilization"],
+        correct: 0
+    },
+    {
+        question: "Which hormone is responsible for ovulation?",
+        answers: ["Luteinizing hormone", "Estrogen", "Progesterone", "Testosterone"],
+        correct: 0
+    },
+    {
+        question: "What is the term for the condition where endometrial tissue grows outside the uterus?",
+        answers: ["Endometriosis", "Fibroids", "Polycystic ovary syndrome", "Cervical dysplasia"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of abnormal uterine bleeding in women over 40?",
+        answers: ["Uterine fibroids", "Polycystic ovary syndrome", "Endometriosis", "Pregnancy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most common symptom of a urinary tract infection (UTI)?",
+        answers: ["Painful urination", "Fever", "Blood in urine", "Vaginal discharge"],
+        correct: 0
+    },
+    {
+        question: "What is the condition called when a woman experiences painful menstrual cramps?",
+        answers: ["Dysmenorrhea", "Amenorrhea", "Menorrhagia", "Oligomenorrhea"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is used to treat polycystic ovary syndrome (PCOS)?",
+        answers: ["Oral contraceptives", "Insulin-sensitizing agents", "Clomiphene citrate", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the condition where a woman is unable to conceive after one year of unprotected intercourse?",
+        answers: ["Infertility", "Amenorrhea", "Dysmenorrhea", "Endometriosis"],
+        correct: 0
+    },
+    {
+        question: "What is the term for excessive menstrual bleeding?",
+        answers: ["Menorrhagia", "Amenorrhea", "Oligomenorrhea", "Dysmenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the term for the cessation of menstruation after 12 months without a period?",
+        answers: ["Menopause", "Perimenopause", "Menarche", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended screening age for mammography in women with no family history of breast cancer?",
+        answers: ["40", "45", "50", "55"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of infertility in women?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Cervical cancer", "Fibroids"],
+        correct: 0
+    },
+    {
+        question: "Which of the following conditions is most often treated with hormone replacement therapy (HRT)?",
+        answers: ["Menopause", "Endometriosis", "Ovarian cancer", "Polycystic ovary syndrome"],
+        correct: 0
+    },
+    {
+        question: "Which method of contraception provides both protection against pregnancy and sexually transmitted infections (STIs)?",
+        answers: ["Condoms", "Oral contraceptives", "IUD", "Sterilization"],
+        correct: 0
+    },
+    {
+        question: "What is the condition where a woman has high blood pressure during pregnancy?",
+        answers: ["Preeclampsia", "Eclampsia", "Gestational diabetes", "Placenta previa"],
+        correct: 0
+    },
+    {
+        question: "What is the name of the procedure where the cervix is removed?",
+        answers: ["Cervicectomy", "Hysterectomy", "Oophorectomy", "Salpingectomy"],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment for a uterine fibroid?",
+        answers: ["Surgical removal", "Hormonal therapy", "Radiation therapy", "Chemotherapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common symptom of vaginal yeast infection?",
+        answers: ["Itching and irritation", "Painful urination", "Fever", "Nausea"],
+        correct: 0
+    },
+    {
+        question: "What is the term for an abnormal growth of cells on the cervix?",
+        answers: ["Cervical dysplasia", "Cervicitis", "Endometriosis", "Ovarian cyst"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a test used to detect changes in the cervix that may lead to cervical cancer?",
+        answers: ["Pap smear", "Mammogram", "Colonoscopy", "Ultrasound"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of menopause?",
+        answers: ["Aging", "Genetics", "Surgical removal of ovaries", "Chemotherapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is NOT a risk factor for ovarian cancer?",
+        answers: ["Family history", "Age", "Early menopause", "High-fat diet"],
+        correct: 3
+    },
+    {
+        question: "What is the recommended treatment for pelvic inflammatory disease (PID)?",
+        answers: ["Antibiotics", "Surgery", "Hormonal therapy", "Sterilization"],
+        correct: 0
+    },
+    {
+        question: "What condition is defined as the failure of the ovaries to release an egg?",
+        answers: ["Anovulation", "Amenorrhea", "Dysmenorrhea", "Menorrhagia"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a method used to diagnose endometriosis?",
+        answers: ["Laparoscopy", "Pelvic ultrasound", "Pap smear", "Blood test"],
+        correct: 0
+    },
+    {
+        question: "What is the main hormone involved in the development of breast tissue?",
+        answers: ["Estrogen", "Progesterone", "Testosterone", "Prolactin"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a condition where a woman has painful intercourse?",
+        answers: ["Dyspareunia", "Amenorrhea", "Dysmenorrhea", "Vaginismus"],
+        correct: 0
+    },
+    {
+        question: "What is the term for an infection of the reproductive organs caused by the bacteria Neisseria gonorrhoeae?",
+        answers: ["Gonorrhea", "Syphilis", "Chlamydia", "Herpes"],
+        correct: 0
+    },
+    {
+        question: "What is the most common symptom of chlamydia?",
+        answers: ["No symptoms", "Abnormal vaginal discharge", "Pelvic pain", "Painful urination"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is NOT a common sign of pregnancy?",
+        answers: ["Missed period", "Morning sickness", "Swollen ankles", "Breast tenderness"],
+        correct: 2
+    }, {
+        question: "Which of the following is a possible complication of a cesarean section?",
+        answers: ["Infection", "Excessive bleeding", "Blood clots", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for the condition in which the placenta covers the cervix?",
+        answers: ["Placenta previa", "Placental abruption", "Gestational trophoblastic disease", "Preterm labor"],
+        correct: 0
+    },
+    {
+        question: "Which hormone is responsible for the growth of the uterine lining during the menstrual cycle?",
+        answers: ["Estrogen", "Progesterone", "Luteinizing hormone", "Follicle-stimulating hormone"],
+        correct: 1
+    },
+    {
+        question: "What is the medical term for a miscarriage?",
+        answers: ["Spontaneous abortion", "Ectopic pregnancy", "Gestational hypertension", "Preterm birth"],
+        correct: 0
+    },
+    {
+        question: "Which test is used to diagnose a urinary tract infection (UTI)?",
+        answers: ["Urine culture", "Pap smear", "Blood test", "Ultrasound"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is NOT a method of emergency contraception?",
+        answers: ["Morning-after pill", "IUD insertion", "Abortion pill", "Condom use"],
+        correct: 3
+    },
+    {
+        question: "Which condition occurs when a fertilized egg implants outside the uterus?",
+        answers: ["Ectopic pregnancy", "Molar pregnancy", "Tubal ligation", "Miscarriage"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a woman who has never been pregnant?",
+        answers: ["Nulliparous", "Primiparous", "Multiparous", "Grand multiparous"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an example of a non-hormonal contraceptive method?",
+        answers: ["Condoms", "Birth control pills", "IUD", "Contraceptive injections"],
+        correct: 0
+    },
+    {
+        question: "Which condition is associated with an increased risk of ovarian cancer?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Use of oral contraceptives", "All of the above"],
+        correct: 1
+    },
+    {
+        question: "What is the first-line treatment for bacterial vaginosis?",
+        answers: ["Antibiotics", "Antifungals", "Topical steroids", "Surgery"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended screening for ovarian cancer?",
+        answers: ["Pelvic ultrasound", "CA-125 blood test", "Pap smear", "Both A and B"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a common risk factor for endometrial cancer?",
+        answers: ["Obesity", "Nulliparity", "Age over 50", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the purpose of a hysterosalpingogram?",
+        answers: ["To check for blockages in the fallopian tubes", "To remove fibroids", "To treat endometriosis", "To perform a D&C"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a key feature of polycystic ovary syndrome (PCOS)?",
+        answers: ["Irregular periods", "Excessive hair growth", "Acne", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the main treatment for preeclampsia?",
+        answers: ["Delivery of the baby", "Bed rest", "Blood pressure medication", "Steroid therapy"],
+        correct: 0
+    },
+    {
+        question: "What is the term for the procedure to remove an ovary?",
+        answers: ["Oophorectomy", "Hysterectomy", "Salpingectomy", "Cervicectomy"],
+        correct: 0
+    },
+    {
+        question: "What is a common symptom of fibroids?",
+        answers: ["Heavy menstrual bleeding", "Pelvic pain", "Frequent urination", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following can increase the risk of developing cervical cancer?",
+        answers: ["Human papillomavirus (HPV) infection", "Smoking", "Multiple sexual partners", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the common treatment for a Bartholin cyst?",
+        answers: ["Incision and drainage", "Antibiotics", "Warm compress", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following conditions is commonly associated with infertility in women?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Blocked fallopian tubes", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following hormones triggers ovulation?",
+        answers: ["Luteinizing hormone (LH)", "Estrogen", "Progesterone", "Testosterone"],
+        correct: 0
+    },
+    {
+        question: "What is the most common treatment for menopause-related hot flashes?",
+        answers: ["Hormone replacement therapy (HRT)", "Antidepressants", "Gabapentin", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the medical term for a period that lasts longer than seven days?",
+        answers: ["Menorrhagia", "Dysmenorrhea", "Oligomenorrhea", "Metrorrhagia"],
+        correct: 0
+    },
+    {
+        question: "What is the term for an infection of the uterus after childbirth?",
+        answers: ["Endometritis", "Cervicitis", "Peritonitis", "Salpingitis"],
+        correct: 0
+    },
+    {
+        question: "What is the first-line treatment for yeast infections?",
+        answers: ["Antifungal medications", "Antibiotics", "Steroids", "Surgical removal"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of a ruptured ovarian cyst?",
+        answers: ["Severe pelvic pain", "Nausea and vomiting", "Heavy bleeding", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which contraceptive method is most effective at preventing pregnancy?",
+        answers: ["IUD", "Condoms", "Oral contraceptives", "Diaphragm"],
+        correct: 0
+    },
+    {
+        question: "What is the most common method for diagnosing endometriosis?",
+        answers: ["Laparoscopy", "Pelvic ultrasound", "MRI", "CT scan"],
+        correct: 0
+    },
+    {
+        question: "What is the most common complication of pregnancy in women with diabetes?",
+        answers: ["Preterm birth", "Gestational hypertension", "Macrosomia", "Placenta previa"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a risk factor for ectopic pregnancy?",
+        answers: ["Previous pelvic infection", "Endometriosis", "Previous ectopic pregnancy", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common treatment for uterine fibroids?",
+        answers: ["Surgical removal", "Hormonal therapy", "Laparoscopic surgery", "Chemotherapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a complication of menopause?",
+        answers: ["Osteoporosis", "Heart disease", "Urinary incontinence", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for the removal of both ovaries?",
+        answers: ["Bilateral oophorectomy", "Bilateral salpingectomy", "Bilateral hysterectomy", "Ovarian biopsy"],
+        correct: 0
+    },
+    {
+        question: "What is a possible complication of untreated chlamydia in women?",
+        answers: ["Pelvic inflammatory disease", "Infertility", "Chronic pelvic pain", "All of the above"],
+        correct: 3
+    },{
+        question: "What is the primary hormone responsible for the development of secondary sexual characteristics in females?",
+        answers: ["Estrogen", "Progesterone", "Testosterone", "Prolactin"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common risk factor for cervical cancer?",
+        answers: ["HPV infection", "Obesity", "High cholesterol", "Frequent use of antibiotics"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of abnormal uterine bleeding in perimenopausal women?",
+        answers: ["Endometrial hyperplasia", "Fibroids", "Cervical cancer", "Polycystic ovary syndrome"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a typical symptom of pelvic inflammatory disease (PID)?",
+        answers: ["Lower abdominal pain", "Nausea", "Fever", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first-line treatment for a woman diagnosed with bacterial vaginosis?",
+        answers: ["Metronidazole", "Ciprofloxacin", "Azithromycin", "Fluconazole"],
+        correct: 0
+    },
+    {
+        question: "Which condition is characterized by painful menstruation?",
+        answers: ["Dysmenorrhea", "Amenorrhea", "Menorrhagia", "Metrorrhagia"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for the absence of menstruation?",
+        answers: ["Amenorrhea", "Dysmenorrhea", "Menorrhagia", "Oligomenorrhea"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the recommended screening test for breast cancer?",
+        answers: ["Mammogram", "Pap smear", "Colonoscopy", "Blood test for CA-125"],
+        correct: 0
+    },
+    {
+        question: "What is the first-line treatment for ovarian cysts?",
+        answers: ["Watchful waiting", "Surgical removal", "Oral contraceptives", "Antibiotics"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a typical complication of endometriosis?",
+        answers: ["Infertility", "Heavy bleeding", "Pelvic pain", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of infertility in women?",
+        answers: ["Polycystic ovary syndrome (PCOS)", "Endometriosis", "Tubal blockage", "Uterine fibroids"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the standard treatment for menopause symptoms?",
+        answers: ["Hormone replacement therapy", "Non-steroidal anti-inflammatory drugs", "Steroid injections", "Antidepressants"],
+        correct: 0
+    },
+    {
+        question: "What is the condition where the uterus descends into the vaginal canal?",
+        answers: ["Uterine prolapse", "Pelvic inflammatory disease", "Endometriosis", "Cervical cancer"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of preeclampsia?",
+        answers: ["High blood pressure", "Protein in urine", "Swelling", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following conditions is associated with multiple pregnancies?",
+        answers: ["Multiple sclerosis", "Eclampsia", "Gestational diabetes", "Twin pregnancy"],
+        correct: 3
+    },
+    {
+        question: "What is the common treatment for uterine fibroids?",
+        answers: ["Hysterectomy", "Observation", "Medications to shrink fibroids", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common method for preventing pregnancy?",
+        answers: ["Contraceptive pills", "IUD", "Condoms", "Sterilization"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a typical symptom of vaginal yeast infection?",
+        answers: ["Itching and burning sensation", "Foul-smelling discharge", "Painful urination", "None of the above"],
+        correct: 0
+    },
+    {
+        question: "What is the procedure called for the removal of the uterus?",
+        answers: ["Hysterectomy", "Oophorectomy", "Salpingectomy", "Mastectomy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a possible complication of a tubal ligation?",
+        answers: ["Ectopic pregnancy", "Infection", "Bleeding", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which hormone stimulates the growth of follicles in the ovary?",
+        answers: ["Follicle-stimulating hormone (FSH)", "Luteinizing hormone (LH)", "Estrogen", "Progesterone"],
+        correct: 0
+    },
+    {
+        question: "What is the primary function of progesterone during pregnancy?",
+        answers: ["Maintains the uterine lining", "Stimulates ovulation", "Prepares the breasts for lactation", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "What is the most effective method of contraception for preventing sexually transmitted infections (STIs)?",
+        answers: ["Condoms", "Birth control pills", "IUD", "Sterilization"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is NOT a symptom of menopause?",
+        answers: ["Hot flashes", "Night sweats", "Decreased bone density", "Increased libido"],
+        correct: 3
+    },
+    {
+        question: "What is the term for excessive menstrual bleeding?",
+        answers: ["Menorrhagia", "Amenorrhea", "Dysmenorrhea", "Oligomenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of a Pap smear?",
+        answers: ["To screen for cervical cancer", "To test for pregnancy", "To assess for STIs", "To measure hormone levels"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a risk factor for developing endometrial cancer?",
+        answers: ["Obesity", "Unopposed estrogen therapy", "Early menarche", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the condition of having high blood pressure during pregnancy called?",
+        answers: ["Gestational hypertension", "Pre-eclampsia", "Eclampsia", "Chronic hypertension"],
+        correct: 0
+    },{
+        question: "What is the medical term for painful intercourse?",
+        answers: ["Dyspareunia", "Amenorrhea", "Dysmenorrhea", "Oligomenorrhea"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an early sign of pregnancy?",
+        answers: ["Missed period", "Morning sickness", "Breast tenderness", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of infertility in women?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Uterine fibroids", "Cervical issues"],
+        correct: 0
+    },
+    {
+        question: "What is the hormone primarily responsible for the development of the female reproductive organs?",
+        answers: ["Estrogen", "Progesterone", "Testosterone", "Human chorionic gonadotropin (hCG)"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for the absence of menstruation?",
+        answers: ["Amenorrhea", "Dysmenorrhea", "Oligomenorrhea", "Menorrhagia"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a condition characterized by the growth of endometrial tissue outside the uterus?",
+        answers: ["Endometriosis", "Polycystic ovary syndrome", "Cervicitis", "Fibroids"],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment for a woman with uterine fibroids?",
+        answers: ["Surgical removal", "Hormonal therapy", "Radiation therapy", "Chemotherapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most common cause of miscarriage in the first trimester?",
+        answers: ["Chromosomal abnormalities", "Infection", "Maternal age", "Trauma"],
+        correct: 0
+    },
+    {
+        question: "What is the condition in which the placenta covers the cervix?",
+        answers: ["Placenta previa", "Placental abruption", "Ectopic pregnancy", "Preeclampsia"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a complication of gestational diabetes?",
+        answers: ["Macrosomia", "Premature labor", "Preeclampsia", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which screening test is used to detect early-stage breast cancer?",
+        answers: ["Mammography", "Pap smear", "Ultrasound", "CT scan"],
+        correct: 0
+    },
+    {
+        question: "What is the name of the surgical procedure used to remove the ovaries?",
+        answers: ["Oophorectomy", "Hysterectomy", "Salpingectomy", "Mastectomy"],
+        correct: 0
+    },
+    {
+        question: "What is the most common type of breast cancer?",
+        answers: ["Invasive ductal carcinoma", "Invasive lobular carcinoma", "Paget's disease", "Medullary carcinoma"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for excessive menstruation?",
+        answers: ["Menorrhagia", "Oligomenorrhea", "Dysmenorrhea", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an indication for a cesarean section?",
+        answers: ["Fetal distress", "Breech presentation", "Placental abruption", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which hormone is responsible for the maturation of the egg during the menstrual cycle?",
+        answers: ["Follicle-stimulating hormone (FSH)", "Luteinizing hormone (LH)", "Estrogen", "Progesterone"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a pregnancy that occurs outside the uterus?",
+        answers: ["Ectopic pregnancy", "Molar pregnancy", "Cystic pregnancy", "Tubal pregnancy"],
+        correct: 0
+    },
+    {
+        question: "What is the primary function of progesterone in pregnancy?",
+        answers: ["Maintains the uterine lining", "Stimulates ovulation", "Supports breast development", "Induces labor"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a characteristic of polycystic ovary syndrome (PCOS)?",
+        answers: ["Irregular periods", "Excessive hair growth", "Ovarian cysts", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the procedure called where the uterus is removed?",
+        answers: ["Hysterectomy", "Oophorectomy", "Salpingectomy", "Mastectomy"],
+        correct: 0
+    },
+    {
+        question: "What is the most common type of uterine cancer?",
+        answers: ["Endometrial cancer", "Cervical cancer", "Ovarian cancer", "Vaginal cancer"],
+        correct: 0
+    },
+    {
+        question: "What is the main function of the fallopian tubes?",
+        answers: ["Transport eggs from the ovaries to the uterus", "Produce hormones", "Provide nourishment to the fetus", "Store eggs"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a condition where a woman has very light or infrequent periods?",
+        answers: ["Oligomenorrhea", "Amenorrhea", "Menorrhagia", "Dysmenorrhea"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common sign of menopause?",
+        answers: ["Hot flashes", "Night sweats", "Vaginal dryness", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary purpose of a Pap smear?",
+        answers: ["To detect cervical cancer", "To screen for breast cancer", "To test for pregnancy", "To diagnose pelvic infections"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common side effect of hormone replacement therapy (HRT)?",
+        answers: ["Weight gain", "Increased risk of blood clots", "Breast tenderness", "All of the above"],
+        correct: 3
+    },{
+        question: "Which of the following conditions is commonly associated with menopause?",
+        answers: ["Hot flashes", "Endometriosis", "Ovarian cysts", "Fibroids"],
+        correct: 0
+    },
+    {
+        question: "What is the term used for the surgical removal of the uterus?",
+        answers: ["Hysterectomy", "Oophorectomy", "Mastectomy", "Salpingectomy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a risk factor for developing cervical cancer?",
+        answers: ["HPV infection", "Endometriosis", "Polycystic ovary syndrome", "None of the above"],
+        correct: 0
+    },
+    {
+        question: "What is the most common symptom of preeclampsia?",
+        answers: ["High blood pressure", "Proteinuria", "Swelling of the hands and face", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the main function of estrogen in the female body?",
+        answers: ["Development of secondary sexual characteristics", "Regulation of the menstrual cycle", "Maintains bone density", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following hormones is responsible for ovulation?",
+        answers: ["Luteinizing hormone (LH)", "Progesterone", "Estrogen", "Prolactin"],
+        correct: 0
+    },
+    {
+        question: "What is the most common complication of a breech delivery?",
+        answers: ["Umbilical cord prolapse", "Fetal head entrapment", "Placenta previa", "Eclampsia"],
+        correct: 1
+    },
+    {
+        question: "What is the name of the surgical procedure used to remove the fallopian tubes?",
+        answers: ["Salpingectomy", "Oophorectomy", "Hysterectomy", "Laparotomy"],
+        correct: 0
+    },
+    {
+        question: "What is the term used for excessive bleeding during menstruation?",
+        answers: ["Menorrhagia", "Dysmenorrhea", "Oligomenorrhea", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the primary function of the placenta?",
+        answers: ["Nourishment and oxygen transfer to the fetus", "Regulation of maternal blood pressure", "Control of hormone secretion", "Protection from infections"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of an ectopic pregnancy?",
+        answers: ["Lower abdominal pain", "Missed period", "Vaginal bleeding", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the medical term for the absence of menstrual periods in a woman of reproductive age?",
+        answers: ["Amenorrhea", "Dysmenorrhea", "Oligomenorrhea", "Menorrhagia"],
+        correct: 0
+    },
+    {
+        question: "What is the common treatment for endometriosis?",
+        answers: ["Pain relief medication", "Surgical removal of endometrial tissue", "Hormonal therapy", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of secondary infertility in women?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Tubal blockage", "Uterine fibroids"],
+        correct: 2
+    },
+    {
+        question: "What is the name of the procedure that examines the cervix with a special magnifying instrument?",
+        answers: ["Colposcopy", "Hysteroscopy", "Pap smear", "Ultrasound"],
+        correct: 0
+    },
+    {
+        question: "What is the typical treatment for a patient with polycystic ovary syndrome (PCOS) who is trying to conceive?",
+        answers: ["Ovulation induction drugs", "Surgical removal of cysts", "Hormonal therapy", "In vitro fertilization (IVF)"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common risk factor for developing ovarian cancer?",
+        answers: ["Family history", "Early onset of menstruation", "Late menopause", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of pelvic inflammatory disease (PID)?",
+        answers: ["Sexually transmitted infections (STIs)", "Bacterial infections", "Viruses", "Fungal infections"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common treatment for fibroids?",
+        answers: ["Medications to shrink the fibroids", "Hysterectomy", "Myomectomy", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for an abnormal pregnancy where the embryo develops outside the uterus?",
+        answers: ["Ectopic pregnancy", "Molar pregnancy", "Blighted ovum", "Tubal pregnancy"],
+        correct: 0
+    },
+    {
+        question: "What is the main function of progesterone in pregnancy?",
+        answers: ["Maintains the uterine lining", "Stimulates ovulation", "Supports breast development", "Induces labor"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a complication of gestational diabetes?",
+        answers: ["Macrosomia", "Premature labor", "Preeclampsia", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the medical term for a pregnancy that occurs outside the uterus?",
+        answers: ["Ectopic pregnancy", "Cystic pregnancy", "Molar pregnancy", "Placenta previa"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a key sign of preeclampsia?",
+        answers: ["Protein in the urine", "Swelling of hands and feet", "High blood pressure", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the recommended treatment for women with polycystic ovary syndrome (PCOS) who are not ovulating?",
+        answers: ["Clomiphene citrate", "Metformin", "In vitro fertilization (IVF)", "Hormonal contraceptives"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for the growth of tissue similar to the uterine lining outside the uterus?",
+        answers: ["Endometriosis", "Myomatosis", "Fibroids", "Polyps"],
+        correct: 0
+    },
+    {
+        question: "Which of the following conditions is most likely to require a cesarean section?",
+        answers: ["Breech presentation", "Placenta previa", "Fetal distress", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary function of the fallopian tubes?",
+        answers: ["Transport eggs from the ovaries to the uterus", "Transport sperm", "Produce eggs", "None of the above"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for heavy or prolonged menstrual bleeding?",
+        answers: ["Menorrhagia", "Oligomenorrhea", "Dysmenorrhea", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of a potential miscarriage?",
+        answers: ["Heavy bleeding", "Lower abdominal pain", "Cramps", "All of the above"],
+        correct: 3
+    },{
+        question: "What is the term for the absence of menstruation in a woman of reproductive age?",
+        answers: ["Amenorrhea", "Oligomenorrhea", "Dysmenorrhea", "Menorrhagia"],
+        correct: 0
+    },
+    {
+        question: "What is the primary cause of endometriosis?",
+        answers: ["Retrograde menstruation", "Genetic predisposition", "Hormonal imbalance", "Infection"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is most commonly used for contraception?",
+        answers: ["Oral contraceptives", "Condoms", "IUD", "Tubal ligation"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for painful periods?",
+        answers: ["Dysmenorrhea", "Amenorrhea", "Oligomenorrhea", "Menorrhagia"],
+        correct: 0
+    },
+    {
+        question: "What is the most common symptom of menopause?",
+        answers: ["Hot flashes", "Vaginal dryness", "Mood swings", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is associated with an increased risk of ovarian cancer?",
+        answers: ["Family history", "Use of oral contraceptives", "High-fat diet", "Regular physical activity"],
+        correct: 0
+    },
+    {
+        question: "Which hormone is responsible for stimulating the growth of ovarian follicles?",
+        answers: ["Follicle-stimulating hormone (FSH)", "Luteinizing hormone (LH)", "Progesterone", "Estrogen"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for excessive bleeding during menstruation?",
+        answers: ["Menorrhagia", "Dysmenorrhea", "Oligomenorrhea", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the term used for the surgical removal of the ovaries?",
+        answers: ["Oophorectomy", "Hysterectomy", "Salpingectomy", "Mastectomy"],
+        correct: 0
+    },
+    {
+        question: "What is the most common complication during pregnancy?",
+        answers: ["Hypertension", "Gestational diabetes", "Morning sickness", "Preterm labor"],
+        correct: 1
+    },
+    {
+        question: "What is the name of the procedure used to examine the cervix with a special magnifying lens?",
+        answers: ["Colposcopy", "Pap smear", "Biopsy", "Hysteroscopy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common risk factor for preeclampsia?",
+        answers: ["High blood pressure", "Obesity", "Multiple pregnancies", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is used to treat a yeast infection?",
+        answers: ["Antifungal medication", "Antibiotics", "Pain relievers", "Hormonal therapy"],
+        correct: 0
+    },
+    {
+        question: "What is the primary function of progesterone during pregnancy?",
+        answers: ["Maintains the uterine lining", "Stimulates ovulation", "Regulates menstrual cycles", "Promotes breast development"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of secondary infertility in women?",
+        answers: ["Endometriosis", "Polycystic ovarian syndrome (PCOS)", "Tubal blockage", "Cervical issues"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a characteristic of a normal Pap smear result?",
+        answers: ["No abnormal cells detected", "Presence of HPV", "Cervical dysplasia", "Abnormal cell growth"],
+        correct: 0
+    },
+    {
+        question: "What is the term for the first menstrual period in a female?",
+        answers: ["Menarche", "Menopause", "Mestruation", "Puberty"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for the condition where the placenta covers the cervix?",
+        answers: ["Placenta previa", "Placental abruption", "Gestational hypertension", "Preterm labor"],
+        correct: 0
+    },
+    {
+        question: "Which condition is most often diagnosed through a blood test for hormone levels?",
+        answers: ["Polycystic ovary syndrome (PCOS)", "Endometriosis", "Ovarian cancer", "Cervical cancer"],
+        correct: 0
+    },
+    {
+        question: "What is the name of the procedure that examines the interior of the uterus using a thin tube?",
+        answers: ["Hysteroscopy", "Colposcopy", "Laparoscopy", "Ultrasound"],
+        correct: 0
+    },
+    {
+        question: "What is the main complication of untreated pelvic inflammatory disease (PID)?",
+        answers: ["Infertility", "Endometriosis", "Ovarian cysts", "Cervical cancer"],
+        correct: 0
+    },
+    {
+        question: "What is the function of the hormone estrogen in the female body?",
+        answers: ["Regulates the menstrual cycle", "Promotes bone density", "Stimulates the development of secondary sexual characteristics", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is used as a contraceptive method for long-term protection?",
+        answers: ["IUD (Intrauterine device)", "Birth control pills", "Condoms", "Sterilization"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended treatment for women with endometriosis?",
+        answers: ["Pain management", "Hormonal therapy", "Surgical intervention", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a common symptom of uterine fibroids?",
+        answers: ["Heavy menstrual bleeding", "Pelvic pain", "Frequent urination", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for the surgical removal of the fallopian tubes?",
+        answers: ["Salpingectomy", "Oophorectomy", "Hysterectomy", "Cystectomy"],
+        correct: 0
+    },
+    {
+        question: "Which hormone is responsible for preparing the uterus for pregnancy?",
+        answers: ["Progesterone", "Estrogen", "Testosterone", "Luteinizing hormone"],
+        correct: 0
+    },
+    {
+        question: "What is the primary purpose of a Pap smear?",
+        answers: ["Detect cervical cancer", "Diagnose endometriosis", "Evaluate ovarian cysts", "Detect STIs"],
+        correct: 0
+    },
+    {
+        question: "What is the common treatment for vaginal yeast infections?",
+        answers: ["Antifungal medications", "Antibiotics", "Pain relievers", "Hormonal therapy"],
+        correct: 0
+    },
+    {
+        question: "What is the most common age range for women to experience menopause?",
+        answers: ["45-55 years", "35-45 years", "55-65 years", "25-35 years"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a pregnancy that occurs outside the uterus?",
+        answers: ["Ectopic pregnancy", "Molar pregnancy", "Blighted ovum", "Placenta previa"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a characteristic of polycystic ovary syndrome (PCOS)?",
+        answers: ["Irregular menstrual cycles", "Excessive hair growth", "Acne", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the recommended first-line treatment for polycystic ovary syndrome (PCOS) in women seeking to conceive?",
+        answers: ["Clomiphene citrate", "Metformin", "In vitro fertilization", "Hormonal therapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of fibroids?",
+        answers: ["Heavy menstrual bleeding", "Frequent urination", "Pelvic pain", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common method of delivery for a breech presentation?",
+        answers: ["Cesarean section", "Vaginal delivery", "Vacuum extraction", "Forceps delivery"],
+        correct: 0
+    },
+    {
+        question: "Which of the following conditions is characterized by high blood pressure and protein in the urine during pregnancy?",
+        answers: ["Preeclampsia", "Gestational diabetes", "Placenta previa", "Preterm labor"],
+        correct: 0
+    },{
+        question: "What is the term for the medical procedure used to examine the vagina and cervix?",
+        answers: ["Colposcopy", "Pap smear", "Hysteroscopy", "Pelvic ultrasound"],
+        correct: 0
+    },
+    {
+        question: "Which condition is most commonly treated with a hysterectomy?",
+        answers: ["Uterine fibroids", "Endometriosis", "Cervical cancer", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of abnormal vaginal bleeding in postmenopausal women?",
+        answers: ["Endometrial cancer", "Atrophic vaginitis", "Cervical polyps", "Fibroids"],
+        correct: 0
+    },
+    {
+        question: "What is the term for the development of abnormal tissue growth inside the uterus?",
+        answers: ["Endometrial hyperplasia", "Fibroids", "Cervical dysplasia", "Polycystic ovaries"],
+        correct: 0
+    },
+    {
+        question: "Which is the primary method for diagnosing ovarian cancer?",
+        answers: ["Transvaginal ultrasound", "Pap smear", "Blood tests", "CT scan"],
+        correct: 0
+    },
+    {
+        question: "What is the most common method of contraception in Nepal?",
+        answers: ["Oral contraceptive pills", "Intrauterine device (IUD)", "Condoms", "Sterilization"],
+        correct: 1
+    },
+    {
+        question: "Which condition is characterized by the presence of fluid-filled sacs on the ovaries?",
+        answers: ["Polycystic ovary syndrome (PCOS)", "Endometriosis", "Fibroids", "Cervical cancer"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a miscarriage occurring before 20 weeks of pregnancy?",
+        answers: ["Spontaneous abortion", "Ectopic pregnancy", "Stillbirth", "Induced abortion"],
+        correct: 0
+    },
+    {
+        question: "What is the most common type of breast cancer?",
+        answers: ["Invasive ductal carcinoma", "Invasive lobular carcinoma", "Medullary carcinoma", "Mucinous carcinoma"],
+        correct: 0
+    },
+    {
+        question: "What is the most common complication during the first trimester of pregnancy?",
+        answers: ["Morning sickness", "Gestational diabetes", "Ectopic pregnancy", "Placenta previa"],
+        correct: 0
+    },
+    {
+        question: "Which hormone triggers ovulation in women?",
+        answers: ["Luteinizing hormone (LH)", "Follicle-stimulating hormone (FSH)", "Progesterone", "Estrogen"],
+        correct: 0
+    },
+    {
+        question: "What is the most common form of breast cancer screening?",
+        answers: ["Mammogram", "Ultrasound", "MRI", "CT scan"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for excessive hair growth in women, particularly on the face and chest?",
+        answers: ["Hirsutism", "Alopecia", "Hypertrichosis", "Androgenic alopecia"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the main cause of pelvic inflammatory disease (PID)?",
+        answers: ["Sexually transmitted infections", "Hormonal imbalance", "Stress", "Poor diet"],
+        correct: 0
+    },
+    {
+        question: "What is the most common treatment for vaginal atrophy?",
+        answers: ["Estrogen therapy", "Antibiotics", "Pain relief medications", "Surgical intervention"],
+        correct: 0
+    },
+    {
+        question: "What is the term used for the inflammation of the cervix?",
+        answers: ["Cervicitis", "Endometritis", "Oophoritis", "Pelvic inflammatory disease"],
+        correct: 0
+    },
+    {
+        question: "What is the surgical procedure that removes the uterus?",
+        answers: ["Hysterectomy", "Salpingectomy", "Oophorectomy", "Cystectomy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following hormones are typically elevated during pregnancy?",
+        answers: ["Human chorionic gonadotropin (hCG)", "Prolactin", "Testosterone", "Estrogen"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for painful intercourse?",
+        answers: ["Dyspareunia", "Dysmenorrhea", "Vaginismus", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the primary purpose of prenatal care?",
+        answers: ["To monitor fetal development", "To assess maternal health", "To prevent complications during pregnancy", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for a surgical incision made in the perineum during childbirth?",
+        answers: ["Episiotomy", "C-section", "Perineal tear", "Vaginal incision"],
+        correct: 0
+    },
+    {
+        question: "Which condition is commonly associated with high estrogen levels in women?",
+        answers: ["Endometrial cancer", "Cervical cancer", "Ovarian cysts", "Polycystic ovary syndrome"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for the surgical removal of the ovaries?",
+        answers: ["Oophorectomy", "Salpingectomy", "Hysterectomy", "Mastectomy"],
+        correct: 0
+    },
+    {
+        question: "What is the primary cause of preterm labor?",
+        answers: ["Infections", "Multiple pregnancies", "Hypertension", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a common complication during pregnancy?",
+        answers: ["Gestational diabetes", "Pre-eclampsia", "Placenta previa", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is used for managing ovarian cysts?",
+        answers: ["Birth control pills", "Antibiotics", "Steroid therapy", "Pain medications"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a woman's first menstrual period?",
+        answers: ["Menarche", "Menopause", "Mestruation", "Ovulation"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended method for preventing the transmission of sexually transmitted infections (STIs)?",
+        answers: ["Condom use", "Sterilization", "Oral contraceptives", "IUD insertion"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of infertility in women?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Blocked fallopian tubes", "Ovulation disorders"],
+        correct: 3
+    },
+    {
+        question: "What is the most common type of cervical cancer?",
+        answers: ["Squamous cell carcinoma", "Adenocarcinoma", "Small cell carcinoma", "Sarcoma"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of using an intrauterine device (IUD) as contraception?",
+        answers: ["Prevents fertilization", "Thickens cervical mucus", "Alters the uterine lining", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a risk factor for developing breast cancer?",
+        answers: ["Family history", "High-fat diet", "Obesity", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most effective method for preventing pregnancy?",
+        answers: ["Sterilization", "Oral contraceptives", "Condoms", "IUD"],
+        correct: 0
+    },
+    {
+        question: "What is the most common sign of cervical cancer?",
+        answers: ["Abnormal vaginal bleeding", "Pelvic pain", "Heavy menstrual bleeding", "Frequent urination"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of premenstrual syndrome (PMS)?",
+        answers: ["Mood swings", "Breast tenderness", "Fatigue", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the recommended method for screening for breast cancer?",
+        answers: ["Mammogram", "Pelvic exam", "Pap smear", "Transvaginal ultrasound"],
+        correct: 0
+    },
+    {
+        question: "What is the term used for a pregnant woman under the age of 18?",
+        answers: ["Adolescent pregnancy", "Teen pregnancy", "Early pregnancy", "Underage pregnancy"],
+        correct: 0
+    },
+    {
+        question: "Which condition is associated with the presence of an abnormally high number of follicles in the ovaries?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Ovarian cancer", "Cervical cancer"],
+        correct: 0
+    }, {
+        question: "What is the most common type of contraceptive used worldwide?",
+        answers: ["Oral contraceptive pills", "Intrauterine device (IUD)", "Condoms", "Sterilization"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a risk factor for developing ovarian cancer?",
+        answers: ["Family history", "Late menopause", "Infertility", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for the period when a woman stops having menstrual periods?",
+        answers: ["Menarche", "Menopause", "Oligomenorrhea", "Dysmenorrhea"],
+        correct: 1
+    },
+    {
+        question: "What is the term for the abnormal growth of tissue outside the uterus?",
+        answers: ["Endometriosis", "Polycystic ovary syndrome", "Cervical cancer", "Uterine fibroids"],
+        correct: 0
+    },
+    {
+        question: "What is the term used for the removal of the uterus?",
+        answers: ["Hysterectomy", "Oophorectomy", "Salpingectomy", "Laparotomy"],
+        correct: 0
+    },
+    {
+        question: "Which hormone is primarily responsible for preparing the uterus for pregnancy?",
+        answers: ["Estrogen", "Progesterone", "Testosterone", "Human chorionic gonadotropin (hCG)"],
+        correct: 1
+    },
+    {
+        question: "What is the most common method of treating ectopic pregnancy?",
+        answers: ["Surgical removal of the ectopic pregnancy", "Chemotherapy", "Hormonal therapy", "Bed rest"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common symptom of pelvic inflammatory disease (PID)?",
+        answers: ["Lower abdominal pain", "Nausea", "Fever", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the medical term for painful menstruation?",
+        answers: ["Dysmenorrhea", "Amenorrhea", "Oligomenorrhea", "Metrorrhagia"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended screening test for cervical cancer?",
+        answers: ["Pap smear", "Mammogram", "Ultrasound", "Blood test"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of infertility in women?",
+        answers: ["Polycystic ovary syndrome (PCOS)", "Endometriosis", "Blocked fallopian tubes", "Advanced age"],
+        correct: 3
+    },
+    {
+        question: "What is the most common type of breast cancer?",
+        answers: ["Invasive ductal carcinoma", "Invasive lobular carcinoma", "Medullary carcinoma", "Mucinous carcinoma"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for an abnormal growth of cells in the cervix?",
+        answers: ["Cervical dysplasia", "Cervicitis", "Cervical cancer", "Endometriosis"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of menopause?",
+        answers: ["Hot flashes", "Increased menstrual flow", "Painful periods", "None of the above"],
+        correct: 0
+    },
+    {
+        question: "What is the most common complication during pregnancy?",
+        answers: ["Morning sickness", "Gestational diabetes", "Placenta previa", "Preeclampsia"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a common cause of abnormal vaginal bleeding?",
+        answers: ["Cervical cancer", "Endometrial cancer", "Polyps", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most effective method of contraception?",
+        answers: ["Sterilization", "IUD", "Oral contraceptives", "Condoms"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common sign of ovarian cysts?",
+        answers: ["Pelvic pain", "Bloating", "Irregular periods", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the medical term for a condition in which the uterus protrudes into the vaginal canal?",
+        answers: ["Prolapsed uterus", "Endometriosis", "Pelvic inflammatory disease", "Fibroids"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a potential complication of gestational diabetes?",
+        answers: ["Macrosomia", "Preterm birth", "Pre-eclampsia", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for an abnormally low level of estrogen in women?",
+        answers: ["Hypoestrogenism", "Hyperestrogenism", "Menorrhagia", "Oligomenorrhea"],
+        correct: 0
+    },{
+    question: "What is a serious menstrual abnormality in women?",
+    answers: ["Menstrual deficiency", "Excessive menstrual bleeding", "Color change in menstrual blood", "Inability to focus"],
+    correct: 1
+},
+{
+    question: "What is the primary symptom of uterine cancer?",
+    answers: ["Abdominal discomfort", "Environmental changes", "Bleeding", "Weight gain"],
+    correct: 2
+},
+{
+    question: "What does feeling excessively cold during pregnancy indicate?",
+    answers: ["Hormonal changes", "Uterine infection", "Uterine complications", "Other"],
+    correct: 0
+},
+{
+    question: "What is a common cause of pelvic pain during pregnancy?",
+    answers: ["Hormonal changes", "Uterine infection", "Pelvic floor relaxation", "None"],
+    correct: 2
+},
+{
+    question: "Which condition is associated with increased risk during pregnancy?",
+    answers: ["High blood pressure", "Low blood sugar", "High cholesterol", "None"],
+    correct: 0
+},
+{
+    question: "Which of the following is a risk factor for cervical cancer?",
+    answers: ["Multiple sexual partners", "Lack of exercise", "Frequent urination", "None"],
+    correct: 0
+},
+{
+    question: "What is the typical first symptom of menopause?",
+    answers: ["Hot flashes", "Irregular periods", "Increased fatigue", "All of the above"],
+    correct: 1
+},
+{
+    question: "Which procedure is used to check for uterine fibroids?",
+    answers: ["Pap smear", "Ultrasound", "CT scan", "MRI"],
+    correct: 1
+},
+{
+    question: "Which of the following is NOT a symptom of ovarian cysts?",
+    answers: ["Abdominal bloating", "Pain during intercourse", "Heavy bleeding", "Fever"],
+    correct: 3
+},
+{
+    question: "What is the recommended first treatment for a urinary tract infection (UTI) during pregnancy?",
+    answers: ["Antibiotics", "Surgical removal of the infection", "Increased fluid intake", "Rest"],
+    correct: 0
+},
+{
+    question: "Which hormone is primarily responsible for ovulation?",
+    answers: ["Estrogen", "Progesterone", "Luteinizing hormone", "Follicle-stimulating hormone"],
+    correct: 2
+},
+{
+    question: "What is the most common cause of vaginal discharge in women?",
+    answers: ["Bacterial vaginosis", "Yeast infections", "Sexually transmitted infections", "None of the above"],
+    correct: 1
+},
+{
+    question: "What is the most effective way to prevent pregnancy?",
+    answers: ["Contraceptive pills", "Intrauterine device (IUD)", "Condoms", "Abstinence"],
+    correct: 1
+},
+{
+    question: "What is a common cause of bleeding during early pregnancy?",
+    answers: ["Implantation bleeding", "Miscarriage", "Ectopic pregnancy", "All of the above"],
+    correct: 3
+},
+{
+    question: "At what stage of pregnancy does gestational diabetes typically develop?",
+    answers: ["First trimester", "Second trimester", "Third trimester", "At birth"],
+    correct: 1
+},
+{
+    question: "Which of the following is NOT a symptom of endometriosis?",
+    answers: ["Severe pelvic pain", "Painful intercourse", "Heavy menstrual bleeding", "Frequent urination"],
+    correct: 3
+},
+{
+    question: "Which is the most common type of breast cancer?",
+    answers: ["Ductal carcinoma in situ", "Lobular carcinoma", "Inflammatory breast cancer", "Angiosarcoma"],
+    correct: 0
+},
+{
+    question: "What is the purpose of a Pap smear?",
+    answers: ["To detect cervical cancer", "To check for pregnancy", "To measure hormone levels", "To check for STDs"],
+    correct: 0
+},
+{
+    question: "What is the condition where a woman experiences heavy bleeding and pelvic pain?",
+    answers: ["Endometriosis", "Fibroids", "Cervical cancer", "Polycystic ovary syndrome (PCOS)"],
+    correct: 1
+},
+{
+    question: "What is the recommended treatment for a patient diagnosed with polycystic ovary syndrome (PCOS)?",
+    answers: ["Weight loss", "Hormonal treatment", "Lifestyle changes", "All of the above"],
+    correct: 3
+},
+{
+    question: "Which vitamin deficiency is commonly associated with menstrual irregularities?",
+    answers: ["Vitamin A", "Vitamin D", "Vitamin C", "Vitamin E"],
+    correct: 1
+},
+{
+    question: "What is the first line of treatment for pelvic inflammatory disease (PID)?",
+    answers: ["Antibiotics", "Surgical intervention", "Radiation therapy", "Pain management"],
+    correct: 0
+},
+{
+    question: "What is the main complication of an untreated ectopic pregnancy?",
+    answers: ["Uterine rupture", "Hemorrhage", "Cervical cancer", "Ovarian cyst rupture"],
+    correct: 1
+},
+{
+    question: "What is the key diagnostic test for breast cancer?",
+    answers: ["Mammography", "Ultrasound", "CT scan", "Blood test"],
+    correct: 0
+},
+{
+    question: "What is a key risk factor for uterine fibroids?",
+    answers: ["Age", "Family history", "Obesity", "All of the above"],
+    correct: 3
+},
+{
+    question: "Which method is commonly used for detecting ovarian cancer?",
+    answers: ["Pelvic ultrasound", "Pap smear", "Blood test", "CT scan"],
+    correct: 0
+},
+{
+    question: "What is the most common complication during pregnancy?",
+    answers: ["Gestational diabetes", "Pre-eclampsia", "Hyperemesis gravidarum", "Anemia"],
+    correct: 1
+},
+{
+    question: "What is the role of estrogen in the female reproductive system?",
+    answers: ["To stimulate ovulation", "To maintain pregnancy", "To regulate menstrual cycle", "To inhibit egg production"],
+    correct: 2
+},
+{
+    question: "At what age should women start receiving mammograms?",
+    answers: ["At 30", "At 40", "At 50", "At 60"],
+    correct: 1
+},
+{
+    question: "What is a common symptom of menopause?",
+    answers: ["Hot flashes", "Menstrual bleeding", "Excessive sweating", "All of the above"],
+    correct: 0
+},
+{
+    question: "What is the name of the condition characterized by the growth of tissue similar to the uterine lining outside the uterus?",
+    answers: ["Endometriosis", "Adenomyosis", "Fibroids", "Cervical cancer"],
+    correct: 0
+},
+{
+    question: "Which of the following is NOT a typical treatment for uterine fibroids?",
+    answers: ["Hysterectomy", "Medications", "Uterine artery embolization", "Ultrasound therapy"],
+    correct: 3
+},
+{
+    question: "What is a sign of early pregnancy?",
+    answers: ["Morning sickness", "Frequent urination", "Missed period", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the main cause of infertility in women?",
+    answers: ["Polycystic ovary syndrome (PCOS)", "Endometriosis", "Blocked fallopian tubes", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the recommended method for preventing sexually transmitted infections (STIs)?",
+    answers: ["Abstinence", "Condoms", "Oral contraceptives", "None of the above"],
+    correct: 1
+},
+{
+    question: "What is the most common cause of abnormal vaginal bleeding in pre-menopausal women?",
+    answers: ["Fibroids", "Endometriosis", "Hormonal imbalance", "Cervical cancer"],
+    correct: 2
+}
+,{
+    question: "What is the most common symptom of menopause?",
+    answers: ["Hot flashes", "Frequent urination", "Increased appetite", "Swollen ankles"],
+    correct: 0
+},
+{
+    question: "What is the recommended treatment for a uterine prolapse?",
+    answers: ["Hysterectomy", "Pelvic floor exercises", "Surgical repair", "Antibiotics"],
+    correct: 1
+},
+{
+    question: "Which of the following is a risk factor for breast cancer?",
+    answers: ["Early menstruation", "Late menopause", "Family history of breast cancer", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is a common symptom of polycystic ovary syndrome (PCOS)?",
+    answers: ["Irregular periods", "Excessive hair growth", "Acne", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the best test to diagnose chlamydia?",
+    answers: ["Urine test", "Blood test", "Pap smear", "Pelvic ultrasound"],
+    correct: 0
+},
+{
+    question: "Which condition is most commonly treated with oral contraceptives?",
+    answers: ["Polycystic ovary syndrome (PCOS)", "Endometriosis", "Irregular periods", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common site for ectopic pregnancies?",
+    answers: ["Ovary", "Cervix", "Fallopian tube", "Abdomen"],
+    correct: 2
+},
+{
+    question: "Which of the following is a complication of untreated gestational diabetes?",
+    answers: ["Increased risk of pre-eclampsia", "Premature birth", "Macrosomia", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the main function of progesterone during pregnancy?",
+    answers: ["Thickens the uterine lining", "Stimulates ovulation", "Increases blood circulation", "Prevents menstrual bleeding"],
+    correct: 0
+},
+{
+    question: "At what age should women start having pap smears according to health guidelines?",
+    answers: ["At age 18", "At age 21", "At age 25", "At age 30"],
+    correct: 1
+},
+{
+    question: "Which of the following is a risk factor for ovarian cancer?",
+    answers: ["Family history", "Never having children", "Hormonal replacement therapy", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the primary cause of pre-eclampsia?",
+    answers: ["High blood pressure", "Excessive bleeding", "Infection", "Hormonal imbalance"],
+    correct: 0
+},
+{
+    question: "What is the common treatment for a yeast infection?",
+    answers: ["Antifungal medications", "Antibiotics", "Hormonal therapy", "Steroids"],
+    correct: 0
+},
+{
+    question: "Which condition is characterized by painful menstrual cramps?",
+    answers: ["Endometriosis", "Polycystic ovary syndrome", "Dysmenorrhea", "Cervicitis"],
+    correct: 2
+},
+{
+    question: "What is the main cause of infertility in women?",
+    answers: ["Polycystic ovary syndrome (PCOS)", "Fallopian tube damage", "Endometriosis", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the role of human chorionic gonadotropin (hCG) during pregnancy?",
+    answers: ["Stimulates the production of progesterone", "Induces ovulation", "Promotes blood circulation", "All of the above"],
+    correct: 0
+},
+{
+    question: "What is the most common method of diagnosing fibroids?",
+    answers: ["Pelvic ultrasound", "CT scan", "Blood test", "Pap smear"],
+    correct: 0
+},
+{
+    question: "What is a major complication of untreated pelvic inflammatory disease (PID)?",
+    answers: ["Infertility", "Miscarriage", "Pre-eclampsia", "Cervical cancer"],
+    correct: 0
+},
+{
+    question: "What is the best method for preventing the transmission of sexually transmitted infections (STIs)?",
+    answers: ["Condoms", "Birth control pills", "Abstinence", "All of the above"],
+    correct: 0
+},
+{
+    question: "What is the name of the condition where tissue similar to the uterine lining grows outside the uterus?",
+    answers: ["Endometriosis", "Fibroids", "Polycystic ovary syndrome", "Cervicitis"],
+    correct: 0
+},
+{
+    question: "What is the most common cause of abnormal vaginal bleeding?",
+    answers: ["Hormonal imbalance", "Cervical cancer", "Fibroids", "None of the above"],
+    correct: 0
+},
+{
+    question: "Which of the following conditions is diagnosed with a colposcopy?",
+    answers: ["Cervical cancer", "Endometriosis", "Ovarian cysts", "Polycystic ovary syndrome"],
+    correct: 0
+},
+{
+    question: "What is a common complication of late-stage pregnancy?",
+    answers: ["Gestational diabetes", "Pre-eclampsia", "Placental abruption", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the primary symptom of toxic shock syndrome (TSS)?",
+    answers: ["Fever", "Abnormal vaginal discharge", "Severe abdominal pain", "Urinary retention"],
+    correct: 0
+},
+{
+    question: "What is the main purpose of a mammogram?",
+    answers: ["To detect breast cancer", "To check for ovarian cysts", "To screen for diabetes", "To detect thyroid issues"],
+    correct: 0
+},
+{
+    question: "What is the best method for managing menopause symptoms?",
+    answers: ["Hormone replacement therapy", "Exercise and diet", "Antidepressants", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common complication during a cesarean section?",
+    answers: ["Infection", "Bleeding", "Blood clots", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the treatment for pre-eclampsia?",
+    answers: ["Medications to lower blood pressure", "Inducing labor", "Rest and hydration", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the primary function of the fallopian tubes?",
+    answers: ["Egg transportation", "Hormone production", "Nutrient absorption", "None of the above"],
+    correct: 0
+},
+{
+    question: "What is the best way to prevent uterine fibroids?",
+    answers: ["Regular exercise", "Hormonal therapy", "Healthy diet", "There is no known prevention"],
+    correct: 3
+},
+{
+    question: "Which of the following is a risk factor for cervical cancer?",
+    answers: ["Human papillomavirus (HPV) infection", "Multiple sexual partners", "Early sexual activity", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the typical treatment for ectopic pregnancy?",
+    answers: ["Surgical intervention", "Medication to dissolve the pregnancy", "Close monitoring", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is a common cause of secondary infertility?",
+    answers: ["Polycystic ovary syndrome", "Endometriosis", "Pelvic adhesions", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is a symptom of an ovarian cyst?",
+    answers: ["Pelvic pain", "Frequent urination", "Unexplained weight gain", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the first sign of a miscarriage?",
+    answers: ["Abdominal cramping", "Heavy bleeding", "Back pain", "Fatigue"],
+    correct: 1
+},
+{
+    question: "What is a potential complication of a missed abortion?",
+    answers: ["Infection", "Infertility", "Excessive bleeding", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common method for treating uterine cancer?",
+    answers: ["Surgical removal of the uterus", "Radiation therapy", "Chemotherapy", "Hormonal therapy"],
+    correct: 0
+},
+{
+    question: "What is the role of estrogen in the menstrual cycle?",
+    answers: ["Stimulates the growth of the uterine lining", "Regulates ovulation", "Maintains pregnancy", "None of the above"],
+    correct: 0
+},
+{
+    question: "What is the most effective method for permanent contraception?",
+    answers: ["Tubal ligation", "Vasectomy", "IUD", "Contraceptive injections"],
+    correct: 0
+},
+{
+    question: "What is the recommended screening for women at high risk of breast cancer?",
+    answers: ["Mammograms starting at 30", "Genetic testing", "Ultrasound screening", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common complication of menopause?",
+    answers: ["Osteoporosis", "Heart disease", "Urinary incontinence", "All of the above"],
+    correct: 3
+},
+{
+    question: "Which condition involves excessive growth of endometrial tissue outside the uterus?",
+    answers: ["Endometriosis", "Fibroids", "Polycystic ovary syndrome", "Cervicitis"],
+    correct: 0
+},
+{
+    question: "What is the best method for preventing preterm labor?",
+    answers: ["Regular prenatal care", "Avoiding stress", "Eating a balanced diet", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the first-line treatment for pelvic inflammatory disease (PID)?",
+    answers: ["Antibiotics", "Surgery", "Pain management", "Steroid injections"],
+    correct: 0
+},
+{
+    question: "What is the most effective way to prevent pregnancy?",
+    answers: ["Contraceptive methods", "Sterilization", "Abstinence", "All of the above"],
+    correct: 3
+}
+,{
+    question: "Which hormone is responsible for ovulation?",
+    answers: ["Estrogen", "Progesterone", "Luteinizing hormone (LH)", "Follicle-stimulating hormone (FSH)"],
+    correct: 2
+},
+{
+    question: "What is the primary cause of endometrial hyperplasia?",
+    answers: ["Excess estrogen", "Low progesterone", "Infection", "Cervical cancer"],
+    correct: 0
+},
+{
+    question: "What is a common symptom of pelvic floor dysfunction?",
+    answers: ["Urinary incontinence", "Abnormal vaginal discharge", "Pelvic pain", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the first step in treating uterine fibroids?",
+    answers: ["Observation", "Surgical removal", "Hormonal therapy", "Pain management"],
+    correct: 0
+},
+{
+    question: "What is the main complication of gestational hypertension?",
+    answers: ["Pre-eclampsia", "Gestational diabetes", "Placental abruption", "Infection"],
+    correct: 0
+},
+{
+    question: "What is the best screening method for cervical cancer?",
+    answers: ["Pap smear", "Mammogram", "Colposcopy", "Pelvic ultrasound"],
+    correct: 0
+},
+{
+    question: "Which of the following is a risk factor for preterm labor?",
+    answers: ["Multiple pregnancies", "History of preterm birth", "Infection", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is a common complication of menopause?",
+    answers: ["Osteoporosis", "Cognitive decline", "Heart disease", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common sexually transmitted infection (STI) worldwide?",
+    answers: ["Human papillomavirus (HPV)", "Chlamydia", "Syphilis", "HIV"],
+    correct: 0
+},
+{
+    question: "What is a common symptom of a miscarriage?",
+    answers: ["Severe abdominal cramps", "Heavy bleeding", "Fever", "Fatigue"],
+    correct: 1
+},
+{
+    question: "What is the recommended age for women to start getting mammograms?",
+    answers: ["30 years", "40 years", "50 years", "60 years"],
+    correct: 1
+},
+{
+    question: "What is the first-line treatment for bacterial vaginosis?",
+    answers: ["Antibiotics", "Antifungals", "Hormonal therapy", "Steroids"],
+    correct: 0
+},
+{
+    question: "What is the most common cause of abnormal uterine bleeding?",
+    answers: ["Hormonal imbalance", "Fibroids", "Cervical cancer", "Infection"],
+    correct: 0
+},
+{
+    question: "What is the best treatment for a woman with polycystic ovary syndrome (PCOS) trying to conceive?",
+    answers: ["Ovulation induction", "Surgical removal of cysts", "Hormonal therapy", "Natural remedies"],
+    correct: 0
+},
+{
+    question: "What is the most common method of contraception?",
+    answers: ["Oral contraceptives", "Condoms", "IUDs", "Sterilization"],
+    correct: 0
+},
+{
+    question: "What is the most common cause of pelvic inflammatory disease (PID)?",
+    answers: ["Chlamydia", "Gonorrhea", "Cervical cancer", "Endometriosis"],
+    correct: 0
+},
+{
+    question: "What is the primary symptom of ovarian cysts?",
+    answers: ["Pelvic pain", "Heavy bleeding", "Abdominal bloating", "Nausea"],
+    correct: 0
+},
+{
+    question: "Which of the following conditions can cause infertility?",
+    answers: ["Polycystic ovary syndrome (PCOS)", "Endometriosis", "Blocked fallopian tubes", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common sign of a fibroid?",
+    answers: ["Heavy menstrual bleeding", "Abdominal pain", "Frequent urination", "Back pain"],
+    correct: 0
+},
+{
+    question: "What is the primary function of the corpus luteum?",
+    answers: ["Secretes progesterone", "Stimulates ovulation", "Stimulates menstruation", "Secretes estrogen"],
+    correct: 0
+},
+{
+    question: "What is the purpose of a Pap smear?",
+    answers: ["To detect cervical cancer", "To diagnose sexually transmitted infections", "To monitor pregnancy", "To check for ovarian cysts"],
+    correct: 0
+},
+{
+    question: "What is the common treatment for endometriosis?",
+    answers: ["Hormonal therapy", "Surgical removal of tissue", "Pain management", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is a common complication of multiple pregnancies?",
+    answers: ["Preterm labor", "Gestational diabetes", "Hypertension", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the main symptom of a yeast infection?",
+    answers: ["Itching", "Abdominal pain", "Frequent urination", "Pelvic pain"],
+    correct: 0
+},
+{
+    question: "What is the function of human chorionic gonadotropin (hCG) during pregnancy?",
+    answers: ["Supports progesterone production", "Stimulates ovulation", "Increases estrogen levels", "Prevents miscarriage"],
+    correct: 0
+},
+{
+    question: "What is the best test for diagnosing chlamydia?",
+    answers: ["Urine test", "Blood test", "Pap smear", "Pelvic ultrasound"],
+    correct: 0
+},
+{
+    question: "What is the main cause of uterine prolapse?",
+    answers: ["Weak pelvic muscles", "Obesity", "Aging", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is a common symptom of vaginal atrophy?",
+    answers: ["Dryness", "Itching", "Pain during intercourse", "All of the above"],
+    correct: 3
+},
+{
+    question: "Which of the following is a common complication of pregnancy?",
+    answers: ["Gestational diabetes", "High blood pressure", "Placental abruption", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the main goal of a prenatal care visit?",
+    answers: ["Monitor fetal development", "Prevent complications", "Educate the patient", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most effective emergency contraception method?",
+    answers: ["Morning-after pill", "Copper IUD", "Contraceptive injections", "Condoms"],
+    correct: 1
+},
+{
+    question: "What is the typical treatment for pre-eclampsia?",
+    answers: ["Hospitalization", "Medication to lower blood pressure", "Induction of labor", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the first-line treatment for menopause-related hot flashes?",
+    answers: ["Hormone replacement therapy", "Antidepressants", "Herbal supplements", "All of the above"],
+    correct: 0
+},
+{
+    question: "What is the primary risk factor for cervical cancer?",
+    answers: ["Human papillomavirus (HPV) infection", "Multiple sexual partners", "Smoking", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the main cause of birth defects?",
+    answers: ["Genetic factors", "Environmental factors", "Infections", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common method of diagnosing ovarian cancer?",
+    answers: ["Pelvic ultrasound", "Blood tests", "CT scan", "Biopsy"],
+    correct: 0
+},
+{
+    question: "What is the primary symptom of an ectopic pregnancy?",
+    answers: ["Abdominal pain", "Heavy bleeding", "Nausea and vomiting", "All of the above"],
+    correct: 0
+},
+{
+    question: "What is the recommended age to start screening for colorectal cancer?",
+    answers: ["40 years", "45 years", "50 years", "60 years"],
+    correct: 1
+},
+{
+    question: "What is the primary method of contraception for teenagers?",
+    answers: ["Condoms", "Birth control pills", "IUD", "Sterilization"],
+    correct: 0
+},
+{
+    question: "What is a common complication of a cesarean section?",
+    answers: ["Infection", "Blood clots", "Bleeding", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common cause of vaginal bleeding after menopause?",
+    answers: ["Hormonal changes", "Uterine cancer", "Cervical cancer", "Fibroids"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for heavy menstrual bleeding?",
+    answers: ["Hormonal therapy", "Surgical intervention", "Iron supplements", "Pain medication"],
+    correct: 0
+},
+{
+    question: "What is the best method for preventing ovarian cancer?",
+    answers: ["Oral contraceptives", "Surgical removal of ovaries", "Lifestyle changes", "All of the above"],
+    correct: 3
+}
+,{
+    question: "Which is the most common symptom of polycystic ovary syndrome (PCOS)?",
+    answers: ["Irregular periods", "Pelvic pain", "Excessive hair growth", "All of the above"],
+    correct: 3
+},
+{
+    question: "Which of the following conditions can cause infertility?",
+    answers: ["Endometriosis", "Blocked fallopian tubes", "Low sperm count", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the first-line treatment for bacterial vaginosis?",
+    answers: ["Antibiotics", "Antifungals", "Probiotics", "Steroids"],
+    correct: 0
+},
+{
+    question: "Which vaccine is recommended for preventing cervical cancer?",
+    answers: ["HPV vaccine", "Hepatitis B vaccine", "Flu vaccine", "Meningococcal vaccine"],
+    correct: 0
+},
+{
+    question: "Which of the following is a risk factor for uterine cancer?",
+    answers: ["Obesity", "Hormonal imbalance", "Age", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common cause of abnormal uterine bleeding in women of reproductive age?",
+    answers: ["Hormonal imbalance", "Fibroids", "Endometriosis", "Cancer"],
+    correct: 0
+},
+{
+    question: "What is the main purpose of a Pap smear?",
+    answers: ["To screen for cervical cancer", "To detect sexually transmitted infections", "To monitor pregnancy", "To check for ovarian cysts"],
+    correct: 0
+},
+{
+    question: "What is the most common type of ovarian tumor?",
+    answers: ["Benign cysts", "Malignant tumors", "Endometrial tumors", "Teratomas"],
+    correct: 0
+},
+{
+    question: "What is the best method for early detection of breast cancer?",
+    answers: ["Mammogram", "Ultrasound", "MRI", "Breast self-exam"],
+    correct: 0
+},
+{
+    question: "Which hormone increases significantly during pregnancy?",
+    answers: ["Estrogen", "Progesterone", "Human chorionic gonadotropin (hCG)", "Testosterone"],
+    correct: 2
+},
+{
+    question: "What is the most common cause of pelvic inflammatory disease (PID)?",
+    answers: ["Chlamydia", "Gonorrhea", "Bacterial infection", "Cervical cancer"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for pelvic organ prolapse?",
+    answers: ["Pelvic floor exercises", "Surgical intervention", "Hormonal therapy", "Antibiotics"],
+    correct: 0
+},
+{
+    question: "What is the most common cause of secondary infertility?",
+    answers: ["Ovulatory disorders", "Endometriosis", "Polycystic ovary syndrome (PCOS)", "Tubal blockage"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of uterine fibroids?",
+    answers: ["Heavy menstrual bleeding", "Abdominal pain", "Frequent urination", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the first step in the treatment of pre-eclampsia?",
+    answers: ["Monitor blood pressure", "Administer antihypertensives", "Induce labor", "Hospitalization for observation"],
+    correct: 3
+},
+{
+    question: "Which of the following is a risk factor for ectopic pregnancy?",
+    answers: ["Previous pelvic infection", "Smoking", "Previous abdominal surgery", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the recommended age for women to begin routine mammography?",
+    answers: ["30", "35", "40", "50"],
+    correct: 2
+},
+{
+    question: "Which is the most common type of menopause?",
+    answers: ["Natural menopause", "Premature menopause", "Surgical menopause", "Induced menopause"],
+    correct: 0
+},
+{
+    question: "What is the purpose of a colposcopy?",
+    answers: ["To examine the cervix for abnormal cells", "To treat infections", "To measure ovarian function", "To assess vaginal health"],
+    correct: 0
+},
+{
+    question: "Which of the following is a complication of diabetes during pregnancy?",
+    answers: ["Macrosomia", "Preterm birth", "Stillbirth", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the recommended treatment for endometriosis?",
+    answers: ["Hormonal therapy", "Surgical removal of tissue", "Pain management", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common cause of postpartum hemorrhage?",
+    answers: ["Uterine atony", "Retained placenta", "Cervical lacerations", "Coagulopathy"],
+    correct: 0
+},
+{
+    question: "What is the most common complication of an episiotomy?",
+    answers: ["Infection", "Pain", "Delayed healing", "Urinary incontinence"],
+    correct: 0
+},
+{
+    question: "What is the most common sexually transmitted infection (STI) in women?",
+    answers: ["Chlamydia", "Gonorrhea", "Human papillomavirus (HPV)", "Herpes"],
+    correct: 2
+},
+{
+    question: "What is the main cause of gestational diabetes?",
+    answers: ["Insulin resistance", "Hormonal changes", "Obesity", "Age"],
+    correct: 0
+},
+{
+    question: "What is the most effective method of contraception for women over 35?",
+    answers: ["Oral contraceptives", "IUD", "Condoms", "Sterilization"],
+    correct: 1
+},
+{
+    question: "What is the role of progesterone in the menstrual cycle?",
+    answers: ["Maintains the uterine lining", "Stimulates ovulation", "Regulates menstrual bleeding", "Inhibits estrogen production"],
+    correct: 0
+},
+{
+    question: "What is the main complication associated with menopause?",
+    answers: ["Osteoporosis", "Heart disease", "Urinary incontinence", "Cognitive decline"],
+    correct: 0
+},
+{
+    question: "What is the most common cause of vaginal bleeding in postmenopausal women?",
+    answers: ["Endometrial cancer", "Atrophic vaginitis", "Cervical polyps", "Hormonal therapy"],
+    correct: 0
+},
+{
+    question: "What is the recommended treatment for a yeast infection?",
+    answers: ["Antifungal medication", "Antibiotics", "Steroids", "Hormonal therapy"],
+    correct: 0
+},
+{
+    question: "What is the best test for detecting early-stage cervical cancer?",
+    answers: ["Pap smear", "Pelvic ultrasound", "Biopsy", "Colposcopy"],
+    correct: 0
+},
+{
+    question: "Which hormone helps maintain pregnancy in the early stages?",
+    answers: ["Progesterone", "Estrogen", "Human chorionic gonadotropin (hCG)", "Luteinizing hormone (LH)"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for vaginal atrophy?",
+    answers: ["Estrogen therapy", "Antibiotics", "Pain management", "Hormonal therapy"],
+    correct: 0
+},
+{
+    question: "Which type of uterine cancer is most common?",
+    answers: ["Endometrial cancer", "Cervical cancer", "Ovarian cancer", "Vaginal cancer"],
+    correct: 0
+},
+{
+    question: "What is the best screening method for ovarian cancer?",
+    answers: ["Transvaginal ultrasound", "CA-125 blood test", "Pelvic exam", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the most common cause of infertility in men?",
+    answers: ["Low sperm count", "Erectile dysfunction", "Testicular problems", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the primary purpose of a hysterectomy?",
+    answers: ["To remove the uterus", "To remove the ovaries", "To treat infertility", "To prevent ovarian cancer"],
+    correct: 0
+},
+{
+    question: "What is the most common complication of a miscarriage?",
+    answers: ["Infection", "Heavy bleeding", "Cervical damage", "Emotional distress"],
+    correct: 1
+},
+{
+    question: "What is a common risk factor for preterm labor?",
+    answers: ["Multiple pregnancies", "Obesity", "Age", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the recommended frequency of mammograms for women over 50?",
+    answers: ["Every year", "Every two years", "Every three years", "Every five years"],
+    correct: 1
+},
+{
+    question: "What is the primary cause of uterine fibroids?",
+    answers: ["Hormonal imbalance", "Genetic factors", "Infection", "Unknown"],
+    correct: 1
+},
+{
+    question: "What is the role of oxytocin during labor?",
+    answers: ["Stimulates uterine contractions", "Regulates blood pressure", "Increases milk production", "Controls bleeding after birth"],
+    correct: 0
+},
+{
+    question: "What is the best way to manage menopause symptoms?",
+    answers: ["Hormone replacement therapy", "Exercise", "Dietary changes", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the recommended age for women to start cervical cancer screening?",
+    answers: ["21", "25", "30", "35"],
+    correct: 0
+},
+{
+    question: "Which of the following is a method of preventing sexually transmitted infections (STIs)?",
+    answers: ["Condoms", "Vaccination", "Monogamous relationships", "All of the above"],
+    correct: 3
+},
+{
+    question: "Which condition is characterized by the overgrowth of endometrial tissue outside the uterus?",
+    answers: ["Endometriosis", "Fibroids", "Polycystic ovary syndrome", "Pelvic inflammatory disease"],
+    correct: 0
+},
+{
+    question: "Which of the following is the first sign of labor?",
+    answers: ["Water breaking", "Cervical dilation", "Braxton Hicks contractions", "Loss of mucus plug"],
+    correct: 1
+}
+,
+    {
+        question: "What is the most common cause of pelvic pain in women?",
+        answers: ["Endometriosis", "Fibroids", "Cysts", "Ovarian cancer"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a treatment for polycystic ovary syndrome (PCOS)?",
+        answers: ["Oral contraceptives", "Clomiphene citrate", "Metformin", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary method of diagnosing uterine fibroids?",
+        answers: ["Pelvic ultrasound", "Pap smear", "MRI", "CT scan"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a miscarriage occurring before 20 weeks of pregnancy?",
+        answers: ["Spontaneous abortion", "Ectopic pregnancy", "Stillbirth", "Induced abortion"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common cause of infertility in women?",
+        answers: ["Ovarian cysts", "Endometriosis", "Blocked fallopian tubes", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the medical term for painful intercourse?",
+        answers: ["Dyspareunia", "Dysmenorrhea", "Vaginismus", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the term for an abnormally high number of follicles in the ovaries?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Ovarian cancer", "Cervical cancer"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended age for the first mammogram?",
+        answers: ["40 years", "45 years", "50 years", "60 years"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a risk factor for developing breast cancer?",
+        answers: ["Family history", "Hormone replacement therapy", "Advanced age", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common type of cervical cancer?",
+        answers: ["Squamous cell carcinoma", "Adenocarcinoma", "Small cell carcinoma", "Sarcoma"],
+        correct: 0
+    },
+    {
+        question: "Which hormone plays a key role in maintaining pregnancy?",
+        answers: ["Progesterone", "Estrogen", "Luteinizing hormone", "Testosterone"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an important screening test for breast cancer?",
+        answers: ["Mammogram", "Pelvic exam", "Pap smear", "Blood test"],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment for endometrial cancer?",
+        answers: ["Hysterectomy", "Chemotherapy", "Radiation therapy", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for the absence of menstrual periods?",
+        answers: ["Amenorrhea", "Dysmenorrhea", "Oligomenorrhea", "Menarche"],
+        correct: 0
+    },
+    {
+        question: "What is the most common type of abortion procedure?",
+        answers: ["Medical abortion", "Surgical abortion", "Spontaneous abortion", "Mifepristone abortion"],
+        correct: 0
+    },
+    {
+        question: "What is the most common risk factor for cervical cancer?",
+        answers: ["Human papillomavirus (HPV) infection", "Family history", "Smoking", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is used to diagnose endometriosis?",
+        answers: ["Laparoscopy", "Ultrasound", "MRI", "Blood tests"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for the surgical removal of the ovaries?",
+        answers: ["Oophorectomy", "Salpingectomy", "Hysterectomy", "Mastectomy"],
+        correct: 0
+    },{
+        question: "What is the most common complication of pregnancy?",
+        answers: ["Pre-eclampsia", "Gestational diabetes", "Placenta previa", "Ectopic pregnancy"],
+        correct: 0
+    },
+    {
+        question: "What is the term for the condition where the placenta partially or completely covers the cervix?",
+        answers: ["Placenta previa", "Placental abruption", "Ectopic pregnancy", "Cervical insufficiency"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common cause of male infertility?",
+        answers: ["Low sperm count", "Varicocele", "Hormonal imbalance", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of secondary infertility?",
+        answers: ["Endometriosis", "Polycystic ovary syndrome", "Tubal factor", "Male factor infertility"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a risk factor for developing uterine fibroids?",
+        answers: ["Age", "Race", "Obesity", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary cause of pre-eclampsia?",
+        answers: ["Placental insufficiency", "Genetic factors", "Infection", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common sign of gestational diabetes?",
+        answers: ["Excessive thirst", "Frequent urination", "Fatigue", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for a female's first menstrual period?",
+        answers: ["Menarche", "Menopause", "Oligomenorrhea", "Amenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the most common treatment for polycystic ovary syndrome (PCOS)?",
+        answers: ["Oral contraceptives", "Clomiphene citrate", "Metformin", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for a miscarriage that occurs after 20 weeks of pregnancy?",
+        answers: ["Stillbirth", "Spontaneous abortion", "Late-term abortion", "Premature labor"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the most common type of ovarian cyst?",
+        answers: ["Follicular cyst", "Corpus luteum cyst", "Endometrioma", "Dermoid cyst"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for an abnormally heavy menstrual flow?",
+        answers: ["Menorrhagia", "Oligomenorrhea", "Metrorrhagia", "Dysmenorrhea"],
+        correct: 0
+    },
+    {
+        question: "What is the best method for detecting breast cancer in high-risk women?",
+        answers: ["Mammography", "Breast ultrasound", "MRI", "Self-breast exam"],
+        correct: 2
+    },
+    {
+        question: "What is the most common cause of vulvovaginitis?",
+        answers: ["Candida infection", "Trichomoniasis", "Bacterial vaginosis", "Herpes simplex virus"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of endometrial cancer?",
+        answers: ["Abnormal vaginal bleeding", "Pelvic pain", "Frequent urination", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "What is the term for inflammation of the cervix?",
+        answers: ["Cervicitis", "Endometritis", "Vulvovaginitis", "Pelvic inflammatory disease"],
+        correct: 0
+    },
+    {
+        question: "What is the medical term for the presence of bacteria in the urine during pregnancy?",
+        answers: ["Bacteriuria", "Cystitis", "Pyelonephritis", "Urinary tract infection (UTI)"],
+        correct: 0
+    },
+    {
+        question: "What is the first-line treatment for bacterial vaginosis?",
+        answers: ["Metronidazole", "Fluconazole", "Ciprofloxacin", "Clindamycin"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of polycystic ovary syndrome (PCOS)?",
+        answers: ["Irregular periods", "Excessive hair growth", "Acne", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a common cause of vaginal discharge?",
+        answers: ["Yeast infections", "Bacterial vaginosis", "Cervicitis", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the recommended screening test for colorectal cancer in women over 50 years of age?",
+        answers: ["Mammogram", "Colonoscopy", "Pap smear", "Blood test"],
+        correct: 1
+    },
+    {
+        question: "What is the medical term for a tear in the cervix during childbirth?",
+        answers: ["Cervical laceration", "Perineal laceration", "Uterine rupture", "Placental abruption"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a condition where the cervix dilates prematurely during pregnancy?",
+        answers: ["Cervical insufficiency", "Placenta previa", "Pre-eclampsia", "Gestational hypertension"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of neonatal jaundice?",
+        answers: ["Physiologic jaundice", "Breastfeeding jaundice", "Hemolytic disease", "Infection"],
+        correct: 0
+    },
+    {
+        question: "What is the first-line treatment for chlamydia infection?",
+        answers: ["Azithromycin", "Doxycycline", "Penicillin", "Erythromycin"],
+        correct: 0
+    },
+    {
+        question: "What is the best contraceptive method for a woman who is breastfeeding?",
+        answers: ["Intrauterine device (IUD)", "Progestin-only pill", "Combined oral contraceptive", "Sterilization"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a common complication of a urinary tract infection during pregnancy?",
+        answers: ["Preterm labor", "Gestational diabetes", "Placental abruption", "Fetal growth restriction"],
+        correct: 0
+    },
+    {
+        question: "What is the most effective way to prevent the spread of sexually transmitted infections?",
+        answers: ["Abstinence", "Condom use", "Vaccination", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a sign of pre-eclampsia?",
+        answers: ["Proteinuria", "Hypertension", "Swelling in hands and feet", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the medical term for low birth weight?",
+        answers: ["Hypotrophy", "Microsomia", "Macrosomia", "IUGR (Intrauterine Growth Restriction)"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of maternal mortality worldwide?",
+        answers: ["Hemorrhage", "Infection", "Hypertensive disorders", "Sepsis"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a treatment for uterine fibroids?",
+        answers: ["Myomectomy", "Hysterectomy", "Uterine artery embolization", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first-line treatment for herpes simplex virus (HSV) infection during pregnancy?",
+        answers: ["Acyclovir", "Valacyclovir", "Famciclovir", "No treatment necessary"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended frequency for Pap smear screening in women aged 21-29?",
+        answers: ["Every 1 year", "Every 3 years", "Every 5 years", "Every 2 years"],
+        correct: 1
+    },
+    {
+        question: "What is the primary cause of cervical cancer?",
+        answers: ["Human papillomavirus (HPV) infection", "Smoking", "Dietary factors", "Hormonal contraceptive use"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a typical symptom of endometriosis?",
+        answers: ["Painful periods", "Pain during intercourse", "Chronic pelvic pain", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following tests is used to diagnose a sexually transmitted infection?",
+        answers: ["Pap smear", "Blood test", "Urine culture", "Pelvic exam"],
+        correct: 1
+    },
+    {
+        question: "Which hormone is primarily responsible for stimulating ovulation?",
+        answers: ["Estrogen", "Progesterone", "Luteinizing hormone (LH)", "Follicle-stimulating hormone (FSH)"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is the most effective method of contraception for preventing pregnancy?",
+        answers: ["Condoms", "Oral contraceptives", "Intrauterine device (IUD)", "Tubal ligation"],
+        correct: 3
+    },
+    {
+        question: "At what age should women start having annual Pap smears for cervical cancer screening?",
+        answers: ["18 years", "21 years", "25 years", "30 years"],
+        correct: 1
+    },
+    {
+        question: "What is the primary function of the progesterone hormone during the menstrual cycle?",
+        answers: ["Stimulating ovulation", "Thickening of the uterine lining", "Preventing the shedding of the endometrium", "Regulating menstruation"],
+        correct: 2
+    },
+    {
+        question: "Which condition is characterized by the presence of endometrial tissue outside the uterus?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Fibroids", "Pelvic inflammatory disease"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a common symptom of menopause?",
+        answers: ["Heavy menstrual bleeding", "Hot flashes", "Increased libido", "Frequent urination"],
+        correct: 1
+    },
+    {
+        question: "What is the typical first-line treatment for polycystic ovary syndrome (PCOS)?",
+        answers: ["Metformin", "Surgical intervention", "Hormonal therapy", "Antibiotics"],
+        correct: 0
+    },
+    {
+        question: "What is the condition in which there is a painful condition involving the uterus, characterized by irregular menstrual bleeding and pain?",
+        answers: ["Endometriosis", "Uterine fibroids", "Polycystic ovary syndrome", "Cervical cancer"],
+        correct: 1
+    },
+    {
+        question: "What is the primary treatment for uterine fibroids that cause symptoms like pain and heavy bleeding?",
+        answers: ["Surgical removal of fibroids", "Pain medications", "Oral contraceptives", "Antibiotics"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a major risk factor for cervical cancer?",
+        answers: ["High-fat diet", "Smoking", "Family history of breast cancer", "Physical inactivity"],
+        correct: 1
+    },
+    {
+        question: "Which of the following can be used to treat symptoms of menopause?",
+        answers: ["Hormone replacement therapy (HRT)", "Insulin therapy", "Thyroid medications", "Non-steroidal anti-inflammatory drugs (NSAIDs)"],
+        correct: 0
+    },
+    {
+        question: "What is the most common site for ectopic pregnancies?",
+        answers: ["Ovary", "Uterus", "Fallopian tube", "Cervix"],
+        correct: 2
+    },
+    {
+        question: "Which of the following is a common sign of uterine cancer?",
+        answers: ["Abnormal vaginal bleeding", "Breast tenderness", "Frequent urination", "Increased appetite"],
+        correct: 0
+    },
+    {
+        question: "What is the name of the hormone that helps maintain the corpus luteum during the early stages of pregnancy?",
+        answers: ["Estrogen", "Progesterone", "Oxytocin", "HCG (Human Chorionic Gonadotropin)"],
+        correct: 3
+    },
+    {
+        question: "What is the primary method of diagnosing polycystic ovary syndrome (PCOS)?",
+        answers: ["Blood tests", "Ultrasound", "Pelvic examination", "CT scan"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is the best method of detecting breast cancer in its early stages?",
+        answers: ["Mammogram", "Pap smear", "Pelvic exam", "Breast self-exam"],
+        correct: 0
+    },
+    {
+        question: "Which condition is characterized by the inability to conceive after one year of regular unprotected intercourse?",
+        answers: ["Infertility", "Endometriosis", "Pelvic inflammatory disease", "Ovarian cysts"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is the first-line treatment for pelvic inflammatory disease (PID)?",
+        answers: ["Antibiotics", "Surgery", "Hormone therapy", "Pain medication"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of infertility in women?",
+        answers: ["Polycystic ovary syndrome", "Endometriosis", "Tubal obstruction", "Uterine fibroids"],
+        correct: 0
+    },
+    {
+        question: "Which hormone is responsible for the development of secondary sexual characteristics in females?",
+        answers: ["Estrogen", "Progesterone", "Testosterone", "Luteinizing hormone"],
+        correct: 0
+    },
+    {
+        question: "What is the primary cause of postmenopausal bleeding?",
+        answers: ["Atrophy of the vaginal lining", "Endometrial hyperplasia", "Uterine fibroids", "Cervical cancer"],
+        correct: 1
+    },
+    {
+        question: "At what stage of pregnancy does the embryo become a fetus?",
+        answers: ["8 weeks", "12 weeks", "24 weeks", "28 weeks"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a common symptom of fibroids?",
+        answers: ["Heavy menstrual bleeding", "Frequent urination", "Painful intercourse", "Nausea"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is used as a diagnostic tool for cervical cancer?",
+        answers: ["Pap smear", "Pelvic ultrasound", "Endometrial biopsy", "CT scan"],
+        correct: 0
+    },
+    {
+        question: "What is the main function of the cervix during pregnancy?",
+        answers: ["Support the growing fetus", "Prevent infection", "Produce progesterone", "Regulate fetal movement"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a symptom of polycystic ovary syndrome (PCOS)?",
+        answers: ["Irregular periods", "Excessive hair growth", "Infertility", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common cause of secondary amenorrhea?",
+        answers: ["Pregnancy", "Polycystic ovary syndrome", "Thyroid disorders", "Anorexia nervosa"],
+        correct: 0
+    },
+    {
+        question: "Which of the following can increase the risk of developing uterine fibroids?",
+        answers: ["Obesity", "Smoking", "Low-fat diet", "High physical activity"],
+        correct: 0
+    },
+    {
+        question: "Which of the following conditions is most commonly associated with infertility in women?",
+        answers: ["Endometriosis", "Polycystic ovary syndrome", "Tubal factor infertility", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the main purpose of the Pap smear test?",
+        answers: ["Detecting cervical cancer", "Detecting endometrial cancer", "Assessing ovarian function", "Monitoring pregnancy"],
+        correct: 0
+    },
+    {
+        question: "What is the treatment of choice for a patient diagnosed with chlamydia?",
+        answers: ["Antibiotics", "Antiviral medication", "Surgical intervention", "Hormonal therapy"],
+        correct: 0
+    },
+    {
+        question: "What is the most common form of contraception used worldwide?",
+        answers: ["Oral contraceptives", "Condoms", "Intrauterine device (IUD)", "Sterilization"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a common complication of pregnancy?",
+        answers: ["Gestational diabetes", "Preterm labor", "Preeclampsia", "All of the above"],
+        correct: 3
+    }
+
+
+];
+
+
+  
+
+
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    
+    const questionText = document.getElementById('question-text');
+    const answerBtns = document.querySelectorAll('.answer-btn');
+    const feedback = document.getElementById('feedback');
+    const questionNumber = document.getElementById('question-number');
+    const finalScore = document.getElementById('finalScore');
+    const percentage = document.getElementById('percentage');
+    const resultContainer = document.querySelector('.result');
+    const viewResultBtn = document.getElementById('viewResultBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    
+    
+    
+    function displayQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionText.textContent = currentQuestion.question;
+        for (let i = 0; i < currentQuestion.answers.length; i++) {
+            answerBtns[i].textContent = currentQuestion.answers[i];
+        }
+        questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        feedback.textContent = "";
+        startTimer();
+    }
+    
+    function checkAnswer(selectedIndex) {
+        const currentQuestion = questions[currentQuestionIndex];
+        clearTimeout(timer);
+        if (selectedIndex === currentQuestion.correct) {
+            score++;
+            feedback.textContent = "Correct!";
+            feedback.className = "feedback-frame correct";
+        } else {
+            feedback.textContent = "Incorrect!";
+            feedback.className = "feedback-frame incorrect";
+        }
+        setTimeout(() => {
+            nextQuestion();
+        }, 1500);
+    }
+    
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+        }
+    }
+    
+    function showResults() {
+        const percentageScore = (score / questions.length) * 100;
+        finalScore.textContent = `Score: ${score} / ${questions.length}`;
+        percentage.textContent = `Percentage: ${percentageScore.toFixed(2)}%`;
+        
+        // Display the result section and hide the quiz
+        resultContainer.style.display = 'block';
+        document.querySelector('.question-container').style.display = 'none';
+        
+        // Chart.js for visual representation (pie and bar charts)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                    data: [score, questions.length - score],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            }
+        });
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Score'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [score],
+                    backgroundColor: '#28a745'
+                }]
+            }
+        });
+
+        viewResultBtn.style.display = 'none';
+    }
+
+    function stopQuiz() {
+        
+       
+        showResults();
+    }
+    
+    // Initialize the quiz
+    displayQuestion();
+    function checkAnswer(selectedIndex) {
+    const currentQuestion = questions[currentQuestionIndex];
+    clearInterval(timer);
+
+    // Check if the selected answer is correct
+    if (selectedIndex === currentQuestion.correct) {
+        score++;
+        feedback.textContent = "Correct!";
+        feedback.className = "feedback-frame correct";
+    } else {
+        feedback.textContent = `Incorrect! The correct answer is:   ${currentQuestion.answers[currentQuestion.correct]}`;
+        feedback.className = "feedback-frame incorrect";
+    }
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 1500);
+}
+
+</script>
+
+
+
+  
+
+</body>
+</html> 

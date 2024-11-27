@@ -1,0 +1,2241 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Medical Surgical Nursing</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background-color: rgba(59, 47, 47, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background-color: rgba(255, 165, 0, 1); /* Vibrant orange */
+            
+        }
+
+        .feedback-frame {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .correct {
+            border: 3px solid #28a745;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .incorrect {
+            border: 3px solid #dc3545;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            gap: 10px;
+        }
+
+        .timer-icon {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: green;
+            width: 100%;
+            border-radius: 10px;
+            animation: countdown 10s linear forwards;
+        }
+
+        @keyframes countdown {
+            0% {
+                width: 100%;
+            }
+            100% {
+                width: 0%;
+                background-color: red;
+            }
+        }
+
+        .navigation-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        p{
+            color:ye
+        }
+        .result-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .btn-result {
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-result:hover {
+            background-color: #218838;
+        }
+
+        /* Stop button */
+        .btn-stop {
+            padding: 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-stop:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design for small screens */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 95%;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .answer-btn {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .feedback-frame {
+                font-size: 1em;
+            }
+
+            .timer {
+                font-size: 1.2em;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Display Question Number -->
+        
+        <div class="question-number" id="question-number">Question 1 of 6</div>
+
+        <div class="timer">
+           
+            
+        </div>
+
+        <div class="question-container">
+            <div class="question" id="question-text">Question will appear here</div>
+            <div class="answers">
+                <button class="answer-btn" id="btn1" onclick="checkAnswer(0)">Option 1</button>
+                <button class="answer-btn" id="btn2" onclick="checkAnswer(1)">Option 2</button>
+                <button class="answer-btn" id="btn3" onclick="checkAnswer(2)">Option 3</button>
+                <button class="answer-btn" id="btn4" onclick="checkAnswer(3)">Option 4</button>
+            </div>
+            <div class="feedback-frame" id="feedback"></div>
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+            <button class="btn-result" id="viewResultBtn" onclick="showResults()" style="display:none;">View Result</button>
+            <button class="btn-stop" id="stopBtn" onclick="stopQuiz()">Stop Quiz</button>
+        </div>
+
+        <div class="result">
+            <div class="result-header">Quiz Results</div>
+            <div id="finalScore">Score: 0</div>
+            <div id="percentage">Percentage: 0%</div>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+     <script>
+  const questions = [
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary purpose of giving anticoagulants postoperatively?",
+    answers: [
+      "To prevent deep vein thrombosis",
+      "To control pain",
+      "To prevent infection",
+      "To improve digestion"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a common complication after abdominal surgery?",
+    answers: [
+      "Pneumonia",
+      "Urinary tract infection",
+      "Surgical site infection",
+      "Cerebrovascular accident"
+    ],
+    correct: 2
+  },
+  {
+    question: "What is the normal range for adult respiratory rate?",
+    answers: [
+      "12-16 breaths per minute",
+      "16-20 breaths per minute",
+      "20-24 breaths per minute",
+      "24-28 breaths per minute"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the initial nursing action for a patient with suspected postoperative hemorrhage?",
+    answers: [
+      "Administer pain medication",
+      "Check vital signs and assess for signs of shock",
+      "Administer IV fluids",
+      "Notify the surgeon immediately"
+    ],
+    correct: 1
+  },
+  
+  // 80 more questions
+  {
+    question: "What is the most important intervention to prevent wound infection after surgery?",
+    answers: [
+      "Administer antibiotics",
+      "Change dressing regularly",
+      "Monitor for fever",
+      "Encourage early ambulation"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which of the following is a sign of a respiratory complication after surgery?",
+    answers: [
+      "Decreased respiratory rate",
+      "Dyspnea",
+      "Hypotension",
+      "Fever"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which of the following is used to measure the oxygen level in a patient's blood?",
+    answers: [
+      "Electrocardiogram",
+      "Pulse oximeter",
+      "Stethoscope",
+      "Spirometer"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the primary focus of postoperative care?",
+    answers: [
+      "Prevent infection",
+      "Manage pain",
+      "Monitor vital signs",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "Which of the following is a common sign of shock in postoperative patients?",
+    answers: [
+      "High blood pressure",
+      "Increased urine output",
+      "Cold, clammy skin",
+      "Elevated temperature"
+    ],
+    correct: 2
+  },
+  {
+    question: "Which of the following is a key symptom of deep vein thrombosis (DVT)?",
+    answers: [
+      "Shortness of breath",
+      "Pain, redness, and swelling in the leg",
+      "Low-grade fever",
+      "Abdominal pain"
+    ],
+    correct: 1
+  },
+  {
+    question: "How often should a nurse assess a postoperative patient’s surgical site for signs of infection?",
+    answers: [
+      "Every 4 hours",
+      "Once daily",
+      "Every 12 hours",
+      "Every 2 hours"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the common cause of postoperative nausea and vomiting?",
+    answers: [
+      "Pain medications",
+      "Anesthesia",
+      "Dehydration",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the best way to assess the effectiveness of pain management post-surgery?",
+    answers: [
+      "Monitor vital signs",
+      "Ask the patient to rate their pain on a scale",
+      "Administer pain medication regularly",
+      "Observe for signs of distress"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the common side effect of opioids that must be managed in postoperative patients?",
+    answers: [
+      "Hypotension",
+      "Nausea and vomiting",
+      "Constipation",
+      "Dizziness"
+    ],
+    correct: 2
+  },
+  {
+    question: "What is the primary goal of physical therapy post-surgery?",
+    answers: [
+      "To prevent infection",
+      "To restore function and mobility",
+      "To prevent blood clots",
+      "To reduce pain"
+    ],
+    correct: 1
+  },
+  {
+    question: "What should be the priority in the care of a postoperative patient with a fever?",
+    answers: [
+      "Administer antipyretic medications",
+      "Increase fluid intake",
+      "Monitor vital signs",
+      "Determine the cause of fever"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the most common complication of open-heart surgery?",
+    answers: [
+      "Heart failure",
+      "Arrhythmias",
+      "Wound infection",
+      "Pneumonia"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the purpose of administering intravenous fluids to a postoperative patient?",
+    answers: [
+      "Prevent dehydration",
+      "Maintain blood pressure",
+      "Replace lost electrolytes",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What should a nurse do if a patient develops a postoperative fever?",
+    answers: [
+      "Immediately call the doctor",
+      "Administer fever-reducing medications",
+      "Monitor temperature and assess for signs of infection",
+      "Restrict fluids to prevent swelling"
+    ],
+    correct: 2
+  },
+  {
+    question: "Which of the following is a complication of abdominal surgery that can cause prolonged pain and bloating?",
+    answers: [
+      "Pneumothorax",
+      "Paralytic ileus",
+      "Dehydration",
+      "Urinary retention"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the most important step in preventing surgical site infection?",
+    answers: [
+      "Administer antibiotics preoperatively",
+      "Use sterile technique during dressing changes",
+      "Keep the site dry and clean",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is a common symptom of atelectasis after surgery?",
+    answers: [
+      "Pain in the abdomen",
+      "Difficulty breathing",
+      "Fever",
+      "Headache"
+    ],
+    correct: 1
+  },
+  {
+    question: "What should be done to prevent thromboembolic events in postoperative patients?",
+    answers: [
+      "Encourage early ambulation",
+      "Administer anticoagulants",
+      "Use compression stockings",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "How should the nurse assess for signs of postoperative infection?",
+    answers: [
+      "Check the wound for redness, warmth, and drainage",
+      "Monitor for changes in vital signs",
+      "Ask the patient about pain at the surgical site",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What should a nurse do if a patient’s wound dressing is saturated with blood?",
+    answers: [
+      "Apply a new dressing immediately",
+      "Elevate the affected limb",
+      "Notify the surgeon and monitor vital signs",
+      "Encourage the patient to cough and deep breathe"
+    ],
+    correct: 2
+  },
+  {
+    question: "What is the best method for preventing pressure ulcers in postoperative patients?",
+    answers: [
+      "Frequent repositioning",
+      "Use of special mattress pads",
+      "Maintain proper nutrition and hydration",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "When should a patient begin postoperative ambulation?",
+    answers: [
+      "Within 24 hours after surgery",
+      "When the patient is able to tolerate it",
+      "After 48 hours of rest",
+      "After the removal of all drains and tubes"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the primary goal of administering oxygen therapy to postoperative patients?",
+    answers: [
+      "To relieve pain",
+      "To prevent hypoxia",
+      "To promote digestion",
+      "To reduce swelling"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is a common cause of postoperative delirium in elderly patients?",
+    answers: [
+      "Medications",
+      "Dehydration",
+      "Infection",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the best way to prevent postoperative pneumonia?",
+    answers: [
+      "Encourage deep breathing and coughing",
+      "Administer antibiotics",
+      "Increase fluid intake",
+      "Apply oxygen therapy"
+    ],
+    correct: 0
+  },{
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary purpose of giving anticoagulants postoperatively?",
+    answers: [
+      "To prevent deep vein thrombosis",
+      "To control pain",
+      "To prevent infection",
+      "To improve digestion"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a common complication after abdominal surgery?",
+    answers: [
+      "Pneumonia",
+      "Urinary tract infection",
+      "Surgical site infection",
+      "Cerebrovascular accident"
+    ],
+    correct: 2
+  },
+  {
+    question: "What is the normal range for adult respiratory rate?",
+    answers: [
+      "12-16 breaths per minute",
+      "16-20 breaths per minute",
+      "20-24 breaths per minute",
+      "24-28 breaths per minute"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the initial nursing action for a patient with suspected postoperative hemorrhage?",
+    answers: [
+      "Administer pain medication",
+      "Check vital signs and assess for signs of shock",
+      "Administer IV fluids",
+      "Notify the surgeon immediately"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the most important intervention to prevent wound infection after surgery?",
+    answers: [
+      "Administer antibiotics",
+      "Change dressing regularly",
+      "Monitor for fever",
+      "Encourage early ambulation"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which of the following is a sign of a respiratory complication after surgery?",
+    answers: [
+      "Decreased respiratory rate",
+      "Dyspnea",
+      "Hypotension",
+      "Fever"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which of the following is used to measure the oxygen level in a patient's blood?",
+    answers: [
+      "Electrocardiogram",
+      "Pulse oximeter",
+      "Stethoscope",
+      "Spirometer"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the primary focus of postoperative care?",
+    answers: [
+      "Prevent infection",
+      "Manage pain",
+      "Monitor vital signs",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "Which of the following is a common sign of shock in postoperative patients?",
+    answers: [
+      "High blood pressure",
+      "Increased urine output",
+      "Cold, clammy skin",
+      "Elevated temperature"
+    ],
+    correct: 2
+  },
+  // Add the rest of the 90 questions here
+
+  {
+    question: "What is the first sign of acute blood loss in a postoperative patient?",
+    answers: [
+      "Elevated blood pressure",
+      "Cool, clammy skin",
+      "Increased urine output",
+      "Elevated heart rate"
+    ],
+    correct: 3
+  },
+  {
+    question: "Which of the following is an important factor in preventing postoperative ileus?",
+    answers: [
+      "Early ambulation",
+      "High-protein diet",
+      "Pain management",
+      "Limiting fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which intervention should the nurse implement for a patient with an elevated temperature after surgery?",
+    answers: [
+      "Administer antipyretic medications",
+      "Increase fluid intake",
+      "Notify the surgeon immediately",
+      "Check vital signs every 15 minutes"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should be monitored regularly for a patient receiving IV fluids postoperatively?",
+    answers: [
+      "Urine output",
+      "Pain level",
+      "Temperature",
+      "Bowel sounds"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most common complication of spinal surgery?",
+    answers: [
+      "Nerve injury",
+      "Wound infection",
+      "Deep vein thrombosis",
+      "Pneumonia"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a risk factor for postoperative pneumonia?",
+    answers: [
+      "Smoking history",
+      "Obesity",
+      "Advanced age",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the purpose of administering heparin after surgery?",
+    answers: [
+      "To prevent thromboembolic events",
+      "To prevent infection",
+      "To manage pain",
+      "To control bleeding"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should a nurse do when a patient exhibits signs of deep vein thrombosis (DVT)?",
+    answers: [
+      "Encourage ambulation",
+      "Apply warm compresses",
+      "Administer anticoagulants as prescribed",
+      "Massage the affected leg"
+    ],
+    correct: 2
+  },
+  {
+    question: "Which of the following is the most common cause of postoperative hypertension?",
+    answers: [
+      "Pain",
+      "Fluid overload",
+      "Anesthesia",
+      "Hypoxia"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the most critical assessment after a patient undergoes thoracic surgery?",
+    answers: [
+      "Breathing pattern",
+      "Pain level",
+      "Urine output",
+      "Gastrointestinal function"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which action should the nurse take to promote effective wound healing?",
+    answers: [
+      "Ensure adequate hydration",
+      "Monitor for signs of infection",
+      "Encourage high-protein meals",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is a primary goal of postoperative nutrition?",
+    answers: [
+      "Promote wound healing",
+      "Prevent infection",
+      "Reduce pain",
+      "Increase energy levels"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a sign of an adverse reaction to general anesthesia?",
+    answers: [
+      "Coughing",
+      "Nausea and vomiting",
+      "Increased heart rate",
+      "Sudden increase in blood pressure"
+    ],
+    correct: 1
+  },
+  {
+    question: "How can the nurse prevent postoperative constipation in a patient?",
+    answers: [
+      "Encourage fluid intake",
+      "Administer stool softeners",
+      "Encourage early ambulation",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the best method for reducing postoperative pain in a patient with a surgical wound?",
+    answers: [
+      "Administering pain medication as prescribed",
+      "Applying ice to the surgical site",
+      "Administering antibiotics",
+      "All of the above"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the appropriate action for a nurse when a postoperative patient complains of sudden severe chest pain?",
+    answers: [
+      "Administer oxygen and notify the physician",
+      "Administer pain medication",
+      "Monitor vital signs",
+      "Apply a heating pad to the chest"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an important aspect of post-cardiac surgery care?",
+    answers: [
+      "Encourage early ambulation to prevent complications",
+      "Limit fluid intake",
+      "Maintain bed rest for the first 72 hours",
+      "Increase dietary sodium intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should be included in the education for a patient undergoing a laparoscopic cholecystectomy?",
+    answers: [
+      "Avoid heavy lifting for 1-2 weeks",
+      "Consume a high-fat diet after surgery",
+      "Avoid drinking fluids for 24 hours",
+      "Resume normal activities immediately"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following symptoms may indicate a postoperative complication in a diabetic patient?",
+    answers: [
+      "Uncontrolled blood sugar levels",
+      "Elevated blood pressure",
+      "Excessive wound drainage",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is a priority action for the nurse when a patient develops sudden shortness of breath after surgery?",
+    answers: [
+      "Administer oxygen and call for help",
+      "Monitor vital signs and notify the surgeon",
+      "Encourage deep breathing exercises",
+      "Encourage the patient to cough and deep breathe"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most common cause of postoperative fever within the first 48 hours?",
+    answers: [
+      "Infection",
+      "Atelectasis",
+      "Thrombophlebitis",
+      "Wound dehiscence"
+    ],
+    correct: 1
+  },{
+    question: "What is the most common cause of postoperative fever within the first 48 hours?",
+    answers: [
+      "Infection",
+      "Atelectasis",
+      "Thrombophlebitis",
+      "Wound dehiscence"
+    ],
+    correct: 1
+  },
+  {
+    question: "Which of the following is an important consideration when caring for an elderly postoperative patient?",
+    answers: [
+      "Monitor for signs of delirium",
+      "Maintain strict bed rest",
+      "Increase fluid intake rapidly",
+      "Provide high-protein diet immediately"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common complication of total knee replacement surgery?",
+    answers: [
+      "Deep vein thrombosis (DVT)",
+      "Urinary retention",
+      "Peptic ulcers",
+      "Diabetes mellitus"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following should be avoided immediately after a hip replacement surgery?",
+    answers: [
+      "Crossing the legs",
+      "Elevating the legs",
+      "Using a walker",
+      "Sitting on a raised toilet seat"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary purpose of a chest tube after thoracic surgery?",
+    answers: [
+      "To remove excess air or fluid from the pleural space",
+      "To prevent infection",
+      "To monitor oxygen levels",
+      "To manage pain"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the key assessment finding indicating possible hemorrhage after surgery?",
+    answers: [
+      "Increased heart rate",
+      "Increased blood pressure",
+      "Decreased urine output",
+      "All of the above"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a common side effect of opioid pain medications?",
+    answers: [
+      "Constipation",
+      "Hyperactivity",
+      "Diarrhea",
+      "Increased heart rate"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most common cause of wound dehiscence?",
+    answers: [
+      "Infection",
+      "Increased physical activity",
+      "Obesity",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is an important part of care for a patient recovering from abdominal surgery?",
+    answers: [
+      "Encourage coughing and deep breathing",
+      "Strict bed rest for the first 24 hours",
+      "Increased fluid intake",
+      "Limiting protein intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is most important when a patient has a postoperative infection?",
+    answers: [
+      "Administer prescribed antibiotics",
+      "Monitor for changes in blood pressure",
+      "Encourage hydration",
+      "Provide mental health support"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a potential complication following a mastectomy?",
+    answers: [
+      "Lymphedema",
+      "Fever",
+      "Hypoxia",
+      "Pneumonia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key component of postoperative respiratory care?",
+    answers: [
+      "Coughing and deep breathing exercises",
+      "Administering sedatives",
+      "Encouraging the patient to sleep in a supine position",
+      "Providing a high-calorie diet"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should the nurse do if a postoperative patient shows signs of shock?",
+    answers: [
+      "Elevate the legs and monitor vital signs",
+      "Increase fluid intake and assess for pain",
+      "Give antibiotics immediately",
+      "Place patient in the Trendelenburg position and administer fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most appropriate method for preventing pressure ulcers in postoperative patients?",
+    answers: [
+      "Frequent repositioning",
+      "Limiting fluid intake",
+      "Providing a high-salt diet",
+      "Administering pain relief medications"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is an indication for using a sequential compression device (SCD) after surgery?",
+    answers: [
+      "Preventing deep vein thrombosis (DVT)",
+      "Preventing infection",
+      "Reducing fever",
+      "Managing pain"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should the nurse do if a patient experiences excessive bleeding postoperatively?",
+    answers: [
+      "Apply pressure to the wound and notify the surgeon",
+      "Administer oxygen immediately",
+      "Monitor vital signs closely and administer pain relief",
+      "Increase IV fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the expected outcome of early ambulation after surgery?",
+    answers: [
+      "Prevention of deep vein thrombosis",
+      "Improved digestion",
+      "Increased pain",
+      "Delayed wound healing"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a common sign of postoperative infection?",
+    answers: [
+      "Redness, warmth, and swelling at the wound site",
+      "Decrease in temperature",
+      "Low blood pressure",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the purpose of a wound drain after surgery?",
+    answers: [
+      "To remove excess fluid or blood from the surgical site",
+      "To provide nutritional support",
+      "To manage pain",
+      "To monitor infection"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common complication of abdominal surgery?",
+    answers: [
+      "Paralytic ileus",
+      "Nausea and vomiting",
+      "Increased blood pressure",
+      "All of the above"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an expected intervention for preventing venous thromboembolism (VTE) in postoperative patients?",
+    answers: [
+      "Administering anticoagulant medication",
+      "Encouraging early ambulation",
+      "Use of compression stockings",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What should the nurse assess regularly after abdominal surgery to prevent complications?",
+    answers: [
+      "Bowel sounds and movement",
+      "Blood pressure",
+      "Urine output",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the appropriate action if a patient develops sudden shortness of breath after surgery?",
+    answers: [
+      "Administer oxygen and notify the healthcare provider",
+      "Encourage the patient to cough",
+      "Administer pain medication",
+      "Give fluids intravenously"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a risk factor for developing postoperative pneumonia?",
+    answers: [
+      "Smoking history",
+      "Obesity",
+      "Advanced age",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "Which of the following is a primary goal of postoperative pain management?",
+    answers: [
+      "To prevent respiratory depression",
+      "To reduce the risk of infection",
+      "To ensure optimal healing",
+      "All of the above"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should the nurse do if a postoperative patient experiences extreme fatigue?",
+    answers: [
+      "Reassure the patient and monitor vital signs",
+      "Administer additional analgesics",
+      "Increase fluid intake immediately",
+      "Increase physical activity"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the key intervention to prevent aspiration pneumonia in postoperative patients?",
+    answers: [
+      "Ensuring the patient is positioned upright while eating or drinking",
+      "Encouraging the patient to sleep on their back",
+      "Administering intravenous fluids",
+      "Encouraging deep breathing exercises"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the main cause of fever in the first 48 hours postoperatively?",
+    answers: [
+      "Atelectasis",
+      "Infection",
+      "Wound dehiscence",
+      "Pneumonia"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is an early sign of wound infection?",
+    answers: [
+      "Redness and warmth at the wound site",
+      "Elevated heart rate",
+      "Pain relief",
+      "Decreased appetite"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should the nurse do for a patient who develops a wound infection after surgery?",
+    answers: [
+      "Notify the surgeon and prepare for possible drainage",
+      "Apply a cold compress",
+      "Administer an antipyretic",
+      "Encourage more fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary goal of postoperative rehabilitation?",
+    answers: [
+      "Restore function and mobility",
+      "Reduce pain and discomfort",
+      "Promote wound healing",
+      "Prevent infection"
+    ],
+    correct: 0
+  },{
+    question: "What is the common cause of wound infection postoperatively?",
+    answers: [
+      "Contaminated surgical instruments",
+      "Increased physical activity",
+      "Decreased fluid intake",
+      "Poor nutrition"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an important nursing consideration when a patient is in the post-anesthesia care unit (PACU)?",
+    answers: [
+      "Monitoring vital signs frequently",
+      "Encouraging the patient to walk immediately",
+      "Providing high-sugar fluids",
+      "Administering sedatives"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a potential complication of total hip replacement?",
+    answers: [
+      "Dislocation of the hip",
+      "Pulmonary embolism",
+      "Deep vein thrombosis",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is the recommended dietary modification for a patient recovering from abdominal surgery?",
+    answers: [
+      "Gradual reintroduction of solid foods",
+      "Immediate high-fat diet",
+      "Strict liquid diet for 48 hours",
+      "Increased fiber intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should a nurse do to prevent deep vein thrombosis (DVT) in a postoperative patient?",
+    answers: [
+      "Encourage frequent movement and use of compression stockings",
+      "Encourage bed rest for the first 48 hours",
+      "Monitor blood sugar levels",
+      "Increase fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a risk factor for postoperative wound dehiscence?",
+    answers: [
+      "Obesity",
+      "Age",
+      "Malnutrition",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "What is a priority assessment after surgery to prevent complications?",
+    answers: [
+      "Monitoring respiratory function and oxygen saturation",
+      "Assessing for pain relief",
+      "Checking for signs of bleeding",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "Which of the following is a typical postoperative complication in patients undergoing abdominal surgery?",
+    answers: [
+      "Constipation",
+      "Fatigue",
+      "Increased heart rate",
+      "Diarrhea"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an important intervention for preventing postoperative pneumonia?",
+    answers: [
+      "Encouraging deep breathing and coughing exercises",
+      "Administering pain medications",
+      "Limiting the patient's movement",
+      "Giving oxygen continuously"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary nursing action for a postoperative patient experiencing nausea?",
+    answers: [
+      "Administer prescribed antiemetic medications",
+      "Encourage increased fluid intake",
+      "Monitor for signs of infection",
+      "Provide a high-protein diet"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a common cause of postoperative delirium?",
+    answers: [
+      "Pain medications",
+      "Surgical trauma",
+      "Electrolyte imbalances",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "Which of the following is an important factor in preventing postoperative urinary retention?",
+    answers: [
+      "Encouraging early ambulation",
+      "Increased fluid intake",
+      "Administering diuretics",
+      "Placing the patient on bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a major concern for patients recovering from spinal surgery?",
+    answers: [
+      "Maintaining proper positioning to prevent nerve damage",
+      "Frequent dressing changes",
+      "Restricting all physical activity",
+      "Ensuring adequate nutrition"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should be done for a patient showing signs of postoperative hemorrhage?",
+    answers: [
+      "Apply pressure to the wound and alert the surgeon",
+      "Increase fluid intake",
+      "Administer pain medication",
+      "Encourage the patient to rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is an essential part of postoperative assessment for signs of infection?",
+    answers: [
+      "Monitoring the temperature and inspecting the wound site",
+      "Assessing blood pressure and heart rate",
+      "Administering pain medications regularly",
+      "Changing dressings frequently"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an expected outcome when a patient is placed in a high Fowler's position after abdominal surgery?",
+    answers: [
+      "Improved lung expansion and decreased risk of aspiration",
+      "Increased pain",
+      "Decreased heart rate",
+      "Increased risk of clot formation"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary risk for a patient recovering from a gastrointestinal surgery?",
+    answers: [
+      "Postoperative ileus",
+      "Pulmonary embolism",
+      "Urinary retention",
+      "Skin breakdown"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most common reason for delayed wound healing?",
+    answers: [
+      "Infection",
+      "Obesity",
+      "Age",
+      "All of the above"
+    ],
+    correct: 3
+  },
+  {
+    question: "Which of the following is an important part of nursing care for a postoperative patient with a chest tube?",
+    answers: [
+      "Monitoring drainage and checking for air leaks",
+      "Encouraging the patient to lie flat",
+      "Administering pain medications frequently",
+      "Restricting all physical activity"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an essential intervention to reduce the risk of post-surgical DVT?",
+    answers: [
+      "Early ambulation and use of anticoagulant medications",
+      "High-sodium diet",
+      "Administering pain medications",
+      "Increased fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should the nurse do if a patient develops an air embolism after surgery?",
+    answers: [
+      "Place the patient in a left lateral decubitus position and notify the healthcare provider",
+      "Administer high-flow oxygen and elevate the head of the bed",
+      "Apply cold compresses to the neck",
+      "Encourage deep breathing"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following can help reduce the risk of post-surgical complications?",
+    answers: [
+      "Early ambulation and controlled pain management",
+      "Strict bed rest",
+      "Limiting fluid intake",
+      "Increased physical activity"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the role of the nurse in preventing infection after surgery?",
+    answers: [
+      "Maintaining aseptic technique during dressing changes",
+      "Encouraging smoking cessation",
+      "Administering antibiotics prophylactically",
+      "Increasing dietary protein"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is an appropriate action when a patient develops a postoperative fever?",
+    answers: [
+      "Assess the wound site and review lab results",
+      "Administer antipyretics without further assessment",
+      "Increase fluid intake without consulting the doctor",
+      "Encourage bed rest immediately"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is a priority nursing intervention for a postoperative patient at risk for atelectasis?",
+    answers: [
+      "Encourage coughing and deep breathing exercises",
+      "Increase pain medication dosage",
+      "Administer sedatives",
+      "Restrict all movement"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an important consideration when providing post-surgical wound care?",
+    answers: [
+      "Checking for signs of infection and ensuring adequate nutrition",
+      "Applying ointments regularly",
+      "Using tight bandages to promote healing",
+      "Encouraging immediate ambulation"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most common cause of post-surgical nausea and vomiting?",
+    answers: [
+      "Anesthesia effects",
+      "Infection",
+      "Pain medications",
+      "Nutritional deficiencies"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should be done if a postoperative patient begins to show signs of a stroke?",
+    answers: [
+      "Call for immediate emergency assistance and monitor vital signs",
+      "Administer a sedative",
+      "Encourage movement",
+      "Administer pain relief"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a sign of a postoperative blood clot?",
+    answers: [
+      "Pain and swelling in the leg",
+      "Fever",
+      "Low heart rate",
+      "Elevated blood pressure"
+    ],
+    correct: 0
+  },  // The next batch of 80 questions
+  {
+    question: "What is the primary concern when managing a postoperative patient with a chest tube?",
+    answers: [
+      "Maintaining a closed drainage system",
+      "Increasing fluid intake",
+      "Encouraging early ambulation",
+      "Administering pain relief"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following signs is most indicative of a postoperative infection?",
+    answers: [
+      "Fever and redness at the incision site",
+      "Increased energy levels",
+      "Decreased pain at the surgical site",
+      "Low blood pressure"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the nursing intervention for a patient with postoperative hypotension?",
+    answers: [
+      "Increase fluid intake and monitor vital signs",
+      "Restrict fluids and encourage rest",
+      "Administer pain medication immediately",
+      "Apply a cold compress to the neck"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a common complication of general anesthesia?",
+    answers: [
+      "Nausea and vomiting",
+      "Increased blood pressure",
+      "Excessive bleeding",
+      "High blood sugar"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most important factor in preventing postoperative pneumonia?",
+    answers: [
+      "Encouraging deep breathing and coughing exercises",
+      "Administering pain relief",
+      "Increasing fluid intake",
+      "Restricting movement to avoid pain"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an appropriate nursing intervention for a postoperative patient with a wound drain?",
+    answers: [
+      "Monitoring the drain for signs of infection and ensuring proper drainage",
+      "Encouraging the patient to walk immediately",
+      "Applying pressure to the wound site to stop drainage",
+      "Restricting fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common risk for patients after major abdominal surgery?",
+    answers: [
+      "Postoperative ileus",
+      "Hyperglycemia",
+      "Increased appetite",
+      "Rapid weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is most important when caring for a patient with a postoperative wound?",
+    answers: [
+      "Inspecting the wound for signs of infection and maintaining sterile technique",
+      "Administering antibiotics at regular intervals",
+      "Encouraging immediate physical activity",
+      "Changing the dressing frequently regardless of the wound condition"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary action to prevent deep vein thrombosis (DVT) in postoperative patients?",
+    answers: [
+      "Encouraging early ambulation and using compression stockings",
+      "Administering high doses of painkillers",
+      "Restricting fluid intake",
+      "Limiting patient movement completely"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the nursing intervention for managing postoperative nausea and vomiting?",
+    answers: [
+      "Administering antiemetic medications as prescribed",
+      "Increasing fluid intake immediately",
+      "Administering sedatives",
+      "Encouraging deep breathing exercises"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a major concern for a patient who has undergone abdominal surgery?",
+    answers: [
+      "Infection and bowel obstruction",
+      "Difficulty swallowing",
+      "Hyperglycemia",
+      "Increased risk of fractures"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the first step when managing postoperative hemorrhage?",
+    answers: [
+      "Apply direct pressure to the site and call for assistance",
+      "Increase fluid intake",
+      "Administer sedatives",
+      "Monitor the patient for pain relief"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the main purpose of using sequential compression devices (SCDs) after surgery?",
+    answers: [
+      "To prevent deep vein thrombosis (DVT)",
+      "To monitor the wound site",
+      "To promote fluid retention",
+      "To reduce postoperative pain"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is the most common postoperative complication in orthopedic surgery?",
+    answers: [
+      "Fat embolism",
+      "Wound infection",
+      "Hemorrhage",
+      "Pulmonary embolism"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most important nursing assessment after surgery for patients at risk for shock?",
+    answers: [
+      "Monitoring blood pressure and heart rate",
+      "Checking for signs of infection",
+      "Assessing for pain levels",
+      "Administering pain relief"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the recommended method for managing postoperative pain?",
+    answers: [
+      "Using a combination of opioid and non-opioid analgesics",
+      "Administering high doses of opioids only",
+      "Restricting fluid intake",
+      "Encouraging excessive physical activity"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an essential nursing intervention for a patient with a postoperative wound infection?",
+    answers: [
+      "Administering prescribed antibiotics and monitoring for signs of sepsis",
+      "Increasing dietary sugar intake",
+      "Encouraging excessive exercise",
+      "Restricting all food intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following can reduce the risk of postoperative constipation?",
+    answers: [
+      "Encouraging early ambulation and increasing fluid intake",
+      "Administering painkillers",
+      "Providing a high-sugar diet",
+      "Limiting fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the best way to prevent postoperative urinary retention?",
+    answers: [
+      "Encouraging early ambulation and hydration",
+      "Administering antibiotics",
+      "Restricting fluid intake",
+      "Encouraging prolonged bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the main concern when caring for a postoperative patient with a urinary catheter?",
+    answers: [
+      "Preventing infection and monitoring output",
+      "Encouraging frequent catheter changes",
+      "Administering high doses of pain relief",
+      "Restricting fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a common complication after a cesarean section?",
+    answers: [
+      "Infection and hemorrhage",
+      "Urinary retention",
+      "Fatigue",
+      "Headache"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing assessment for a postoperative patient with chest pain?",
+    answers: [
+      "Assessing the heart rate, rhythm, and oxygen saturation",
+      "Administering pain medication",
+      "Encouraging deep breathing exercises",
+      "Increasing fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary intervention to prevent pressure ulcers in postoperative patients?",
+    answers: [
+      "Repositioning the patient regularly and using pressure-relieving devices",
+      "Limiting fluid intake",
+      "Encouraging excessive activity",
+      "Administering sedatives"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the first intervention when a postoperative patient experiences a sudden drop in blood pressure?",
+    answers: [
+      "Assessing for possible causes and ensuring adequate fluid volume",
+      "Administering pain relief",
+      "Increasing physical activity",
+      "Restricting fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is an early sign of postoperative infection?",
+    answers: [
+      "Fever and increased heart rate",
+      "Decreased respiratory rate",
+      "Decreased blood pressure",
+      "Increased wound redness"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a primary nursing intervention for a postoperative patient at risk for pneumonia?",
+    answers: [
+      "Encouraging coughing and deep breathing exercises",
+      "Administering antibiotics",
+      "Restricting movement to prevent pain",
+      "Increasing fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most effective way to prevent post-surgical infection?",
+    answers: [
+      "Proper hand hygiene and aseptic technique",
+      "Increasing dietary protein",
+      "Administering antibiotics indiscriminately",
+      "Encouraging rest and immobilization"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common complication after spinal surgery?",
+    answers: [
+      "Respiratory depression",
+      "Dislodged spinal hardware",
+      "Urinary retention",
+      "Pulmonary embolism"
+    ],
+    correct: 0
+  },{
+    question: "What is a common cause of postoperative delirium?",
+    answers: [
+      "Electrolyte imbalances and medication side effects",
+      "Excessive physical activity",
+      "Dehydration and low blood pressure",
+      "Increased blood sugar levels"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the recommended intervention for a patient with postoperative urinary retention?",
+    answers: [
+      "Encourage fluid intake and attempt bladder training",
+      "Administer analgesics only",
+      "Limit fluid intake to reduce the need to urinate",
+      "Restrict ambulation to minimize movement"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a complication of immobility after surgery?",
+    answers: [
+      "Deep vein thrombosis (DVT)",
+      "Decreased risk of infection",
+      "Reduced risk of pressure ulcers",
+      "Improved circulation"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most important aspect of pain management in postoperative patients?",
+    answers: [
+      "Assessing pain regularly and using multimodal analgesia",
+      "Restricting the use of opioids",
+      "Administering antibiotics prophylactically",
+      "Encouraging prolonged rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a priority nursing action for a patient with a newly inserted chest tube?",
+    answers: [
+      "Ensuring the drainage system remains intact and monitoring for air leaks",
+      "Encouraging deep breathing and coughing exercises",
+      "Administering analgesics for pain control",
+      "Repositioning the patient every hour"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is the most important assessment for a postoperative patient receiving opioid medications?",
+    answers: [
+      "Monitoring for signs of respiratory depression",
+      "Assessing for fever and chills",
+      "Encouraging the patient to eat and drink",
+      "Increasing physical activity"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the best intervention for preventing wound infection in a postoperative patient?",
+    answers: [
+      "Maintaining sterile technique during dressing changes",
+      "Encouraging the patient to eat high-sugar foods",
+      "Restricting fluid intake",
+      "Administering antibiotics without prescription"
+    ],
+    correct: 0
+  },
+  {
+    question: "What should be done if a postoperative patient's surgical site is showing signs of infection?",
+    answers: [
+      "Notify the healthcare provider and follow the prescribed treatment plan",
+      "Apply warm compresses immediately",
+      "Continue the patient's normal activity without any restrictions",
+      "Administer pain relief without consulting the provider"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a sign of postoperative hemorrhage?",
+    answers: [
+      "Hypotension and tachycardia",
+      "Increased urine output",
+      "Elevated body temperature",
+      "Sudden improvement in pain"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the purpose of using a Foley catheter after surgery?",
+    answers: [
+      "To monitor urine output and prevent urinary retention",
+      "To prevent infection",
+      "To administer antibiotics",
+      "To encourage fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following interventions should be done immediately after a patient is extubated post-surgery?",
+    answers: [
+      "Monitor airway patency and assess for signs of respiratory distress",
+      "Encourage the patient to talk immediately",
+      "Administer high doses of pain medication",
+      "Encourage the patient to eat immediately"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common complication of a deep abdominal surgery?",
+    answers: [
+      "Ileus and bowel obstruction",
+      "Skin irritation",
+      "Increased appetite",
+      "Reduced risk of infection"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which nursing intervention is most important for a patient post-orthopedic surgery?",
+    answers: [
+      "Ensuring proper positioning and monitoring for complications like DVT",
+      "Encouraging immediate weight-bearing exercises",
+      "Providing a high-sugar diet",
+      "Increasing the use of sedatives"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary reason for encouraging early ambulation in postoperative patients?",
+    answers: [
+      "To reduce the risk of deep vein thrombosis (DVT)",
+      "To increase pain levels",
+      "To promote rest and prevent exhaustion",
+      "To restrict fluid intake"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the best nursing intervention for preventing postoperative atelectasis?",
+    answers: [
+      "Encouraging deep breathing and coughing exercises",
+      "Administering painkillers only",
+      "Restricting fluid intake",
+      "Encouraging the patient to lie flat"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an important assessment for a patient with a drain after surgery?",
+    answers: [
+      "Checking for signs of infection and ensuring the drain is patent",
+      "Encouraging the patient to perform physical exercises immediately",
+      "Administering sedatives",
+      "Limiting patient mobility"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a major cause of post-surgical bleeding?",
+    answers: [
+      "Inadequate hemostasis during surgery",
+      "Dehydration",
+      "Overuse of painkillers",
+      "Encouraging early ambulation"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the best intervention for preventing postoperative pneumonia?",
+    answers: [
+      "Encouraging deep breathing, coughing, and early mobilization",
+      "Administering antibiotics immediately",
+      "Providing large amounts of fluid",
+      "Restricting patient movement"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary purpose of postoperative antibiotics?",
+    answers: [
+      "To prevent infection at the surgical site",
+      "To reduce pain",
+      "To improve appetite",
+      "To promote early ambulation"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the key nursing action for a postoperative patient with a fever?",
+    answers: [
+      "Assessing for signs of infection and monitoring vital signs",
+      "Administering painkillers without consulting the physician",
+      "Increasing fluid intake",
+      "Encouraging immediate physical activity"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most important nursing intervention when caring for a postoperative patient with an epidural catheter?",
+    answers: [
+      "Monitoring for signs of infection and assessing pain levels",
+      "Increasing fluid intake only",
+      "Encouraging immediate ambulation",
+      "Administering antibiotics without orders"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the role of patient education after discharge following surgery?",
+    answers: [
+      "To ensure the patient understands care instructions and follow-up appointments",
+      "To encourage immediate physical activity",
+      "To limit fluid intake",
+      "To administer painkillers as needed"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most important nursing action for preventing venous thromboembolism (VTE) after surgery?",
+    answers: [
+      "Encouraging early mobilization and using compression devices",
+      "Restricting fluid intake",
+      "Administering opioids for pain relief",
+      "Encouraging sedentary behavior"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary concern when monitoring a postoperative patient's heart rate?",
+    answers: [
+      "Detecting any abnormal rhythms or signs of hypoperfusion",
+      "Assessing for pain levels",
+      "Administering pain relief",
+      "Encouraging deep breathing exercises"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the primary purpose of giving anticoagulants postoperatively?",
+    answers: [
+      "To prevent deep vein thrombosis",
+      "To control pain",
+      "To prevent infection",
+      "To improve digestion"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which of the following is a common complication after abdominal surgery?",
+    answers: [
+      "Pneumonia",
+      "Urinary tract infection",
+      "Surgical site infection",
+      "Cerebrovascular accident"
+    ],
+    correct: 2
+  },
+  {
+    question: "What is the normal range for adult respiratory rate?",
+    answers: [
+      "12-16 breaths per minute",
+      "16-20 breaths per minute",
+      "20-24 breaths per minute",
+      "24-28 breaths per minute"
+    ],
+    correct: 1
+  },
+  {
+    question: "What is the initial nursing action for a patient with suspected postoperative hemorrhage?",
+    answers: [
+      "Administer pain medication",
+      "Check vital signs and assess for signs of shock",
+      "Administer IV fluids",
+      "Notify the surgeon immediately"
+    ],
+    correct: 1
+  },
+  // Add more questions here to make it over 100
+  // Example:
+  {
+    question: "Which assessment finding indicates fluid volume overload?",
+    answers: [
+      "Decreased blood pressure",
+      "Increased urine output",
+      "Peripheral edema",
+      "Dry mucous membranes"
+    ],
+    correct: 2
+  }
+];
+
+
+
+
+  
+
+
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    
+    const questionText = document.getElementById('question-text');
+    const answerBtns = document.querySelectorAll('.answer-btn');
+    const feedback = document.getElementById('feedback');
+    const questionNumber = document.getElementById('question-number');
+    const finalScore = document.getElementById('finalScore');
+    const percentage = document.getElementById('percentage');
+    const resultContainer = document.querySelector('.result');
+    const viewResultBtn = document.getElementById('viewResultBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    
+    
+    
+    function displayQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionText.textContent = currentQuestion.question;
+        for (let i = 0; i < currentQuestion.answers.length; i++) {
+            answerBtns[i].textContent = currentQuestion.answers[i];
+        }
+        questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        feedback.textContent = "";
+        startTimer();
+    }
+    
+    function checkAnswer(selectedIndex) {
+        const currentQuestion = questions[currentQuestionIndex];
+        clearTimeout(timer);
+        if (selectedIndex === currentQuestion.correct) {
+            score++;
+            feedback.textContent = "Correct!";
+            feedback.className = "feedback-frame correct";
+        } else {
+            feedback.textContent = "Incorrect!";
+            feedback.className = "feedback-frame incorrect";
+        }
+        setTimeout(() => {
+            nextQuestion();
+        }, 1500);
+    }
+    
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+        }
+    }
+    
+    function showResults() {
+        const percentageScore = (score / questions.length) * 100;
+        finalScore.textContent = `Score: ${score} / ${questions.length}`;
+        percentage.textContent = `Percentage: ${percentageScore.toFixed(2)}%`;
+        
+        // Display the result section and hide the quiz
+        resultContainer.style.display = 'block';
+        document.querySelector('.question-container').style.display = 'none';
+        
+        // Chart.js for visual representation (pie and bar charts)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                    data: [score, questions.length - score],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            }
+        });
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Score'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [score],
+                    backgroundColor: '#28a745'
+                }]
+            }
+        });
+
+        viewResultBtn.style.display = 'none';
+    }
+
+    function stopQuiz() {
+        
+       
+        showResults();
+    }
+    
+    // Initialize the quiz
+    displayQuestion();
+    function checkAnswer(selectedIndex) {
+    const currentQuestion = questions[currentQuestionIndex];
+    clearInterval(timer);
+
+    // Check if the selected answer is correct
+    if (selectedIndex === currentQuestion.correct) {
+        score++;
+        feedback.textContent = "Correct!";
+        feedback.className = "feedback-frame correct";
+    } else {
+        feedback.textContent = `Incorrect! The correct answer is:   ${currentQuestion.answers[currentQuestion.correct]}`;
+        feedback.className = "feedback-frame incorrect";
+    }
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 1500);
+}
+
+</script>
+
+
+
+  
+
+</body>
+</html> 

@@ -1,0 +1,5908 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Medical Surgical Nursing</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background-color: rgba(59, 47, 47, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background-color: rgba(255, 165, 0, 1); /* Vibrant orange */
+            
+        }
+
+        .feedback-frame {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .correct {
+            border: 3px solid #28a745;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .incorrect {
+            border: 3px solid #dc3545;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            gap: 10px;
+        }
+
+        .timer-icon {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: green;
+            width: 100%;
+            border-radius: 10px;
+            animation: countdown 10s linear forwards;
+        }
+
+        @keyframes countdown {
+            0% {
+                width: 100%;
+            }
+            100% {
+                width: 0%;
+                background-color: red;
+            }
+        }
+
+        .navigation-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        p{
+            color:ye
+        }
+        .result-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .btn-result {
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-result:hover {
+            background-color: #218838;
+        }
+
+        /* Stop button */
+        .btn-stop {
+            padding: 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-stop:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design for small screens */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 95%;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .answer-btn {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .feedback-frame {
+                font-size: 1em;
+            }
+
+            .timer {
+                font-size: 1.2em;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Display Question Number -->
+        
+        <div class="question-number" id="question-number">Question 1 of 6</div>
+
+        <div class="timer">
+           
+            
+        </div>
+
+        <div class="question-container">
+            <div class="question" id="question-text">Question will appear here</div>
+            <div class="answers">
+                <button class="answer-btn" id="btn1" onclick="checkAnswer(0)">Option 1</button>
+                <button class="answer-btn" id="btn2" onclick="checkAnswer(1)">Option 2</button>
+                <button class="answer-btn" id="btn3" onclick="checkAnswer(2)">Option 3</button>
+                <button class="answer-btn" id="btn4" onclick="checkAnswer(3)">Option 4</button>
+            </div>
+            <div class="feedback-frame" id="feedback"></div>
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+            <button class="btn-result" id="viewResultBtn" onclick="showResults()" style="display:none;">View Result</button>
+            <button class="btn-stop" id="stopBtn" onclick="stopQuiz()">Stop Quiz</button>
+        </div>
+
+        <div class="result">
+            <div class="result-header">Quiz Results</div>
+            <div id="finalScore">Score: 0</div>
+            <div id="percentage">Percentage: 0%</div>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+     <script>
+   const questions = [
+   {
+        question: "What is the primary focus of medical-surgical nursing?",
+        answers: [
+            "Caring for patients with acute and chronic illnesses",
+            "Providing care for pediatric patients only",
+            "Focusing solely on surgical procedures",
+            "Conducting laboratory tests"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common sign of hypovolemic shock?",
+        answers: ["Hypotension", "Tachycardia", "Bradycardia", "Cyanosis"],
+        correct: 1
+    },
+    {
+        question: "Which electrolyte imbalance is commonly associated with kidney failure?",
+        answers: [
+            "Hyperkalemia",
+            "Hypocalcemia",
+            "Hypernatremia",
+            "Hypomagnesemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the first priority in managing a patient with airway obstruction?",
+        answers: [
+            "Administer oxygen",
+            "Perform CPR",
+            "Clear the airway",
+            "Assess the patient's breathing"
+        ],
+        correct: 2
+    },
+    {
+        question: "Which intervention is most appropriate for a patient with fluid volume overload?",
+        answers: [
+            "Administering diuretics",
+            "Providing IV fluids rapidly",
+            "Encouraging salt intake",
+            "Positioning the patient flat"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the normal range for serum potassium levels?",
+        answers: [
+            "3.5-5.0 mEq/L",
+            "135-145 mEq/L",
+            "8.5-10.2 mg/dL",
+            "22-28 mEq/L"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary goal of preoperative nursing care?",
+        answers: [
+            "Ensure the patient is NPO",
+            "Prepare the patient physically and emotionally",
+            "Teach post-operative exercises",
+            "Administer anesthesia"
+        ],
+        correct: 1
+    },
+    {
+        question: "Which condition is characterized by chronic airflow limitation?",
+        answers: [
+            "Chronic obstructive pulmonary disease (COPD)",
+            "Asthma",
+            "Pneumonia",
+            "Pulmonary edema"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a priority nursing intervention for a patient experiencing chest pain?",
+        answers: [
+            "Administer nitroglycerin",
+            "Monitor respiratory rate",
+            "Perform a 12-lead ECG",
+            "Assess blood glucose levels"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which lab test is used to monitor warfarin therapy?",
+        answers: [
+            "Prothrombin time (PT) and INR",
+            "Partial thromboplastin time (PTT)",
+            "Hemoglobin and hematocrit",
+            "Platelet count"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a common complication of immobility in hospitalized patients?",
+        answers: [
+            "Pressure ulcers",
+            "Increased appetite",
+            "Improved circulation",
+            "Elevated respiratory rate"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary nursing diagnosis for a patient with pneumonia?",
+        answers: [
+            "Ineffective airway clearance",
+            "Risk for infection",
+            "Impaired physical mobility",
+            "Chronic pain"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the hallmark symptom of diabetes insipidus?",
+        answers: [
+            "Polyuria",
+            "Polyphagia",
+            "Polydipsia",
+            "Weight loss"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is characterized by an abnormal immune response to gluten?",
+        answers: [
+            "Celiac disease",
+            "Crohn's disease",
+            "Ulcerative colitis",
+            "Diverticulitis"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of the Glasgow Coma Scale (GCS)?",
+        answers: [
+            "To assess a patient’s level of consciousness",
+            "To monitor blood pressure",
+            "To measure pain levels",
+            "To evaluate respiratory function"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which nursing action is most important for a patient receiving chemotherapy?",
+        answers: [
+            "Monitoring for signs of infection",
+            "Encouraging high-calorie foods",
+            "Limiting fluid intake",
+            "Administering analgesics"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which type of isolation is required for a patient with tuberculosis?",
+        answers: [
+            "Airborne precautions",
+            "Contact precautions",
+            "Droplet precautions",
+            "Standard precautions"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the main goal of post-operative care?",
+        answers: [
+            "Prevent complications and promote recovery",
+            "Teach the patient how to administer medications",
+            "Ensure the patient avoids all activities",
+            "Evaluate the surgeon's techniques"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is the most common symptom of a urinary tract infection (UTI)?",
+        answers: [
+            "Dysuria",
+            "Constipation",
+            "Hypotension",
+            "Peripheral edema"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary purpose of a chest tube?",
+        answers: [
+            "To remove air or fluid from the pleural space",
+            "To deliver medications directly to the lungs",
+            "To assist with intubation",
+            "To monitor oxygen saturation levels"
+        ],
+        correct: 0
+    },{
+        question: "What is the first priority in managing a patient with a suspected myocardial infarction (MI)?",
+        answers: [
+            "Administering oxygen",
+            "Obtaining an ECG",
+            "Administering pain relief",
+            "Assessing airway and circulation"
+        ],
+        correct: 3
+    },
+    {
+        question: "Which condition is associated with decreased red blood cell production?",
+        answers: [
+            "Iron deficiency anemia",
+            "Sickle cell anemia",
+            "Hemophilia",
+            "Polycythemia vera"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary cause of angina pectoris?",
+        answers: [
+            "Decreased oxygen supply to the heart muscle",
+            "Heart valve malfunction",
+            "Electrolyte imbalance",
+            "Aortic dissection"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which nursing intervention is appropriate for a patient with a cast on the leg?",
+        answers: [
+            "Assessing for signs of compartment syndrome",
+            "Encouraging vigorous exercise",
+            "Applying heat to the cast",
+            "Keeping the leg in a dependent position"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the main nursing priority for a patient with a tracheostomy?",
+        answers: [
+            "Maintaining airway patency",
+            "Monitoring for signs of infection",
+            "Educating the patient on speech therapy",
+            "Administering oral antibiotics"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of hemodialysis?",
+        answers: [
+            "To filter waste products from the blood",
+            "To increase blood glucose levels",
+            "To improve cardiac output",
+            "To reduce serum potassium"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is indicated by a blood pressure reading of 180/120 mmHg without organ damage?",
+        answers: [
+            "Hypertensive urgency",
+            "Hypertensive crisis",
+            "Hypertensive emergency",
+            "Prehypertension"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which electrolyte imbalance is a patient with chronic diarrhea at risk for?",
+        answers: [
+            "Hypokalemia",
+            "Hypercalcemia",
+            "Hypermagnesemia",
+            "Hyponatremia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a common complication of diabetes mellitus?",
+        answers: [
+            "Diabetic ketoacidosis",
+            "Chronic bronchitis",
+            "Heart block",
+            "Cirrhosis"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which intervention is most effective for managing a patient with fluid volume deficit?",
+        answers: [
+            "Administering IV fluids",
+            "Restricting oral intake",
+            "Monitoring for signs of infection",
+            "Encouraging physical activity"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the hallmark sign of deep vein thrombosis (DVT)?",
+        answers: [
+            "Unilateral leg swelling",
+            "Cyanosis of the extremities",
+            "Severe headache",
+            "Fever"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which nursing action is appropriate for a patient with a suspected stroke?",
+        answers: [
+            "Assessing blood glucose levels",
+            "Encouraging oral fluids",
+            "Positioning the patient flat",
+            "Applying cold compresses"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary focus of care for a patient with acute pancreatitis?",
+        answers: [
+            "Pain management",
+            "Improving mobility",
+            "Increasing fluid intake",
+            "Administering antibiotics"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which type of burn injury involves damage to all layers of the skin?",
+        answers: [
+            "Full-thickness burn",
+            "Superficial burn",
+            "Partial-thickness burn",
+            "First-degree burn"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which medication is commonly used to treat acute asthma exacerbations?",
+        answers: [
+            "Albuterol",
+            "Montelukast",
+            "Fluticasone",
+            "Ipratropium"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of peptic ulcer disease?",
+        answers: [
+            "Helicobacter pylori infection",
+            "Excessive alcohol consumption",
+            "NSAID use",
+            "Smoking"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a priority nursing diagnosis for a patient with chronic heart failure?",
+        answers: [
+            "Impaired gas exchange",
+            "Risk for infection",
+            "Chronic pain",
+            "Deficient fluid volume"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of upper gastrointestinal bleeding?",
+        answers: [
+            "Peptic ulcer disease",
+            "Hemorrhoids",
+            "Colitis",
+            "Gastric cancer"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is associated with severe epigastric pain radiating to the back?",
+        answers: [
+            "Acute pancreatitis",
+            "Cholecystitis",
+            "Appendicitis",
+            "Diverticulitis"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the hallmark sign of nephrotic syndrome?",
+        answers: [
+            "Proteinuria",
+            "Oliguria",
+            "Hematuria",
+            "Edema"
+        ],
+        correct: 0
+    }, {
+        question: "Which diagnostic test is most specific for myocardial infarction?",
+        answers: [
+            "Troponin levels",
+            "Electrocardiogram (ECG)",
+            "Echocardiography",
+            "Chest X-ray"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common complication of prolonged immobility?",
+        answers: [
+            "Pressure ulcers",
+            "Hypertension",
+            "Sepsis",
+            "Hyperthermia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a key nursing intervention for a patient with pneumonia?",
+        answers: [
+            "Encouraging coughing and deep breathing",
+            "Restricting fluid intake",
+            "Administering NSAIDs",
+            "Avoiding oxygen therapy"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment goal for a patient with diabetes insipidus?",
+        answers: [
+            "Maintaining fluid balance",
+            "Lowering blood glucose levels",
+            "Increasing urine output",
+            "Preventing infections"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which symptom is most indicative of a pulmonary embolism?",
+        answers: [
+            "Sudden shortness of breath",
+            "Fever",
+            "Chest pain radiating to the back",
+            "Productive cough"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which dietary recommendation is appropriate for a patient with chronic kidney disease?",
+        answers: [
+            "Low-protein diet",
+            "High-sodium diet",
+            "High-protein diet",
+            "Low-carbohydrate diet"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a classic sign of Cushing’s syndrome?",
+        answers: [
+            "Moon face",
+            "Weight loss",
+            "Hypotension",
+            "Hyperpigmentation"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which electrolyte imbalance is associated with Addison’s disease?",
+        answers: [
+            "Hyperkalemia",
+            "Hypernatremia",
+            "Hypercalcemia",
+            "Hypokalemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is the first-line treatment for anaphylaxis?",
+        answers: [
+            "Epinephrine",
+            "Hydrocortisone",
+            "Diphenhydramine",
+            "Albuterol"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the hallmark symptom of Parkinson’s disease?",
+        answers: [
+            "Resting tremor",
+            "Ataxia",
+            "Diplopia",
+            "Paralysis"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a common symptom of multiple sclerosis?",
+        answers: [
+            "Blurred vision",
+            "Severe abdominal pain",
+            "Hyperglycemia",
+            "Dysuria"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the best nursing action for a patient experiencing diabetic ketoacidosis (DKA)?",
+        answers: [
+            "Administering IV insulin",
+            "Restricting fluids",
+            "Providing oral glucose",
+            "Encouraging physical activity"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common early sign of hypovolemic shock?",
+        answers: [
+            "Tachycardia",
+            "Bradycardia",
+            "Hypertension",
+            "Severe edema"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a characteristic finding in rheumatoid arthritis?",
+        answers: [
+            "Morning stiffness lasting more than 30 minutes",
+            "Joint pain relieved by exercise",
+            "Unilateral joint involvement",
+            "Bone spurs"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which nursing intervention is most appropriate for a patient with a nasogastric tube?",
+        answers: [
+            "Checking tube placement before each feeding",
+            "Restricting oral intake",
+            "Keeping the patient in a supine position",
+            "Flushing the tube every 12 hours"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is characterized by increased intraocular pressure?",
+        answers: [
+            "Glaucoma",
+            "Cataracts",
+            "Macular degeneration",
+            "Retinal detachment"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of left-sided heart failure?",
+        answers: [
+            "Hypertension",
+            "Chronic obstructive pulmonary disease",
+            "Myocarditis",
+            "Pulmonary embolism"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the priority intervention for a patient experiencing a seizure?",
+        answers: [
+            "Ensuring patient safety",
+            "Inserting an oral airway",
+            "Administering anticonvulsants",
+            "Restraining the patient"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign is associated with hypocalcemia?",
+        answers: [
+            "Chvostek’s sign",
+            "Trousseau’s sign",
+            "Brudzinski’s sign",
+            "Kernig’s sign"
+        ],
+        correct: 1
+    },
+    {
+        question: "What is the primary goal for a patient with a peptic ulcer?",
+        answers: [
+            "Preventing perforation",
+            "Increasing gastric acid secretion",
+            "Reducing dietary restrictions",
+            "Encouraging physical activity"
+        ],
+        correct: 0
+    },   {
+        question: "What is the first step in managing a patient with suspected anaphylaxis?",
+        answers: [
+            "Administering epinephrine",
+            "Administering antihistamines",
+            "Starting IV fluids",
+            "Ensuring airway patency"
+        ],
+        correct: 3
+    },
+    {
+        question: "What is the primary nursing intervention for a patient experiencing hypoglycemia?",
+        answers: [
+            "Administering glucose tablets or juice",
+            "Administering insulin",
+            "Encouraging the patient to exercise",
+            "Applying a warm compress"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign is commonly associated with hypokalemia?",
+        answers: [
+            "Muscle weakness",
+            "Bradycardia",
+            "Seizures",
+            "Hyperreflexia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the main purpose of monitoring central venous pressure (CVP) in critically ill patients?",
+        answers: [
+            "Assessing fluid status",
+            "Monitoring oxygen levels",
+            "Measuring cardiac output",
+            "Evaluating renal function"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which lab test is most important for monitoring anticoagulation therapy with warfarin?",
+        answers: [
+            "INR",
+            "aPTT",
+            "D-dimer",
+            "Bleeding time"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a common side effect of loop diuretics like furosemide?",
+        answers: [
+            "Hypokalemia",
+            "Hyperkalemia",
+            "Hypertension",
+            "Constipation"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which intervention is a priority for a patient with a postoperative wound dehiscence?",
+        answers: [
+            "Covering the wound with a sterile saline dressing",
+            "Administering IV antibiotics",
+            "Starting enteral feeding",
+            "Applying heat to the wound"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most important nursing intervention for a patient with a chest tube?",
+        answers: [
+            "Monitoring for signs of air leaks",
+            "Restricting fluid intake",
+            "Changing the dressing every hour",
+            "Removing the tube daily for inspection"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which electrolyte imbalance is most commonly associated with Addison's disease?",
+        answers: [
+            "Hyperkalemia",
+            "Hypokalemia",
+            "Hypernatremia",
+            "Hypercalcemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which assessment finding is a hallmark of a tension pneumothorax?",
+        answers: [
+            "Tracheal deviation",
+            "Bilateral crackles",
+            "Dull percussion",
+            "Decreased heart rate"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of a low-sodium diet for a patient with heart failure?",
+        answers: [
+            "To reduce fluid retention",
+            "To decrease potassium levels",
+            "To promote renal perfusion",
+            "To stabilize blood glucose levels"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is characterized by a butterfly-shaped rash across the cheeks and nose?",
+        answers: [
+            "Systemic lupus erythematosus",
+            "Psoriasis",
+            "Eczema",
+            "Scleroderma"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which lab value is most indicative of renal function?",
+        answers: [
+            "Serum creatinine",
+            "Liver enzymes",
+            "Blood glucose",
+            "Platelet count"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which medication is commonly used to treat hypothyroidism?",
+        answers: [
+            "Levothyroxine",
+            "Methimazole",
+            "Prednisone",
+            "Hydrocortisone"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a priority nursing diagnosis for a patient with Guillain-Barré syndrome?",
+        answers: [
+            "Ineffective airway clearance",
+            "Chronic pain",
+            "Impaired skin integrity",
+            "Risk for infection"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign is most characteristic of Cushing's syndrome?",
+        answers: [
+            "Moon face",
+            "Weight loss",
+            "Hyperpigmentation",
+            "Hypotension"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the hallmark sign of Parkinson's disease?",
+        answers: [
+            "Resting tremor",
+            "Dysphagia",
+            "Severe headache",
+            "Diplopia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a priority nursing intervention for a patient with increased intracranial pressure?",
+        answers: [
+            "Elevating the head of the bed to 30 degrees",
+            "Administering IV fluids rapidly",
+            "Encouraging coughing and deep breathing",
+            "Placing the patient in Trendelenburg position"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a clinical manifestation of hyperthyroidism?",
+        answers: [
+            "Tachycardia",
+            "Weight gain",
+            "Cold intolerance",
+            "Bradycardia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most effective way to prevent hospital-acquired infections?",
+        answers: [
+            "Hand hygiene",
+            "Using isolation rooms",
+            "Administering antibiotics prophylactically",
+            "Restricting visitors"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is the first-line treatment for an acute myocardial infarction?",
+        answers: [
+            "Morphine, oxygen, nitrates, and aspirin (MONA)",
+            "IV antibiotics",
+            "Beta-blockers only",
+            "Calcium channel blockers"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a common early sign of hypovolemic shock?",
+        answers: [
+            "Tachycardia",
+            "Bradycardia",
+            "Increased urine output",
+            "Bounding pulse"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary nursing concern for a patient with a tracheostomy?",
+        answers: [
+            "Maintaining airway patency",
+            "Managing fluid balance",
+            "Preventing skin breakdown",
+            "Administering antibiotics"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is the most reliable indicator of pain in a conscious patient?",
+        answers: [
+            "The patient’s self-report",
+            "Vital signs",
+            "Facial expressions",
+            "Muscle tension"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of a hemodialysis procedure?",
+        answers: [
+            "To remove waste and excess fluid from the blood",
+            "To treat infections in the bloodstream",
+            "To manage electrolyte imbalances temporarily",
+            "To prevent kidney stone formation"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a priority nursing intervention for a patient with diabetic ketoacidosis?",
+        answers: [
+            "Administering IV fluids and insulin",
+            "Providing oral glucose",
+            "Encouraging high-carbohydrate meals",
+            "Restricting fluid intake"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which assessment finding is most consistent with left-sided heart failure?",
+        answers: [
+            "Pulmonary edema",
+            "Peripheral edema",
+            "Jugular vein distension",
+            "Ascites"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a common complication of immobility in postoperative patients?",
+        answers: [
+            "Deep vein thrombosis",
+            "Hyperthermia",
+            "Hypertension",
+            "Diarrhea"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which electrolyte imbalance is most likely in a patient with chronic kidney disease?",
+        answers: [
+            "Hyperkalemia",
+            "Hypokalemia",
+            "Hypernatremia",
+            "Hyponatremia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which medication is typically used to treat hyperlipidemia?",
+        answers: [
+            "Atorvastatin",
+            "Metformin",
+            "Enalapril",
+            "Digoxin"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the priority nursing action for a patient with suspected pulmonary embolism?",
+        answers: [
+            "Administering oxygen",
+            "Encouraging coughing exercises",
+            "Providing fluids",
+            "Ambulating the patient"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which symptom is most commonly associated with acute pancreatitis?",
+        answers: [
+            "Severe abdominal pain",
+            "Polyuria",
+            "Cough",
+            "Weight gain"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which finding is expected in a patient with Cushing’s syndrome?",
+        answers: [
+            "Truncal obesity",
+            "Weight loss",
+            "Hyperpigmentation",
+            "Hypoglycemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the main goal of treatment in a patient with rheumatoid arthritis?",
+        answers: [
+            "Reducing inflammation and preserving joint function",
+            "Curing the disease",
+            "Preventing secondary infections",
+            "Reducing the risk of fractures"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which lab test is most specific for diagnosing myocardial infarction?",
+        answers: [
+            "Troponin I and T levels",
+            "CK-MB",
+            "C-reactive protein",
+            "LDH levels"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which position is recommended for a patient with dyspnea?",
+        answers: [
+            "High Fowler's position",
+            "Supine position",
+            "Prone position",
+            "Trendelenburg position"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which assessment finding is most consistent with hypocalcemia?",
+        answers: [
+            "Positive Chvostek’s sign",
+            "Tachycardia",
+            "Increased urine output",
+            "Bradycardia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which nursing intervention is most appropriate for a patient with neutropenia?",
+        answers: [
+            "Implementing protective isolation",
+            "Encouraging frequent visitors",
+            "Administering iron supplements",
+            "Restricting protein intake"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the priority nursing diagnosis for a patient with acute respiratory distress syndrome (ARDS)?",
+        answers: [
+            "Impaired gas exchange",
+            "Risk for infection",
+            "Decreased cardiac output",
+            "Fluid volume deficit"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is most commonly associated with a positive Trousseau’s sign?",
+        answers: [
+            "Hypocalcemia",
+            "Hyperkalemia",
+            "Hyponatremia",
+            "Hypermagnesemia"
+        ],
+        correct: 0
+    },{
+        question: "What is the most common cause of a peptic ulcer?",
+        answers: [
+            "Helicobacter pylori infection",
+            "High-fiber diet",
+            "Viral infection",
+            "Gallstones"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which electrolyte imbalance is most likely in a patient with Addison's disease?",
+        answers: [
+            "Hyponatremia",
+            "Hypernatremia",
+            "Hypercalcemia",
+            "Hypokalemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which intervention is essential for a patient undergoing continuous bladder irrigation?",
+        answers: [
+            "Ensuring the catheter remains patent",
+            "Administering oral diuretics",
+            "Restricting fluid intake",
+            "Avoiding use of analgesics"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign indicates an upper gastrointestinal bleed?",
+        answers: [
+            "Hematemesis",
+            "Melena",
+            "Bright red blood in stool",
+            "Yellow discoloration of stool"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is the first step in managing a patient with anaphylaxis?",
+        answers: [
+            "Administering epinephrine",
+            "Starting intravenous fluids",
+            "Applying oxygen therapy",
+            "Administering antihistamines"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is most likely to result in metabolic acidosis?",
+        answers: [
+            "Diabetic ketoacidosis",
+            "Severe vomiting",
+            "Hypoventilation",
+            "Pneumonia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the classic symptom of deep vein thrombosis?",
+        answers: [
+            "Pain and swelling in one leg",
+            "Bilateral leg edema",
+            "Shortness of breath",
+            "Fever and chills"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the recommended dietary modification for a patient with chronic kidney disease?",
+        answers: [
+            "Low protein, low sodium, low potassium",
+            "High protein, high potassium",
+            "High sodium, low calcium",
+            "Low carbohydrate, high fat"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which assessment finding is most consistent with hypothyroidism?",
+        answers: [
+            "Weight gain and cold intolerance",
+            "Weight loss and heat intolerance",
+            "Increased appetite and diarrhea",
+            "Exophthalmos"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a priority nursing action for a patient with a chest tube?",
+        answers: [
+            "Maintaining a sterile water seal system",
+            "Keeping the drainage system above the chest",
+            "Clamping the chest tube routinely",
+            "Encouraging shallow breathing"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of cirrhosis?",
+        answers: [
+            "Chronic alcohol use",
+            "Gallbladder stones",
+            "Peptic ulcer",
+            "Vitamin deficiency"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a common sign of acute appendicitis?",
+        answers: [
+            "Right lower quadrant pain",
+            "Left lower quadrant pain",
+            "Generalized abdominal swelling",
+            "Pain relieved by eating"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a priority intervention for a patient experiencing a seizure?",
+        answers: [
+            "Protecting the patient from injury",
+            "Providing oral glucose",
+            "Inserting a tongue depressor",
+            "Restricting patient movement"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is associated with a butterfly-shaped rash on the face?",
+        answers: [
+            "Systemic lupus erythematosus",
+            "Psoriasis",
+            "Dermatitis",
+            "Rheumatoid arthritis"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which type of diet is recommended for a patient with celiac disease?",
+        answers: [
+            "Gluten-free diet",
+            "Low-protein diet",
+            "Low-fat diet",
+            "High-sodium diet"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which assessment finding indicates peritonitis?",
+        answers: [
+            "Rigid abdomen and rebound tenderness",
+            "Decreased bowel sounds",
+            "Hyperactive bowel sounds",
+            "Soft, non-tender abdomen"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary goal of nursing care for a burn patient during the emergent phase?",
+        answers: [
+            "Maintaining airway patency",
+            "Preventing infection",
+            "Promoting wound healing",
+            "Providing psychological support"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign is commonly seen in patients with liver failure?",
+        answers: [
+            "Jaundice",
+            "Weight gain",
+            "Pale skin",
+            "Elevated blood sugar"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary concern for a patient with hyperkalemia?",
+        answers: [
+            "Cardiac arrhythmias",
+            "Seizures",
+            "Muscle cramps",
+            "Increased urine output"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which type of isolation is required for a patient with tuberculosis?",
+        answers: [
+            "Airborne precautions",
+            "Contact precautions",
+            "Droplet precautions",
+            "Reverse isolation"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a classic sign of pulmonary edema?",
+        answers: [
+            "Pink, frothy sputum",
+            "Chest pain",
+            "Dry cough",
+            "Weight loss"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which medication is commonly used to reverse opioid overdose?",
+        answers: [
+            "Naloxone",
+            "Morphine",
+            "Diazepam",
+            "Atropine"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a symptom of Guillain-Barre syndrome?",
+        answers: [
+            "Ascending paralysis",
+            "Facial rash",
+            "Chronic diarrhea",
+            "Seizures"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the main purpose of a chest physiotherapy session?",
+        answers: [
+            "Clear airway secretions",
+            "Reduce lung inflammation",
+            "Increase appetite",
+            "Relieve pain"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign is indicative of hypoglycemia?",
+        answers: [
+            "Shakiness and diaphoresis",
+            "Dry skin",
+            "Weight gain",
+            "Increased thirst"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the expected range for normal blood pH levels?",
+        answers: [
+            "7.35–7.45",
+            "6.8–7.0",
+            "7.5–8.0",
+            "7.0–7.2"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which assessment finding is a hallmark of peripheral arterial disease?",
+        answers: [
+            "Intermittent claudication",
+            "Dependent edema",
+            "Brownish discoloration",
+            "Ulcers on the medial malleolus"
+        ],
+        correct: 0
+    },{
+        question: "Which type of shock is caused by a severe allergic reaction?",
+        answers: [
+            "Anaphylactic shock",
+            "Cardiogenic shock",
+            "Septic shock",
+            "Neurogenic shock"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is characterized by the overproduction of cortisol?",
+        answers: [
+            "Cushing's syndrome",
+            "Addison's disease",
+            "Graves' disease",
+            "Diabetes insipidus"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which electrolyte imbalance is most common in chronic kidney disease?",
+        answers: [
+            "Hyperkalemia",
+            "Hypocalcemia",
+            "Hypernatremia",
+            "Hypokalemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is the most common cause of acute pancreatitis?",
+        answers: [
+            "Gallstones",
+            "Smoking",
+            "Chronic hepatitis",
+            "Bacterial infection"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the first sign of increased intracranial pressure (ICP)?",
+        answers: [
+            "Change in level of consciousness",
+            "Seizures",
+            "Unequal pupil size",
+            "Bradycardia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which complication is a priority concern for a patient with severe burns?",
+        answers: [
+            "Hypovolemic shock",
+            "Fever",
+            "Constipation",
+            "Hyperglycemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary purpose of a central venous catheter?",
+        answers: [
+            "To measure central venous pressure",
+            "To administer oral medications",
+            "To provide physical therapy",
+            "To check blood glucose levels"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which medication is used to treat hypothyroidism?",
+        answers: [
+            "Levothyroxine",
+            "Methimazole",
+            "Propylthiouracil",
+            "Metformin"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a primary nursing intervention for a patient with pneumonia?",
+        answers: [
+            "Encourage frequent deep breathing and coughing",
+            "Restrict fluid intake",
+            "Administer antihypertensive medications",
+            "Perform abdominal massage"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a common complication of diabetes mellitus?",
+        answers: [
+            "Peripheral neuropathy",
+            "Hypercalcemia",
+            "Pulmonary embolism",
+            "Gastroesophageal reflux disease"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the main function of insulin in the body?",
+        answers: [
+            "Lower blood glucose levels",
+            "Increase blood glucose levels",
+            "Decrease blood pressure",
+            "Stimulate thyroid hormone production"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of myocardial infarction?",
+        answers: [
+            "Coronary artery blockage",
+            "Pulmonary embolism",
+            "Atrial fibrillation",
+            "Valvular heart disease"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which intervention is most important for a patient with neutropenia?",
+        answers: [
+            "Preventing infections",
+            "Administering blood thinners",
+            "Providing high-protein meals",
+            "Performing frequent range-of-motion exercises"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which test is used to confirm the diagnosis of tuberculosis?",
+        answers: [
+            "Sputum culture",
+            "Chest X-ray",
+            "Bronchoscopy",
+            "Complete blood count"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is associated with frothy, bubbly urine?",
+        answers: [
+            "Nephrotic syndrome",
+            "Urinary tract infection",
+            "Dehydration",
+            "Kidney stones"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment for hyperthyroidism?",
+        answers: [
+            "Radioactive iodine therapy",
+            "Oral insulin",
+            "Corticosteroids",
+            "Calcium channel blockers"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which type of diet is recommended for a patient with gout?",
+        answers: [
+            "Low-purine diet",
+            "High-protein diet",
+            "Low-fiber diet",
+            "Gluten-free diet"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition involves chronic inflammation of the joints?",
+        answers: [
+            "Rheumatoid arthritis",
+            "Osteoarthritis",
+            "Gout",
+            "Lupus"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which nursing intervention is a priority for a patient with hyperkalemia?",
+        answers: [
+            "Monitoring cardiac rhythm",
+            "Restricting fluid intake",
+            "Encouraging physical activity",
+            "Administering antipyretics"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of a bronchodilator in asthma management?",
+        answers: [
+            "To relax airway muscles",
+            "To reduce mucus production",
+            "To decrease coughing",
+            "To eliminate allergens"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign indicates dehydration in an elderly patient?",
+        answers: [
+            "Dry mucous membranes",
+            "Increased appetite",
+            "High urine output",
+            "Weight gain"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which medication is commonly used to treat angina?",
+        answers: [
+            "Nitroglycerin",
+            "Ibuprofen",
+            "Metformin",
+            "Warfarin"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which is a primary cause of osteoporosis?",
+        answers: [
+            "Low bone density",
+            "High calcium intake",
+            "Increased exercise",
+            "Excessive vitamin D"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the first-line treatment for hypertension?",
+        answers: [
+            "Lifestyle modifications",
+            "Beta-blockers",
+            "Antibiotics",
+            "Insulin therapy"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which symptom is characteristic of left-sided heart failure?",
+        answers: [
+            "Pulmonary edema",
+            "Peripheral edema",
+            "Ascites",
+            "Jaundice"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the main purpose of continuous positive airway pressure (CPAP) therapy?",
+        answers: [
+            "To maintain airway patency",
+            "To improve lung compliance",
+            "To treat fluid overload",
+            "To enhance muscle tone"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which type of cancer is most closely associated with smoking?",
+        answers: [
+            "Lung cancer",
+            "Skin cancer",
+            "Breast cancer",
+            "Colorectal cancer"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common sign of hyperglycemia?",
+        answers: [
+            "Increased thirst and frequent urination",
+            "Shakiness and sweating",
+            "Blurred vision and dizziness",
+            "Chest pain and shortness of breath"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign indicates fluid overload?",
+        answers: [
+            "Crackles in lungs",
+            "Increased appetite",
+            "Dry skin",
+            "Decreased weight"
+        ],
+        correct: 0
+    }, {
+        question: "Which intervention is a priority in a patient with sepsis?",
+        answers: [
+            "Administering IV fluids promptly",
+            "Restricting fluid intake",
+            "Encouraging ambulation",
+            "Providing a high-protein diet"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the hallmark sign of acute respiratory distress syndrome (ARDS)?",
+        answers: [
+            "Refractory hypoxemia",
+            "Decreased heart rate",
+            "High fever",
+            "Severe hypertension"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which test is most reliable in diagnosing diabetes mellitus?",
+        answers: [
+            "HbA1c test",
+            "Random blood glucose",
+            "Urine glucose test",
+            "Fasting lipid profile"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which intervention is essential for a patient post-thyroidectomy?",
+        answers: [
+            "Monitoring for signs of hypocalcemia",
+            "Encouraging the patient to speak frequently",
+            "Providing low-fiber meals",
+            "Restricting fluids"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is a priority nursing diagnosis for a patient with a fractured femur?",
+        answers: [
+            "Risk for impaired tissue perfusion",
+            "Risk for fluid volume deficit",
+            "Risk for infection",
+            "Risk for constipation"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which nursing intervention is crucial for a patient with a colostomy?",
+        answers: [
+            "Assessing stoma appearance regularly",
+            "Restricting fluid intake",
+            "Administering oral antibiotics",
+            "Performing deep breathing exercises"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which electrolyte imbalance is commonly seen in patients with chronic liver disease?",
+        answers: [
+            "Hyponatremia",
+            "Hyperkalemia",
+            "Hypernatremia",
+            "Hypophosphatemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which assessment finding indicates potential complications of chemotherapy?",
+        answers: [
+            "Neutropenia",
+            "Increased appetite",
+            "Decreased urine output",
+            "Hyperglycemia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment for deep vein thrombosis (DVT)?",
+        answers: [
+            "Anticoagulation therapy",
+            "High-fiber diet",
+            "Diuretic administration",
+            "Supplemental oxygen"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which condition is a common cause of pulmonary embolism?",
+        answers: [
+            "Deep vein thrombosis",
+            "Hyperglycemia",
+            "Hypertension",
+            "Pneumonia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the first-line treatment for status epilepticus?",
+        answers: [
+            "Intravenous lorazepam",
+            "Oral phenytoin",
+            "Intramuscular glucagon",
+            "Subcutaneous insulin"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a modifiable risk factor for hypertension?",
+        answers: [
+            "Obesity",
+            "Age",
+            "Gender",
+            "Family history"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which lab value is most concerning in a patient with chronic renal failure?",
+        answers: [
+            "Elevated potassium levels",
+            "Low magnesium levels",
+            "Elevated chloride levels",
+            "Low hemoglobin levels"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which assessment finding is most indicative of hypovolemic shock?",
+        answers: [
+            "Decreased blood pressure",
+            "Increased urine output",
+            "Elevated oxygen saturation",
+            "Bradycardia"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which medication is commonly used to treat deep vein thrombosis (DVT)?",
+        answers: [
+            "Heparin",
+            "Aspirin",
+            "Morphine",
+            "Metoprolol"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which intervention is a priority for a patient with chronic obstructive pulmonary disease (COPD)?",
+        answers: [
+            "Maintaining adequate oxygenation",
+            "Restricting oral fluid intake",
+            "Encouraging bed rest",
+            "Providing high-carbohydrate meals"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which type of diet is recommended for a patient with chronic kidney disease?",
+        answers: [
+            "Low-protein diet",
+            "High-calcium diet",
+            "Low-carbohydrate diet",
+            "High-potassium diet"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the recommended treatment for a patient experiencing an acute asthma attack?",
+        answers: [
+            "Inhaled bronchodilators",
+            "Intravenous antibiotics",
+            "Oral corticosteroids",
+            "Beta-blockers"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common complication of prolonged immobility?",
+        answers: [
+            "Pressure ulcers",
+            "Hypertension",
+            "Hyperkalemia",
+            "Sepsis"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which sign is an early indicator of fluid volume deficit?",
+        answers: [
+            "Tachycardia",
+            "Hypertension",
+            "Crackles in the lungs",
+            "Edema"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which lab test is most specific for diagnosing myocardial infarction?",
+        answers: [
+            "Troponin levels",
+            "C-reactive protein",
+            "Electrolyte panel",
+            "Complete blood count"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of ischemic stroke?",
+        answers: [
+            "Thromboembolism",
+            "Hemorrhage",
+            "Trauma",
+            "Brain tumor"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which medication is commonly used to treat angina pectoris?",
+        answers: [
+            "Nitroglycerin",
+            "Warfarin",
+            "Furosemide",
+            "Amoxicillin"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which electrolyte imbalance is most concerning in a patient with diabetic ketoacidosis?",
+        answers: [
+            "Hyperkalemia",
+            "Hypernatremia",
+            "Hypocalcemia",
+            "Hyponatremia"
+        ],
+        correct: 0
+    },
+    {
+        question: "What is the first priority in treating a patient with anaphylactic shock?",
+        answers: [
+            "Administering epinephrine",
+            "Starting IV fluids",
+            "Providing supplemental oxygen",
+            "Monitoring vital signs"
+        ],
+        correct: 0
+    },
+  {
+    question: "What is the priority nursing intervention for a patient experiencing hypoglycemia?",
+    answers: [
+      "Administer 15-20 grams of glucose",
+      "Provide a high-protein meal",
+      "Administer insulin immediately",
+      "Encourage the patient to rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which electrolyte imbalance is associated with prolonged vomiting?",
+    answers: [
+      "Hypokalemia",
+      "Hyperkalemia",
+      "Hypernatremia",
+      "Hypercalcemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most common complication of myocardial infarction?",
+    answers: [
+      "Heart failure",
+      "Stroke",
+      "Kidney failure",
+      "Hypertension"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which diagnostic test is most specific for diagnosing heart failure?",
+    answers: [
+      "BNP levels",
+      "Electrocardiogram (ECG)",
+      "Chest X-ray",
+      "Echocardiogram"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which nursing intervention is a priority for a patient with a burn injury?",
+    answers: [
+      "Fluid resuscitation",
+      "Administering pain medications",
+      "Providing a high-protein diet",
+      "Monitoring urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the hallmark sign of deep vein thrombosis (DVT)?",
+    answers: [
+      "Unilateral leg swelling",
+      "Generalized body pain",
+      "Tachycardia",
+      "Hypertension"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }, {
+    question: "Which medication is used as the first-line treatment for anaphylaxis?",
+    answers: [
+      "Epinephrine",
+      "Diphenhydramine",
+      "Prednisone",
+      "Albuterol"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a key nursing intervention for a patient with COPD?",
+    answers: [
+      "Maintaining oxygen saturation above 90%",
+      "Restricting oral fluids",
+      "Administering sedatives",
+      "Encouraging bed rest"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of dehydration?",
+    answers: [
+      "Poor skin turgor",
+      "Increased urine output",
+      "Bradycardia",
+      "Peripheral edema"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority nursing intervention for a patient with acute pancreatitis?",
+    answers: [
+      "NPO status and IV fluids",
+      "Administering oral pain medications",
+      "Encouraging ambulation",
+      "Providing a low-fat diet"
+    ],
+    correct: 0
+  },
+
+  // Add more questions to reach 100
+
+  {
+    question: "Which lab value is most indicative of acute kidney injury?",
+    answers: [
+      "Elevated serum creatinine",
+      "Low hemoglobin levels",
+      "Decreased white blood cell count",
+      "Elevated blood glucose"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a hallmark symptom of hyperthyroidism?",
+    answers: [
+      "Weight loss despite increased appetite",
+      "Weight gain",
+      "Cold intolerance",
+      "Dry skin"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is expected in a patient with chronic obstructive pulmonary disease (COPD)?",
+    answers: [
+      "Barrel-shaped chest",
+      "Cyanosis",
+      "Tracheal deviation",
+      "Kussmaul respirations"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which is the priority intervention for a patient with a pulmonary embolism?",
+    answers: [
+      "Administering oxygen therapy",
+      "Encouraging ambulation",
+      "Administering bronchodilators",
+      "Restricting oral fluids"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which complication is associated with long-term use of corticosteroids?",
+    answers: [
+      "Osteoporosis",
+      "Hypoglycemia",
+      "Bradycardia",
+      "Hyperkalemia"
+    ],
+    correct: 0
+  },
+
+  {
+    question: "Which electrolyte imbalance is a common complication of diuretic therapy?",
+    answers: [
+      "Hypokalemia",
+      "Hypercalcemia",
+      "Hypernatremia",
+      "Hypomagnesemia"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the priority intervention for a patient with increased intracranial pressure (ICP)?",
+    answers: [
+      "Raising the head of the bed to 30 degrees",
+      "Encouraging coughing",
+      "Providing high-carbohydrate meals",
+      "Administering IV fluids"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a common sign of hypocalcemia?",
+    answers: [
+      "Positive Chvostek's sign",
+      "Hypertension",
+      "Dry skin",
+      "Increased urine output"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which condition is most commonly associated with right-sided heart failure?",
+    answers: [
+      "Peripheral edema",
+      "Pulmonary congestion",
+      "Decreased urine output",
+      "Weight loss"
+    ],
+    correct: 0
+  },
+  {
+    question: "Which assessment finding is most indicative of infection in a postoperative patient?",
+    answers: [
+      "Elevated white blood cell count",
+      "Bradycardia",
+      "Decreased urine output",
+      "Cool, pale skin"
+    ],
+    correct: 0
+  }
+
+  // Continue to add questions here to reach 100
+
+
+
+
+
+
+
+
+];
+
+
+  
+
+
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    
+    const questionText = document.getElementById('question-text');
+    const answerBtns = document.querySelectorAll('.answer-btn');
+    const feedback = document.getElementById('feedback');
+    const questionNumber = document.getElementById('question-number');
+    const finalScore = document.getElementById('finalScore');
+    const percentage = document.getElementById('percentage');
+    const resultContainer = document.querySelector('.result');
+    const viewResultBtn = document.getElementById('viewResultBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    
+    
+    
+    function displayQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionText.textContent = currentQuestion.question;
+        for (let i = 0; i < currentQuestion.answers.length; i++) {
+            answerBtns[i].textContent = currentQuestion.answers[i];
+        }
+        questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        feedback.textContent = "";
+        startTimer();
+    }
+    
+    function checkAnswer(selectedIndex) {
+        const currentQuestion = questions[currentQuestionIndex];
+        clearTimeout(timer);
+        if (selectedIndex === currentQuestion.correct) {
+            score++;
+            feedback.textContent = "Correct!";
+            feedback.className = "feedback-frame correct";
+        } else {
+            feedback.textContent = "Incorrect!";
+            feedback.className = "feedback-frame incorrect";
+        }
+        setTimeout(() => {
+            nextQuestion();
+        }, 1500);
+    }
+    
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+        }
+    }
+    
+    function showResults() {
+        const percentageScore = (score / questions.length) * 100;
+        finalScore.textContent = `Score: ${score} / ${questions.length}`;
+        percentage.textContent = `Percentage: ${percentageScore.toFixed(2)}%`;
+        
+        // Display the result section and hide the quiz
+        resultContainer.style.display = 'block';
+        document.querySelector('.question-container').style.display = 'none';
+        
+        // Chart.js for visual representation (pie and bar charts)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                    data: [score, questions.length - score],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            }
+        });
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Score'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [score],
+                    backgroundColor: '#28a745'
+                }]
+            }
+        });
+
+        viewResultBtn.style.display = 'none';
+    }
+
+    function stopQuiz() {
+        
+       
+        showResults();
+    }
+    
+    // Initialize the quiz
+    displayQuestion();
+    function checkAnswer(selectedIndex) {
+    const currentQuestion = questions[currentQuestionIndex];
+    clearInterval(timer);
+
+    // Check if the selected answer is correct
+    if (selectedIndex === currentQuestion.correct) {
+        score++;
+        feedback.textContent = "Correct!";
+        feedback.className = "feedback-frame correct";
+    } else {
+        feedback.textContent = `Incorrect! The correct answer is:   ${currentQuestion.answers[currentQuestion.correct]}`;
+        feedback.className = "feedback-frame incorrect";
+    }
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 1500);
+}
+
+</script>
+
+
+
+  
+
+</body>
+</html> 

@@ -1,0 +1,3728 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer and IT in Loksewa Banking</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background-color: rgba(59, 47, 47, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background-color: rgba(255, 165, 0, 1); /* Vibrant orange */
+            
+        }
+
+        .feedback-frame {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .correct {
+            border: 3px solid #28a745;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .incorrect {
+            border: 3px solid #dc3545;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            gap: 10px;
+        }
+
+        .timer-icon {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: green;
+            width: 100%;
+            border-radius: 10px;
+            animation: countdown 10s linear forwards;
+        }
+
+        @keyframes countdown {
+            0% {
+                width: 100%;
+            }
+            100% {
+                width: 0%;
+                background-color: red;
+            }
+        }
+
+        .navigation-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        p{
+            color:ye
+        }
+        .result-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .btn-result {
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-result:hover {
+            background-color: #218838;
+        }
+
+        /* Stop button */
+        .btn-stop {
+            padding: 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-stop:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design for small screens */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 95%;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .answer-btn {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .feedback-frame {
+                font-size: 1em;
+            }
+
+            .timer {
+                font-size: 1.2em;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Display Question Number -->
+        
+        <div class="question-number" id="question-number">Question 1 of 6</div>
+
+        <div class="timer">
+           
+            
+        </div>
+
+        <div class="question-container">
+            <div class="question" id="question-text">Question will appear here</div>
+            <div class="answers">
+                <button class="answer-btn" id="btn1" onclick="checkAnswer(0)">Option 1</button>
+                <button class="answer-btn" id="btn2" onclick="checkAnswer(1)">Option 2</button>
+                <button class="answer-btn" id="btn3" onclick="checkAnswer(2)">Option 3</button>
+                <button class="answer-btn" id="btn4" onclick="checkAnswer(3)">Option 4</button>
+                
+            </div>
+            <div class="feedback-frame" id="feedback"></div>
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+            <button class="btn-result" id="viewResultBtn" onclick="showResults()" style="display:none;">View Result</button>
+            <button class="btn-stop" id="stopBtn" onclick="stopQuiz()">Stop Quiz</button>
+        </div>
+
+        <div class="result">
+            <div class="result-header">Quiz Results</div>
+            <div id="finalScore">Score: 0</div>
+            <div id="percentage">Percentage: 0%</div>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+     <script>
+   const questions = [
+  
+
+
+   {
+    question: "कम्प्युटरमा प्रयोग हुने CPU को पूरा रूप के हो?",
+    answers: [
+        "Central Processing Unit",
+        "Control Processing Unit",
+        "Central Program Unit",
+        "Control Program Unit"
+    ],
+    correct: 0
+},
+{
+    question: "MS Word मा 'Ctrl + S' कुन कार्यका लागि प्रयोग हुन्छ?",
+    answers: [
+        "डकुमेन्टलाई बचत गर्न",
+        "डकुमेन्टलाई प्रिन्ट गर्न",
+        "डकुमेन्टलाई बन्द गर्न",
+        "डकुमेन्टलाई मेटाउन"
+    ],
+    correct: 0
+},
+{
+    question: "कम्प्युटरमा डाटा भण्डारणको सबैभन्दा सानो एकाइ के हो?",
+    answers: [
+        "बिट",
+        "बाइट",
+        "किलाबाइट",
+        "मेगाबाइट"
+    ],
+    correct: 0
+},
+{
+    question: "निम्नमध्ये कुन सफ्टवेयर 'प्रेजेन्टेशन' तयार गर्न प्रयोग हुन्छ?",
+    answers: [
+        "MS Word",
+        "MS Excel",
+        "MS PowerPoint",
+        "MS Access"
+    ],
+    correct: 2
+},
+{
+    question: "इमेलको पूरा रूप के हो?",
+    answers: [
+        "Electronic Mail",
+        "Energy Mail",
+        "Electric Mail",
+        "Easy Mail"
+    ],
+    correct: 0
+},
+{
+    question: "URL को पूरा रूप के हो?",
+    answers: [
+        "Uniform Resource Locator",
+        "Universal Resource Locator",
+        "Uniform Reference Locator",
+        "Universal Reference Locator"
+    ],
+    correct: 0
+}
+,  {
+        question: "निम्नमध्ये कुन आउटपुट उपकरण हो?",
+        answers: [
+            "माउस",
+            "किबोर्ड",
+            "प्रिन्टर",
+            "स्क्यानर"
+        ],
+        correct: 2
+    },
+    {
+        question: "कम्प्युटरमा RAM को मुख्य काम के हो?",
+        answers: [
+            "डाटा स्थायी भण्डारण",
+            "अस्थायी मेमोरी भण्डारण",
+            "प्रोसेसर चलाउन",
+            "सफ्टवेयर अपग्रेड गर्न"
+        ],
+        correct: 1
+    },
+    {
+        question: "HTML को पूरा रूप के हो?",
+        answers: [
+            "HyperText Markup Language",
+            "HyperText Machine Language",
+            "HighText Markup Language",
+            "HyperTool Markup Language"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्नमध्ये कुन एप्लिकेसन सफ्टवेयर हो?",
+        answers: [
+            "Windows OS",
+            "Linux",
+            "MS Excel",
+            "MacOS"
+        ],
+        correct: 2
+    },
+    {
+        question: "कुन सफ्टवेयर डेटाबेस व्यवस्थापन गर्न प्रयोग गरिन्छ?",
+        answers: [
+            "MS PowerPoint",
+            "MS Word",
+            "MySQL",
+            "Adobe Photoshop"
+        ],
+        correct: 2
+    },
+    {
+        question: "IP Address के को लागि प्रयोग गरिन्छ?",
+        answers: [
+            "डाटा भण्डारण गर्न",
+            "नेटवर्कमा उपकरणको ठेगाना पत्ता लगाउन",
+            "कम्प्युटर बन्द गर्न",
+            "सफ्टवेयर इन्स्टल गर्न"
+        ],
+        correct: 1
+    },
+    {
+        question: "Ctrl + V को प्रयोगले के गर्छ?",
+        answers: [
+            "डाटा कपी गर्छ",
+            "डाटा पेस्ट गर्छ",
+            "डाटा डिलिट गर्छ",
+            "डाटा सेलेक्ट गर्छ"
+        ],
+        correct: 1
+    },
+    {
+        question: "निम्न मध्ये कुन 'प्रणाली सफ्टवेयर' हो?",
+        answers: [
+            "Microsoft Word",
+            "Windows Operating System",
+            "Adobe Photoshop",
+            "Google Chrome"
+        ],
+        correct: 1
+    },
+    {
+        question: "कुन प्रोग्रामिङ भाषाले वेबसाइट डिजाइनमा प्रयोग हुन्छ?",
+        answers: [
+            "Python",
+            "HTML",
+            "C++",
+            "Java"
+        ],
+        correct: 1
+    },
+    {
+        question: "वर्ड प्रोसेसिङ सफ्टवेयर के हो?",
+        answers: [
+            "MS Word",
+            "MS Excel",
+            "MS PowerPoint",
+            "MS Access"
+        ],
+        correct: 0
+    },
+    {
+        question: "फाइलको विस्तार (.docx) कुन प्रकारको फाइलको लागि हो?",
+        answers: [
+            "प्रेजेन्टेशन फाइल",
+            "वर्ड डकुमेन्ट फाइल",
+            "स्प्रेडसिट फाइल",
+            "इमेज फाइल"
+        ],
+        correct: 1
+    },
+    {
+        question: "कुन यन्त्र इनपुट यन्त्र हो?",
+        answers: [
+            "मोनिटर",
+            "माउस",
+            "प्रिन्टर",
+            "स्पीकर"
+        ],
+        correct: 1
+    },
+    {
+        question: "कम्प्युटर नेटवर्कमा LAN को पूरा रूप के हो?",
+        answers: [
+            "Local Area Network",
+            "Large Area Network",
+            "Light Area Network",
+            "Linked Area Network"
+        ],
+        correct: 0
+    },
+    {
+        question: "वायरसबाट जोगिनका लागि कुन सफ्टवेयर प्रयोग गरिन्छ?",
+        answers: [
+            "Anti-Malware",
+            "Antivirus",
+            "Data Recovery",
+            "Firewall"
+        ],
+        correct: 1
+    },
+    {
+        question: "स्प्रेडसिट सफ्टवेयरको उदाहरण कुन हो?",
+        answers: [
+            "MS Word",
+            "MS Excel",
+            "MS PowerPoint",
+            "Adobe Photoshop"
+        ],
+        correct: 1
+    },
+    {
+        question: "कुन मेमोरी डेटा स्थायी रूपमा भण्डारण गर्छ?",
+        answers: [
+            "RAM",
+            "ROM",
+            "Cache Memory",
+            "Register"
+        ],
+        correct: 1
+    },
+    {
+        question: "CPU को मुख्य भाग के-के हुन्?",
+        answers: [
+            "ALU, CU, Registers",
+            "ALU, GPU, RAM",
+            "ROM, RAM, CPU",
+            "Cache, Register, ROM"
+        ],
+        correct: 0
+    },
+    {
+        question: "DNS को मुख्य काम के हो?",
+        answers: [
+            "डाटा पठाउने",
+            "डोमेन नामलाई IP मा बदल्ने",
+            "नेटवर्क बनाउन",
+            "फाइल ट्रान्सफर गर्न"
+        ],
+        correct: 1
+    },
+    {
+        question: "कुन फाइल फर्म्याट 'इमेज' को लागि हो?",
+        answers: [
+            ".docx",
+            ".jpg",
+            ".exe",
+            ".txt"
+        ],
+        correct: 1
+    },
+    {
+        question: "स्पीड मापनको एकाइ के हो?",
+        answers: [
+            "Hz",
+            "MB",
+            "GHz",
+            "GB"
+        ],
+        correct: 2
+    },
+    {
+        question: "USB को पूरा रूप के हो?",
+        answers: [
+            "Universal Serial Bus",
+            "Universal System Bus",
+            "Unified Serial Bus",
+            "Universal Service Bus"
+        ],
+        correct: 0
+    },
+    {
+        question: "Firewall को मुख्य भूमिका के हो?",
+        answers: [
+            "सिस्टम अपडेट गर्न",
+            "सुरक्षा प्रदान गर्न",
+            "डाटा स्टोर गर्न",
+            "डाटा ट्रान्सफर गर्न"
+        ],
+        correct: 1
+    },
+    {
+        question: "कुन नेटवर्क टोपोलोजी सबैभन्दा सरल हुन्छ?",
+        answers: [
+            "Star",
+            "Bus",
+            "Mesh",
+            "Ring"
+        ],
+        correct: 1
+    },
+    {
+        question: "WAN को उदाहरण कुन हो?",
+        answers: [
+            "Internet",
+            "LAN",
+            "MAN",
+            "Intranet"
+        ],
+        correct: 0
+    },
+    {
+        question: "नेटवर्कमा डाटा पठाउने र प्राप्त गर्ने कार्य केद्वारा गरिन्छ?",
+        answers: [
+            "Router",
+            "Modem",
+            "Switch",
+            "Hub"
+        ],
+        correct: 1
+    },{
+        question: "कम्प्युटर प्रणालीको मुख्य तीन भाग कुन-कुन हुन्?",
+        answers: [
+            "CPU, GPU, HDD",
+            "Hardware, Software, User",
+            "Motherboard, RAM, ROM",
+            "Input, Process, Output"
+        ],
+        correct: 3
+    },
+    {
+        question: "निम्न मध्ये कुन Operating System को उदाहरण हो?",
+        answers: [
+            "Linux",
+            "MS Word",
+            "Google Chrome",
+            "Adobe Photoshop"
+        ],
+        correct: 0
+    },
+    {
+        question: "URL को पूरा रूप के हो?",
+        answers: [
+            "Uniform Resource Locator",
+            "Uniform Resource Link",
+            "Universal Resource Locator",
+            "Universal Resource Link"
+        ],
+        correct: 0
+    },
+    {
+        question: "कम्प्युटरको गति मापन गर्ने एकाइ के हो?",
+        answers: [
+            "GHz",
+            "Hz",
+            "MBps",
+            "Kbps"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन उपकरणलाई इनपुट उपकरण मानिन्न?",
+        answers: [
+            "माउस",
+            "किबोर्ड",
+            "मोनिटर",
+            "स्क्यानर"
+        ],
+        correct: 2
+    },
+    {
+        question: "निम्न मध्ये कुन Secondary Storage हो?",
+        answers: [
+            "RAM",
+            "ROM",
+            "Hard Disk",
+            "Cache Memory"
+        ],
+        correct: 2
+    },
+    {
+        question: "ASCII को पूरा रूप के हो?",
+        answers: [
+            "American Standard Code for Information Interchange",
+            "American System Code for Internet Information",
+            "American Standard Communication for Internet Interchange",
+            "American Standard Code for Intelligent Interchange"
+        ],
+        correct: 0
+    },
+    {
+        question: "TCP/IP प्रोटोकल कुन कामका लागि प्रयोग गरिन्छ?",
+        answers: [
+            "डेटा स्टोरेज",
+            "डेटा ट्रान्समिशन",
+            "डेटा एडिटिङ",
+            "डेटा डिलिट"
+        ],
+        correct: 1
+    },
+    {
+        question: "कोड लेख्न प्रयोग हुने भाषालाई के भनिन्छ?",
+        answers: [
+            "प्रोग्रामिङ भाषा",
+            "मशीन भाषा",
+            "कम्पाइलर भाषा",
+            "नेटवर्क भाषा"
+        ],
+        correct: 0
+    },
+    {
+        question: "डाटाबेस व्यवस्थापनको उदाहरण कुन हो?",
+        answers: [
+            "MS Word",
+            "MySQL",
+            "Adobe Reader",
+            "PowerPoint"
+        ],
+        correct: 1
+    },
+    {
+        question: "IPv6 मा एड्रेसको बिट साइज कति हुन्छ?",
+        answers: [
+            "32 बिट",
+            "64 बिट",
+            "128 बिट",
+            "256 बिट"
+        ],
+        correct: 2
+    },
+    {
+        question: "कम्प्युटरमा 1 निबल बराबर कति बिट हुन्छ?",
+        answers: [
+            "2",
+            "4",
+            "8",
+            "16"
+        ],
+        correct: 1
+    },
+    {
+        question: "निम्न मध्ये कुन वेब ब्राउजर हो?",
+        answers: [
+            "Windows",
+            "Chrome",
+            "Linux",
+            "Photoshop"
+        ],
+        correct: 1
+    },
+    {
+        question: "RAM को प्रकार कुन हो?",
+        answers: [
+            "DRAM",
+            "SRAM",
+            "Both DRAM and SRAM",
+            "ROM"
+        ],
+        correct: 2
+    },
+    {
+        question: "कुन कम्प्युटरलाई ठूलो डेटा प्रोसेस गर्न डिजाइन गरिएको हो?",
+        answers: [
+            "माइक्रो कम्प्युटर",
+            "मेनफ्रेम कम्प्युटर",
+            "लैपटप",
+            "सुपर कम्प्युटर"
+        ],
+        correct: 1
+    },
+    {
+        question: "निम्न मध्ये कुनको इन्टरनेट एड्रेस IP Address हो?",
+        answers: [
+            "192.168.0.1",
+            "localhost",
+            "www.google.com",
+            "All of the above"
+        ],
+        correct: 3
+    },
+    {
+        question: "निम्न मध्ये कुन फोटो एडिटिङ सफ्टवेयर हो?",
+        answers: [
+            "MS Word",
+            "Photoshop",
+            "MS Excel",
+            "Windows Media Player"
+        ],
+        correct: 1
+    },
+    {
+        question: "डेटाबेसमा Primary Key को प्रयोग केका लागि हुन्छ?",
+        answers: [
+            "डेटा समूह बनाउन",
+            "डेटालाई अद्वितीय बनाउन",
+            "डेटा डिलिट गर्न",
+            "डेटा कपी गर्न"
+        ],
+        correct: 1
+    },
+    {
+        question: "WAN को फुलफर्म के हो?",
+        answers: [
+            "Wide Area Network",
+            "Web Access Network",
+            "Wireless Area Network",
+            "Wide Access Network"
+        ],
+        correct: 0
+    },
+    {
+        question: "कम्प्युटरको केन्द्रीय भागलाई के भनिन्छ?",
+        answers: [
+            "CPU",
+            "RAM",
+            "ROM",
+            "Cache"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन सफ्टवेयर Presentation बनाउन प्रयोग गरिन्छ?",
+        answers: [
+            "MS Word",
+            "MS Excel",
+            "MS PowerPoint",
+            "MS Access"
+        ],
+        correct: 2
+    },
+    {
+        question: "Operating System को मुख्य काम के हो?",
+        answers: [
+            "हार्डवेयर र सफ्टवेयरको व्यवस्थापन",
+            "डेटा स्टोरेज",
+            "डाटा एनालिसिस",
+            "वेबसाइट बनाउने"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्न मध्ये कुन Storage Device हो?",
+        answers: [
+            "Scanner",
+            "Printer",
+            "Hard Disk",
+            "Monitor"
+        ],
+        correct: 2
+    },
+    {
+        question: "USB Drive लाई के भनिन्छ?",
+        answers: [
+            "Permanent Storage",
+            "Portable Storage",
+            "Primary Storage",
+            "Secondary Storage"
+        ],
+        correct: 1
+    },
+    {
+        question: "निम्नमध्ये कुन इनपुट र आउटपुट दुबै कार्य गर्ने यन्त्र हो?",
+        answers: [
+            "मोनिटर",
+            "प्रिन्टर",
+            "Touch Screen",
+            "माउस"
+        ],
+        correct: 2
+    },
+    {
+        question: "कुन उपकरण नेटवर्कलाई जोड्न प्रयोग गरिन्छ?",
+        answers: [
+            "Router",
+            "Scanner",
+            "Printer",
+            "Monitor"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन ईमेल प्रोटोकल मेसेज पठाउन प्रयोग गरिन्छ?",
+        answers: [
+            "POP3",
+            "IMAP",
+            "SMTP",
+            "HTTP"
+        ],
+        correct: 2
+    },
+    {
+        question: "HTTP को पूरा रूप के हो?",
+        answers: [
+            "HyperText Transfer Protocol",
+            "HyperText Transmission Protocol",
+            "HyperText Transfer Path",
+            "HyperTool Transfer Protocol"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्न मध्ये कुन डेटा कम्प्रेशनको लागि प्रयोग गरिन्छ?",
+        answers: [
+            "ZIP",
+            "RAR",
+            "Both ZIP and RAR",
+            "DOCX"
+        ],
+        correct: 2
+    }, {
+        question: "कुन सफ्टवेयरले डाटाबेस व्यवस्थापनमा मद्दत पुर्‍याउँछ?",
+        answers: [
+            "Oracle",
+            "Photoshop",
+            "MS Word",
+            "MS Paint"
+        ],
+        correct: 0
+    },
+    {
+        question: "BIOS को पूरा रूप के हो?",
+        answers: [
+            "Basic Input Output System",
+            "Binary Input Output System",
+            "Basic Integrated Output System",
+            "Binary Integrated Operating System"
+        ],
+        correct: 0
+    },
+    {
+        question: "कम्प्युटरमा GUI को पूरा रूप के हो?",
+        answers: [
+            "Graphic User Interface",
+            "General User Interface",
+            "Graphical User Interaction",
+            "General User Interaction"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन प्रोग्रामिङ भाषा वेब विकासका लागि लोकप्रिय छ?",
+        answers: [
+            "Python",
+            "JavaScript",
+            "C++",
+            "Assembly"
+        ],
+        correct: 1
+    },
+    {
+        question: "कम्प्युटरको CPU लाई के भनिन्छ?",
+        answers: [
+            "Brain of the Computer",
+            "Memory of the Computer",
+            "Storage of the Computer",
+            "Power of the Computer"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन फाइल एक्सटेन्सन टेक्स्ट फाइलको हो?",
+        answers: [
+            ".txt",
+            ".exe",
+            ".jpg",
+            ".mp3"
+        ],
+        correct: 0
+    },
+    {
+        question: "कम्प्युटरको पहिलो पिँढीमा कुन प्रविधि प्रयोग गरिएको थियो?",
+        answers: [
+            "Vacuum Tubes",
+            "Transistors",
+            "Microprocessors",
+            "Integrated Circuits"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन यन्त्र नेटवर्क उपकरण हो?",
+        answers: [
+            "Switch",
+            "Keyboard",
+            "Mouse",
+            "Monitor"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्नमध्ये कुन अपरेटिङ सिस्टम हो?",
+        answers: [
+            "Windows",
+            "Chrome",
+            "MySQL",
+            "Oracle"
+        ],
+        correct: 0
+    },
+    {
+        question: "हार्ड डिस्कमा डेटा कसरी भण्डारण गरिन्छ?",
+        answers: [
+            "Magnetic Storage",
+            "Optical Storage",
+            "Flash Storage",
+            "Cloud Storage"
+        ],
+        correct: 0
+    },
+    {
+        question: "USB को पूरा रूप के हो?",
+        answers: [
+            "Universal Serial Bus",
+            "Universal System Bus",
+            "Universal Storage Bus",
+            "Universal Sharing Bus"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्नमध्ये कुन क्लाउड कम्प्युटिङ प्लेटफर्म हो?",
+        answers: [
+            "AWS",
+            "Photoshop",
+            "MS Word",
+            "Linux"
+        ],
+        correct: 0
+    },
+    {
+        question: "HTML को पूरा रूप के हो?",
+        answers: [
+            "HyperText Markup Language",
+            "HyperTransfer Markup Language",
+            "HyperTool Markup Language",
+            "HyperTag Markup Language"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन प्रोग्रामिङ भाषालाई आर्टिफिसियल इन्टेलिजेन्समा प्रयोग गरिन्छ?",
+        answers: [
+            "Python",
+            "C",
+            "Java",
+            "HTML"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्नमध्ये कुन प्रिन्टरको प्रकार हो?",
+        answers: [
+            "Laser Printer",
+            "Optical Printer",
+            "Magnetic Printer",
+            "Cloud Printer"
+        ],
+        correct: 0
+    },
+    {
+        question: "LAN को फुल फर्म के हो?",
+        answers: [
+            "Local Area Network",
+            "Large Area Network",
+            "Limited Access Network",
+            "Linked Area Network"
+        ],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसमा कुंजीहरूको प्रकारमध्ये कुन हो?",
+        answers: [
+            "Primary Key",
+            "Foreign Key",
+            "Both Primary and Foreign Key",
+            "None of the above"
+        ],
+        correct: 2
+    },
+    {
+        question: "कुन वेब ब्राउजरको उदाहरण हो?",
+        answers: [
+            "Firefox",
+            "Windows",
+            "Linux",
+            "Ubuntu"
+        ],
+        correct: 0
+    },
+    {
+        question: "IPv4 मा एड्रेसको बिट साइज कति हुन्छ?",
+        answers: [
+            "32 बिट",
+            "64 बिट",
+            "128 बिट",
+            "256 बिट"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्नमध्ये कुन अपरेटिङ सिस्टम होइन?",
+        answers: [
+            "Windows",
+            "Linux",
+            "Android",
+            "Oracle"
+        ],
+        correct: 3
+    },
+    {
+        question: "कुन सफ्टवेयर स्प्रेडशीट बनाउन प्रयोग गरिन्छ?",
+        answers: [
+            "MS Word",
+            "MS Excel",
+            "MS PowerPoint",
+            "MS Access"
+        ],
+        correct: 1
+    },
+    {
+        question: "कुन प्रविधिले नेटवर्कमा डेटा पठाउने काम गर्छ?",
+        answers: [
+            "Router",
+            "Switch",
+            "Firewall",
+            "Scanner"
+        ],
+        correct: 0
+    },
+    {
+        question: "मेसिन भाषामा प्रोग्राम लेख्न कुन टूल प्रयोग गरिन्छ?",
+        answers: [
+            "Assembler",
+            "Compiler",
+            "Interpreter",
+            "Debugger"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्नमध्ये कुन डेटा भण्डारण माध्यम हो?",
+        answers: [
+            "RAM",
+            "ROM",
+            "Cloud",
+            "All of the above"
+        ],
+        correct: 3
+    },
+    {
+        question: "नेटवर्कमा डाटा सुरक्षित गर्न कुन टूल प्रयोग गरिन्छ?",
+        answers: [
+            "Firewall",
+            "Router",
+            "Switch",
+            "Hub"
+        ],
+        correct: 0
+    },
+    {
+        question: "CSS को पूरा रूप के हो?",
+        answers: [
+            "Cascading Style Sheets",
+            "Color Styling System",
+            "Cascading Sheet Styles",
+            "None of the above"
+        ],
+        correct: 0
+    },
+    {
+        question: "ब्लग बनाउन कुन प्लेटफर्म प्रख्यात छ?",
+        answers: [
+            "WordPress",
+            "Excel",
+            "PowerPoint",
+            "Photoshop"
+        ],
+        correct: 0
+    },
+    {
+        question: "SMTP को मुख्य काम के हो?",
+        answers: [
+            "इमेल पठाउने",
+            "इमेल प्राप्त गर्ने",
+            "वेब ब्राउजिंग",
+            "डेटाबेस व्यवस्थापन"
+        ],
+        correct: 0
+    },
+    {
+        question: "HTTP को डिफल्ट पोर्ट नम्बर के हो?",
+        answers: [
+            "80",
+            "8080",
+            "443",
+            "21"
+        ],
+        correct: 0
+    },
+    {
+        question: "SQL को पूरा रूप के हो?",
+        answers: [
+            "Structured Query Language",
+            "System Query Language",
+            "Standard Query Language",
+            "Sequential Query Language"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्न मध्ये कुन इनपुट डिभाइस हो?",
+        answers: [
+            "Mouse",
+            "Printer",
+            "Monitor",
+            "Speaker"
+        ],
+        correct: 0
+    },{
+        question: "RAM को मुख्य उद्देश्य के हो?",
+        answers: [
+            "डाटा स्टोर गर्ने",
+            "डाटा प्रोसेस गर्ने",
+            "प्रयोगकर्ता सेटिङ भण्डारण गर्ने",
+            "डाटा ट्रान्सफर गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन एक टोपोलोजीमा सबै डिभाइस सिंगल केबलमा जडान गरिन्छ?",
+        answers: [
+            "Bus Topology",
+            "Star Topology",
+            "Ring Topology",
+            "Mesh Topology"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्नमध्ये कुन इन्पुट डिभाइस हो?",
+        answers: [
+            "Mouse",
+            "Monitor",
+            "Speaker",
+            "Printer"
+        ],
+        correct: 0
+    },
+    {
+        question: "अवस्थित नेटवर्कलाई कसरी सुरक्षित बनाउन सकिन्छ?",
+        answers: [
+            "Firewall",
+            "Switch",
+            "Hub",
+            "Repeater"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cloud Storage को मुख्य फाइदा के हो?",
+        answers: [
+            "डाटा सुरक्षित भण्डारण",
+            "तत्काल पहुँच",
+            "कम लागत",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Excel मा Formulas लेख्न कुन प्रतीक प्रयोग गरिन्छ?",
+        answers: [
+            "=",
+            "$",
+            "%",
+            "@"
+        ],
+        correct: 0
+    },
+    {
+        question: "कम्प्युटरमा Operating System को मुख्य काम के हो?",
+        answers: [
+            "Hardware र Software बीचको समन्वय",
+            "Data Analysis",
+            "Program Design",
+            "Networking Setup"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्न मध्ये कुन Output Device हो?",
+        answers: [
+            "Monitor",
+            "Mouse",
+            "Keyboard",
+            "Scanner"
+        ],
+        correct: 0
+    },
+    {
+        question: "HTTPS मा 'S' को अर्थ के हो?",
+        answers: [
+            "Secure",
+            "System",
+            "Server",
+            "Script"
+        ],
+        correct: 0
+    },
+    {
+        question: "TCP/IP मा IP को पूरा रूप के हो?",
+        answers: [
+            "Internet Protocol",
+            "Internal Protocol",
+            "Integrated Protocol",
+            "International Protocol"
+        ],
+        correct: 0
+    },
+    {
+        question: "Photoshop कुन प्रकारको सफ्टवेयर हो?",
+        answers: [
+            "Graphic Design",
+            "Database Management",
+            "Word Processing",
+            "Video Editing"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन IT सेवा क्लाउड कम्प्युटिङको हिस्सा हो?",
+        answers: [
+            "SaaS",
+            "BIOS",
+            "SMTP",
+            "HTTP"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्न मध्ये कुन वेब ब्राउजर हो?",
+        answers: [
+            "Google Chrome",
+            "Ubuntu",
+            "Windows",
+            "MySQL"
+        ],
+        correct: 0
+    },
+    {
+        question: "IPv6 मा एड्रेसको बिट साइज कति हुन्छ?",
+        answers: [
+            "128 बिट",
+            "64 बिट",
+            "256 बिट",
+            "32 बिट"
+        ],
+        correct: 0
+    },
+    {
+        question: "निम्न मध्ये कुन प्रोग्रामिङ भाषालाई प्राथमिकता दिइन्छ?",
+        answers: [
+            "Python",
+            "HTML",
+            "CSS",
+            "Photoshop"
+        ],
+        correct: 0
+    },
+    {
+        question: "Operating System को उदाहरण कुन हो?",
+        answers: [
+            "Linux",
+            "Oracle",
+            "MySQL",
+            "Apache"
+        ],
+        correct: 0
+    },
+    {
+        question: "प्रयोगकर्ताको प्रमाणिकरण गर्न कुन सफ्टवेयर प्रयोग गरिन्छ?",
+        answers: [
+            "Authentication Software",
+            "Firewall",
+            "Router",
+            "Scanner"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन प्रकारको भण्डारण चिप RAM हो?",
+        answers: [
+            "Volatile Memory",
+            "Non-Volatile Memory",
+            "Optical Storage",
+            "Magnetic Storage"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन नेटवर्क उपकरण डाटाको दिशानिर्देशनमा प्रयोग गरिन्छ?",
+        answers: [
+            "Router",
+            "Switch",
+            "Hub",
+            "Repeater"
+        ],
+        correct: 0
+    },
+    {
+        question: "VPN को मुख्य उद्देश्य के हो?",
+        answers: [
+            "गोप्य नेटवर्क कनेक्शन",
+            "डेटा प्रोसेसिङ",
+            "डेटा विश्लेषण",
+            "डेटाबेस व्यवस्थापन"
+        ],
+        correct: 0
+    },
+    {
+        question: "AI मा प्रयोग हुने प्रमुख एल्गोरिदम कुन हो?",
+        answers: [
+            "Machine Learning",
+            "Sorting Algorithm",
+            "Database Algorithm",
+            "Cryptographic Algorithm"
+        ],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसमा SQL प्रयोग गरेर कुन कार्य गरिन्छ?",
+        answers: [
+            "डाटा व्यवस्थापन",
+            "डाटा प्रोसेसिङ",
+            "डाटा प्रिन्टिङ",
+            "डाटा स्क्यानिङ"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन Browser मा Open Source License छ?",
+        answers: [
+            "Firefox",
+            "Safari",
+            "Internet Explorer",
+            "Edge"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन भाषा HTML का लागि पूरक मानिन्छ?",
+        answers: [
+            "CSS",
+            "C++",
+            "Java",
+            "Python"
+        ],
+        correct: 0
+    },
+    {
+        question: "USB को प्रकार मध्ये कुन छैन?",
+        answers: [
+            "USB 4.0",
+            "USB 3.2",
+            "USB 2.0",
+            "USB 5.0"
+        ],
+        correct: 3
+    },
+    {
+        question: "कुन डाटाबेस सफ्टवेयरमा प्राथमिक कुंजी प्रयोग गरिन्छ?",
+        answers: [
+            "MySQL",
+            "Photoshop",
+            "MS Excel",
+            "Windows"
+        ],
+        correct: 0
+    },
+    {
+        question: "Firewall ले कुन प्रकारको सुरक्षा दिन्छ?",
+        answers: [
+            "Network Security",
+            "Hardware Security",
+            "User Authentication",
+            "Data Backup"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन सफ्टवेयर Office Suite मा पर्दछ?",
+        answers: [
+            "MS Word",
+            "Linux",
+            "MySQL",
+            "Apache"
+        ],
+        correct: 0
+    },
+    {
+        question: "Python मा प्रायः कुन लाइब्रेरी डेटा विश्लेषणका लागि प्रयोग गरिन्छ?",
+        answers: [
+            "Pandas",
+            "Numpy",
+            "Matplotlib",
+            "All of the above"
+        ],
+        correct: 3
+    },
+    {
+        question: "Cloud Computing मा SaaS को उदाहरण कुन हो?",
+        answers: [
+            "Google Drive",
+            "Python",
+            "Router",
+            "Hub"
+        ],
+        correct: 0
+    }
+    ,   {
+        question: "Binary Number System मा कति आधार हुन्छ?",
+        answers: [
+            "2",
+            "8",
+            "10",
+            "16"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन एक डाटाबेस व्यवस्थापन प्रणाली हो?",
+        answers: [
+            "MySQL",
+            "MS Paint",
+            "Adobe Reader",
+            "PowerPoint"
+        ],
+        correct: 0
+    },
+    {
+        question: "ALU को पूरा रूप के हो?",
+        answers: [
+            "Arithmetic and Logic Unit",
+            "Application Logic Unit",
+            "Array Logic Unit",
+            "Advanced Logical Unit"
+        ],
+        correct: 0
+    },
+    {
+        question: "LAN को मुख्य विशेषता के हो?",
+        answers: [
+            "सिमित भौगोलिक क्षेत्र",
+            "विश्वव्यापी पहुँच",
+            "उच्च लेटेंसी",
+            "वायरलेस सञ्जाल"
+        ],
+        correct: 0
+    },
+    {
+        question: "CPU लाई कम्प्युटरको के भनिन्छ?",
+        answers: [
+            "Brain",
+            "Heart",
+            "Storage",
+            "Memory"
+        ],
+        correct: 0
+    },
+    {
+        question: "डाटालाई क्रमबद्ध गर्न कुन एल्गोरिदम प्रयोग गरिन्छ?",
+        answers: [
+            "Sorting Algorithm",
+            "Searching Algorithm",
+            "Hashing Algorithm",
+            "Cryptographic Algorithm"
+        ],
+        correct: 0
+    },
+    {
+        question: "Microsoft Office को कुन एप्लिकेसन Spreadsheet का लागि प्रयोग गरिन्छ?",
+        answers: [
+            "Excel",
+            "Word",
+            "PowerPoint",
+            "Access"
+        ],
+        correct: 0
+    },
+    {
+        question: "ROM को मुख्य विशेषता के हो?",
+        answers: [
+            "डाटा परिवर्तन गर्न नसकिने",
+            "भण्डारण क्षमता उच्च",
+            "डाटा प्रोसेसिङ द्रुत",
+            "नियमित रूपमा अपग्रेड हुने"
+        ],
+        correct: 0
+    },
+    {
+        question: "SMTP को मुख्य कार्य के हो?",
+        answers: [
+            "इमेल पठाउने",
+            "फाइल ट्रान्सफर गर्ने",
+            "वेब होस्ट गर्ने",
+            "भण्डारण गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "CSS को पूरा रूप के हो?",
+        answers: [
+            "Cascading Style Sheets",
+            "Central Style Sheets",
+            "Cascading Script Sheets",
+            "Code Styling System"
+        ],
+        correct: 0
+    },
+    {
+        question: "IPv4 मा कति बिटको एड्रेस हुन्छ?",
+        answers: [
+            "32 बिट",
+            "64 बिट",
+            "128 बिट",
+            "16 बिट"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन इन्टरनेट प्रोटोकल DNS को लागि प्रयोग गरिन्छ?",
+        answers: [
+            "UDP",
+            "TCP",
+            "SMTP",
+            "HTTP"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cloud Computing मा PaaS को उदाहरण कुन हो?",
+        answers: [
+            "Google App Engine",
+            "Dropbox",
+            "AWS S3",
+            "Microsoft Word"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन एक हार्डवेयर कम्पोनेन्ट मात्र इन्पुटको लागि प्रयोग गरिन्छ?",
+        answers: [
+            "Keyboard",
+            "Monitor",
+            "Printer",
+            "Speaker"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन भाषा वेब डिजाइनका लागि प्रयोग गरिन्छ?",
+        answers: [
+            "HTML",
+            "Python",
+            "C++",
+            "Java"
+        ],
+        correct: 0
+    },
+    {
+        question: "Router को मुख्य कार्य के हो?",
+        answers: [
+            "प्याकेट ट्रान्सफर गर्ने",
+            "डेटा स्टोर गर्ने",
+            "प्रिन्ट गर्ने",
+            "स्क्यान गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "Big Data प्रोसेस गर्न कुन टूल प्रयोग गरिन्छ?",
+        answers: [
+            "Hadoop",
+            "Photoshop",
+            "MS Paint",
+            "Audacity"
+        ],
+        correct: 0
+    },
+    {
+        question: "UNIX कुन प्रकारको Operating System हो?",
+        answers: [
+            "Multi-User",
+            "Single-User",
+            "Mobile",
+            "Real-Time"
+        ],
+        correct: 0
+    },
+    {
+        question: "SSD को मुख्य फाइदा के हो?",
+        answers: [
+            "उच्च गति",
+            "लागत सस्तो",
+            "अधिक तौल",
+            "कम आयु"
+        ],
+        correct: 0
+    },
+    {
+        question: "Hardware र Software बीचको कडी के हो?",
+        answers: [
+            "Operating System",
+            "Application Software",
+            "Utility Software",
+            "Firmware"
+        ],
+        correct: 0
+    },
+    {
+        question: "Fiber Optics के प्रयोग गरिन्छ?",
+        answers: [
+            "डेटा ट्रान्सफर",
+            "पावर सप्लाई",
+            "भण्डारण",
+            "प्रिन्टिङ"
+        ],
+        correct: 0
+    },
+    {
+        question: "AI मा Natural Language Processing को मुख्य उद्देश्य के हो?",
+        answers: [
+            "मानव भाषा बुझ्ने",
+            "डेटा विश्लेषण गर्ने",
+            "चित्र प्रोसेस गर्ने",
+            "अडियो प्रोसेस गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "Zoom कुन प्रकारको सफ्टवेयर हो?",
+        answers: [
+            "Video Conferencing",
+            "Image Editing",
+            "Database Management",
+            "Game Development"
+        ],
+        correct: 0
+    },
+    {
+        question: "USB को पूरा रूप के हो?",
+        answers: [
+            "Universal Serial Bus",
+            "Universal Storage Base",
+            "Universal System Bus",
+            "Universal Software Bus"
+        ],
+        correct: 0
+    },
+    {
+        question: "HTML मा टेबल बनाउन कुन ट्याग प्रयोग गरिन्छ?",
+        answers: [
+            "<table>",
+            "<div>",
+            "<tr>",
+            "<td>"
+        ],
+        correct: 0
+    },
+    {
+        question: "Python मा Data Analysis का लागि कुन Library प्रयोग गरिन्छ?",
+        answers: [
+            "Pandas",
+            "Matplotlib",
+            "TensorFlow",
+            "Flask"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cybersecurity मा Phishing भनेको के हो?",
+        answers: [
+            "डेटा चोरी गर्ने प्रविधि",
+            "फिश खेती",
+            "नेटवर्क सेटअप",
+            "डेटाबेस व्यवस्थापन"
+        ],
+        correct: 0
+    },
+    {
+        question: "AI मा Supervised Learning भनेको के हो?",
+        answers: [
+            "Label गरिएको डाटामा आधारित सिकाइ",
+            "बिना लेबल सिकाइ",
+            "डेटाबेस व्यवस्थापन",
+            "रियल टाइम प्रोसेसिंग"
+        ],
+        correct: 0
+    },
+    {
+        question: "Linux मा Terminal चलाउन कुन Command प्रयोग गरिन्छ?",
+        answers: [
+            "Ctrl + Alt + T",
+            "Ctrl + T",
+            "Shift + T",
+            "Alt + T"
+        ],
+        correct: 0
+    }, {
+        question: "IPv6 मा कति बिटको एड्रेस हुन्छ?",
+        answers: [
+            "128 बिट",
+            "64 बिट",
+            "32 बिट",
+            "256 बिट"
+        ],
+        correct: 0
+    },
+    {
+        question: "Firewall को मुख्य कार्य के हो?",
+        answers: [
+            "नेटवर्क सुरक्षा प्रदान गर्ने",
+            "डेटा भण्डारण गर्ने",
+            "सिस्टम गति बढाउने",
+            "इन्टरनेट गति घटाउने"
+        ],
+        correct: 0
+    },
+    {
+        question: "Python मा String को लागि कुन चिन्ह प्रयोग गरिन्छ?",
+        answers: [
+            "'' वा \"\"",
+            "[]",
+            "{}",
+            "()"
+        ],
+        correct: 0
+    },
+    {
+        question: "कुन Software Testing को प्रकार हो?",
+        answers: [
+            "Unit Testing",
+            "Integration Testing",
+            "System Testing",
+            "उपरोक्त सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "डेटाको Encryption गर्न कुन Algorithm प्रयोग गरिन्छ?",
+        answers: [
+            "AES",
+            "Bubble Sort",
+            "Binary Search",
+            "DFS"
+        ],
+        correct: 0
+    },
+    {
+        question: "Email पठाउन कुन प्रोटोकल प्रयोग गरिन्छ?",
+        answers: [
+            "SMTP",
+            "FTP",
+            "HTTP",
+            "POP3"
+        ],
+        correct: 0
+    },
+    {
+        question: "Laptop मा Power Saving Mode का लागि कुन विकल्प उपयुक्त हो?",
+        answers: [
+            "Sleep Mode",
+            "Hibernate",
+            "Shutdown",
+            "Restart"
+        ],
+        correct: 1
+    },
+    {
+        question: "URL को पूरा रूप के हो?",
+        answers: [
+            "Uniform Resource Locator",
+            "Universal Resource Locator",
+            "Uniform Record Locator",
+            "Unique Resource Locator"
+        ],
+        correct: 0
+    },
+    {
+        question: "Software Engineering मा SDLC को मुख्य चरण कुन हो?",
+        answers: [
+            "Requirement Analysis",
+            "Design",
+            "Testing",
+            "उपरोक्त सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "RAM को मुख्य विशेषता के हो?",
+        answers: [
+            "Volatile Memory",
+            "Non-Volatile Memory",
+            "स्थायी भण्डारण",
+            "डाटा संरक्षण"
+        ],
+        correct: 0
+    },
+    {
+        question: "DNS को मुख्य कार्य के हो?",
+        answers: [
+            "डोमेन नेमलाई IP मा ट्रान्सलेट गर्ने",
+            "IP लाई डोमेन नेममा ट्रान्सलेट गर्ने",
+            "डेटा भण्डारण गर्ने",
+            "नेटवर्क गति बढाउने"
+        ],
+        correct: 0
+    },
+    {
+        question: "HTTP मा कुन पोर्ट प्रयोग गरिन्छ?",
+        answers: [
+            "80",
+            "443",
+            "25",
+            "21"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cache Memory को मुख्य उद्देश्य के हो?",
+        answers: [
+            "CPU र RAM बीचको गति बढाउने",
+            "डेटा संरक्षण गर्ने",
+            "नेटवर्क सेटअप गर्ने",
+            "पावर सेभ गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cloud Storage को उदाहरण कुन हो?",
+        answers: [
+            "Google Drive",
+            "MS Word",
+            "Adobe Photoshop",
+            "Windows Defender"
+        ],
+        correct: 0
+    },
+    {
+        question: "Computer मा Bits र Bytes को बीचको सम्बन्ध के हो?",
+        answers: [
+            "1 Byte = 8 Bits",
+            "1 Byte = 16 Bits",
+            "1 Byte = 4 Bits",
+            "1 Byte = 32 Bits"
+        ],
+        correct: 0
+    },
+    {
+        question: "Bluetooth को मुख्य प्रयोग के हो?",
+        answers: [
+            "Wireless Communication",
+            "File Compression",
+            "Encryption",
+            "Data Analysis"
+        ],
+        correct: 0
+    },
+    {
+        question: "SQL मा डाटाबेस सिर्जना गर्न कुन Command प्रयोग गरिन्छ?",
+        answers: [
+            "CREATE DATABASE",
+            "SELECT DATABASE",
+            "INSERT INTO",
+            "UPDATE DATABASE"
+        ],
+        correct: 0
+    },
+    {
+        question: "Linux मा File List गर्न कुन Command प्रयोग गरिन्छ?",
+        answers: [
+            "ls",
+            "cd",
+            "pwd",
+            "mkdir"
+        ],
+        correct: 0
+    },
+    {
+        question: "HTTP को Secure संस्करण कुन हो?",
+        answers: [
+            "HTTPS",
+            "FTP",
+            "SFTP",
+            "SMTP"
+        ],
+        correct: 0
+    },
+    {
+        question: "AI मा Reinforcement Learning को मुख्य लक्ष्य के हो?",
+        answers: [
+            "Action को Reward प्राप्त गर्नु",
+            "डेटा विश्लेषण गर्नु",
+            "इन्पुट प्रोसेस गर्नु",
+            "चित्र प्रोसेस गर्नु"
+        ],
+        correct: 0
+    },
+    {
+        question: "IPv4 मा एड्रेसको अधिकतम संख्या कति हुन्छ?",
+        answers: [
+            "4.3 billion",
+            "1 million",
+            "10 billion",
+            "1 billion"
+        ],
+        correct: 0
+    },
+    {
+        question: "Router Layer कुन OSI Model मा पर्छ?",
+        answers: [
+            "Network Layer",
+            "Data Link Layer",
+            "Transport Layer",
+            "Application Layer"
+        ],
+        correct: 0
+    },
+    {
+        question: "JavaScript मा Variable घोषणा गर्न कुन शब्द प्रयोग गरिन्छ?",
+        answers: [
+            "var",
+            "int",
+            "float",
+            "double"
+        ],
+        correct: 0
+    },
+    {
+        question: "CLI को पूरा रूप के हो?",
+        answers: [
+            "Command Line Interface",
+            "Computer Line Interface",
+            "Central Line Interface",
+            "Core Line Interface"
+        ],
+        correct: 0
+    },
+    {
+        question: "AI मा NLP को मुख्य उपयोग के हो?",
+        answers: [
+            "मानव भाषाको व्याख्या",
+            "नेटवर्क व्यवस्थापन",
+            "डेटा भण्डारण",
+            "सिस्टम डिजाइन"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cybersecurity मा Brute Force Attack के हो?",
+        answers: [
+            "Password को विभिन्न संयोजन प्रयास",
+            "डेटा एनक्रिप्सन",
+            "फायरवाल सेटअप",
+            "नेटवर्क गतिको मापन"
+        ],
+        correct: 0
+    }, {
+        question: "Computer मा ALU को मुख्य कार्य के हो?",
+        answers: [
+            "Arithmetic र Logical Operation",
+            "डेटा भण्डारण",
+            "नेटवर्क व्यवस्थापन",
+            "इन्पुट प्रोसेस"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cache Memory कहाँ अवस्थित हुन्छ?",
+        answers: [
+            "CPU मा",
+            "RAM मा",
+            "Hard Drive मा",
+            "Network मा"
+        ],
+        correct: 0
+    },
+    {
+        question: "Linux मा Current Directory देखाउन कुन Command प्रयोग गरिन्छ?",
+        answers: [
+            "pwd",
+            "ls",
+            "cd",
+            "dir"
+        ],
+        correct: 0
+    },
+    {
+        question: "Software Development मा Agile Methodology को मुख्य विशेषता के हो?",
+        answers: [
+            "Iteration र Increment",
+            "धेरै Testing",
+            "Deployment मा ध्यान दिनु",
+            "Strict Documentation"
+        ],
+        correct: 0
+    },
+    {
+        question: "DNS मा Zone File के हो?",
+        answers: [
+            "DNS Records को संग्रह",
+            "IP Address को सूची",
+            "Domain Names को सूची",
+            "Encryption Key"
+        ],
+        correct: 0
+    },
+    {
+        question: "HTML मा Image Embed गर्न कुन Tag प्रयोग गरिन्छ?",
+        answers: [
+            "<img>",
+            "<image>",
+            "<src>",
+            "<picture>"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cybersecurity मा Phishing Attack के हो?",
+        answers: [
+            "फर्जी वेबसाइटबाट जानकारी चोरी गर्ने प्रयास",
+            "नेटवर्क गति बढाउने",
+            "डेटा Compression गर्ने",
+            "डेटा एनालिसिस गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "Backup Data को मुख्य उद्देश्य के हो?",
+        answers: [
+            "डाटा संरक्षण",
+            "नेटवर्क वृद्धि",
+            "पावर सेभिंग",
+            "फाइल एडिटिंग"
+        ],
+        correct: 0
+    },
+    {
+        question: "Data Transmission मा Bandwidth के हो?",
+        answers: [
+            "Maximum Data Transfer Rate",
+            "डेटाको प्रकार",
+            "नेटवर्कको प्रकार",
+            "डेटा Encryption"
+        ],
+        correct: 0
+    },
+    {
+        question: "USB को पूरा रूप के हो?",
+        answers: [
+            "Universal Serial Bus",
+            "Universal Storage Bus",
+            "United Serial Bus",
+            "Unique Serial Bus"
+        ],
+        correct: 0
+    },
+    {
+        question: "Computer मा BIOS को मुख्य कार्य के हो?",
+        answers: [
+            "Hardware Initialization र Boot Process",
+            "Software Install गर्नु",
+            "डाटा प्रोसेस",
+            "RAM चलाउनु"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cloud Computing को मुख्य विशेषता के हो?",
+        answers: [
+            "On-Demand Services",
+            "स्थायी डाटा भण्डारण",
+            "High Power Usage",
+            "डाटा डाउनलोड"
+        ],
+        correct: 0
+    },
+    {
+        question: "IPv4 मा कित्ता Octet हुन्छ?",
+        answers: [
+            "4",
+            "2",
+            "6",
+            "8"
+        ],
+        correct: 0
+    },
+    {
+        question: "Blockchain को मुख्य उपयोग के हो?",
+        answers: [
+            "डिजिटल ट्रान्जेक्शन सुरक्षा",
+            "डेटा एनालिसिस",
+            "इन्पुट प्रोसेस",
+            "नेटवर्क स्पीड बढाउने"
+        ],
+        correct: 0
+    },
+    {
+        question: "SQL मा Primary Key को उपयोग के हो?",
+        answers: [
+            "तालिका को Unique पहचान",
+            "डेटा मिलाउनु",
+            "तालिका मेटाउनु",
+            "डेटा Encryption"
+        ],
+        correct: 0
+    },
+    {
+        question: "Database मा Normalization को मुख्य उद्देश्य के हो?",
+        answers: [
+            "डेटा Redundancy घटाउनु",
+            "डेटा Compression",
+            "डेटा Sorting",
+            "डेटा Encryption"
+        ],
+        correct: 0
+    },
+    {
+        question: "CSS मा External Stylesheet लिन कुन Tag प्रयोग गरिन्छ?",
+        answers: [
+            "<link>",
+            "<style>",
+            "<script>",
+            "<meta>"
+        ],
+        correct: 0
+    },
+    {
+        question: "JavaScript मा Array को Index कति बाट सुरु हुन्छ?",
+        answers: [
+            "0",
+            "1",
+            "-1",
+            "2"
+        ],
+        correct: 0
+    },
+    {
+        question: "Operating System मा Multitasking के हो?",
+        answers: [
+            "एकै समय धेरै Process चलाउनु",
+            "एक Process लाई धेरै पटक चलाउनु",
+            "Hardware चलाउनु",
+            "RAM Reset गर्नु"
+        ],
+        correct: 0
+    },
+    {
+        question: "Computer Network मा Hub को मुख्य कार्य के हो?",
+        answers: [
+            "डेटा वितरण गर्ने",
+            "डेटा Encryption",
+            "डेटा Compression",
+            "डाटा भण्डारण"
+        ],
+        correct: 0
+    },
+    {
+        question: "Fiber Optic Cable को मुख्य विशेषता के हो?",
+        answers: [
+            "High Speed Data Transmission",
+            "कम गति",
+            "अधिक पावर खपत",
+            "Wireless Transmission"
+        ],
+        correct: 0
+    },
+    {
+        question: "File Extension .xlsx कुन प्रकारको फाइल हो?",
+        answers: [
+            "Excel File",
+            "Word Document",
+            "Image File",
+            "Audio File"
+        ],
+        correct: 0
+    },
+    {
+        question: "Computer मा GUI को पूरा रूप के हो?",
+        answers: [
+            "Graphical User Interface",
+            "General User Interface",
+            "Generic User Interface",
+            "Global User Interface"
+        ],
+        correct: 0
+    },
+    {
+        question: "Data Structure मा Queue को मुख्य विशेषता के हो?",
+        answers: [
+            "FIFO (First In First Out)",
+            "LIFO (Last In First Out)",
+            "Random Access",
+            "Indexed Access"
+        ],
+        correct: 0
+    },
+    {
+        question: "Microsoft Office मा PowerPoint को मुख्य प्रयोग के हो?",
+        answers: [
+            "Presentation तयार पार्नु",
+            "डाटा एनालिसिस गर्नु",
+            "Code लेख्नु",
+            "फोटो एडिट गर्नु"
+        ],
+        correct: 0
+    },
+    {
+        question: "Machine Learning मा Supervised Learning के हो?",
+        answers: [
+            "Labelled Data प्रयोग गर्ने",
+            "Unlabelled Data प्रयोग गर्ने",
+            "Random Data प्रयोग गर्ने",
+            "Real-Time Data प्रयोग गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "RAM को विपरित, ROM को मुख्य विशेषता के हो?",
+        answers: [
+            "Non-Volatile Memory",
+            "Volatile Memory",
+            "Random Access",
+            "Temporary Memory"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cybersecurity मा VPN को उपयोग के हो?",
+        answers: [
+            "Secure Connection प्रदान गर्ने",
+            "डेटा Compression",
+            "डेटा भण्डारण",
+            "नेटवर्क गति बढाउने"
+        ],
+        correct: 0
+    }
+   , {
+        question: "CBS (Core Banking System) को पूर्ण रूप के हो?",
+        answers: [
+            "Central Bank Service",
+            "Core Banking Solution",
+            "Customer Banking System",
+            "Centralized Banking Software"
+        ],
+        correct: 1
+    },
+    {
+        question: "ATM को पूर्ण रूप के हो?",
+        answers: [
+            "Automatic Teller Machine",
+            "Automated Transaction Machine",
+            "All Time Money",
+            "Automated Teller Management"
+        ],
+        correct: 0
+    },
+    {
+        question: "नेपालमा पहिलो ATM सेवा कहिले सुरु भएको थियो?",
+        answers: [
+            "२०५० सालमा",
+            "२०५५ सालमा",
+            "२०६० सालमा",
+            "२०६५ सालमा"
+        ],
+        correct: 1
+    },
+    {
+        question: "SWIFT को प्रयोग मुख्यतया के का लागि हुन्छ?",
+        answers: [
+            "अन्तर्राष्ट्रिय पैसा स्थानान्तरण",
+            "स्थानीय पैसा स्थानान्तरण",
+            "क्लाउड स्टोरेज",
+            "फिनटेक विकास"
+        ],
+        correct: 0
+    },
+    {
+        question: "CBS प्रणालीको मुख्य लाभ के हो?",
+        answers: [
+            "कस्टमरलाई एकीकृत सेवा उपलब्ध गराउनु",
+            "ATM सेवा उपलब्ध गराउनु",
+            "पैसा छाप्नु",
+            "सरकारी नीतिमा परिवर्तन गर्नु"
+        ],
+        correct: 0
+    },
+    {
+        question: "Nepal Clearing House Limited (NCHL) ले कुन सेवा प्रदान गर्छ?",
+        answers: [
+            "चेक क्लियरिंग",
+            "डिजिटल पेमेन्ट",
+            "RTGS (Real Time Gross Settlement)",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "QR कोडको पूर्ण रूप के हो?",
+        answers: [
+            "Quick Response",
+            "Quick Read",
+            "Query Resolution",
+            "Question Response"
+        ],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ क्षेत्रले Blockchain टेक्नोलोजीलाई कहाँ प्रयोग गर्न सक्छ?",
+        answers: [
+            "पैसा ट्रान्सफर",
+            "डेटा सुरक्षा",
+            "डिजिटल लेजर",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "IT मा VPN को प्रयोग केका लागि हुन्छ?",
+        answers: [
+            "नेटवर्कलाई सुरक्षित बनाउने",
+            "अनलाइन गेमिंग",
+            "पैसा बचत गर्ने",
+            "डाटा डिलिट गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "फिनटेकको मुख्य उद्देश्य के हो?",
+        answers: [
+            "बैंकिङ सेवालाई डिजिटल बनाउने",
+            "क्रिप्टो माइनिंग",
+            "हार्डवेयर डिजाइन",
+            "इलेक्ट्रोनिक पसल संचालन"
+        ],
+        correct: 0
+    },
+    {
+        question: "Nepal QR को सुरुवात कहिले भएको हो?",
+        answers: [
+            "२०७४ सालमा",
+            "२०७५ सालमा",
+            "२०७६ सालमा",
+            "२०७७ सालमा"
+        ],
+        correct: 2
+    },
+    {
+        question: "RTGS को मुख्य फाइदा के हो?",
+        answers: [
+            "तत्काल ठूलो रकम स्थानान्तरण गर्न मिल्ने",
+            "रकमको ब्याज वृद्धि",
+            "कम लागतमा पैसा स्थानान्तरण",
+            "रकम बचत गर्न मिल्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "IFSC को प्रयोग केमा हुन्छ?",
+        answers: [
+            "बैंकहरूबीच फन्ड ट्रान्सफर",
+            "नेटवर्क कनेक्शन",
+            "मेसिन रिपेरिंग",
+            "फाइल ट्रान्सफर"
+        ],
+        correct: 0
+    },
+    {
+        question: "CRM (Customer Relationship Management) को मुख्य काम के हो?",
+        answers: [
+            "ग्राहकसँग सम्बन्ध सुधार गर्नु",
+            "पैसा ट्रान्सफर गर्नु",
+            "सफ्टवेयर इन्स्टल गर्नु",
+            "मेसिन चलाउनु"
+        ],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ क्षेत्रले Big Data Analytics कहाँ प्रयोग गर्न सक्छ?",
+        answers: [
+            "ग्राहकको डेटा विश्लेषण",
+            "धोकाधडी पत्ता लगाउने",
+            "मार्केटिङ रणनीति बनाउने",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "BPOS को पूर्ण रूप के हो?",
+        answers: [
+            "Banking Process Outsourcing Service",
+            "Bank Payment Online Service",
+            "Big Process Optimization System",
+            "Bank Personal Office System"
+        ],
+        correct: 0
+    },
+    {
+        question: "EMI को पूर्ण रूप के हो?",
+        answers: [
+            "Equated Monthly Installment",
+            "Easy Money Integration",
+            "Electronic Money Investment",
+            "Equated Manual Installment"
+        ],
+        correct: 0
+    },
+    {
+        question: "डिजिटल Signature को प्रयोग बैंकमा केका लागि हुन्छ?",
+        answers: [
+            "डाटा प्रमाणिकरण",
+            "फाइल डिलिट गर्न",
+            "पैसा स्थानान्तरण रोक्न",
+            "ग्राहकलाई छुट दिन"
+        ],
+        correct: 0
+    },
+    {
+        question: "KYC को मुख्य उद्देश्य के हो?",
+        answers: [
+            "ग्राहकको पहिचान सुनिश्चित गर्नु",
+            "पैसा बचत गर्न",
+            "सेयर खरीद गर्न",
+            "ग्राहकलाई छुट दिन"
+        ],
+        correct: 0
+    },
+    {
+        question: "ISO 27001 केसँग सम्बन्धित छ?",
+        answers: [
+            "सूचना सुरक्षा",
+            "फाइनान्सियल रेगुलेसन",
+            "बैंकिङ पेमेन्ट सिस्टम",
+            "ग्राहक सेवा"
+        ],
+        correct: 0
+    }
+,{
+        question: "Nepal Clearing House ले कुन इलेक्ट्रोनिक भुक्तानी प्रणाली सञ्चालन गर्छ?",
+        answers: [
+            "NCHL-ECC",
+            "ConnectIPS",
+            "NCHL-IPS",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "CBS प्रणालीमा कुन घटक समावेश छैन?",
+        answers: [
+            "ग्राहक खाता व्यवस्थापन",
+            "क्लाउड स्टोरेज",
+            "ऋण व्यवस्थापन",
+            "खाताको लेखा परीक्षण"
+        ],
+        correct: 1
+    },
+    {
+        question: "फिनटेकमा प्रयोग हुने 'AI' को पूर्ण रूप के हो?",
+        answers: [
+            "Artificial Intelligence",
+            "Automated Integration",
+            "Advanced Information",
+            "Applied Innovation"
+        ],
+        correct: 0
+    },
+    {
+        question: "Nepal Rastra Bank ले कुन प्रणाली प्रयोग गरी चेक क्लियरिङ्ग गर्दछ?",
+        answers: [
+            "ECC (Electronic Cheque Clearing)",
+            "RTGS",
+            "SWIFT",
+            "Core Banking System"
+        ],
+        correct: 0
+    },
+    {
+        question: "बैंकमा Two-Factor Authentication को प्रयोग किन गरिन्छ?",
+        answers: [
+            "ग्राहकलाई प्रमाणीकरण गर्न",
+            "डेटा बचत गर्न",
+            "पैसा स्थानान्तरण गर्न",
+            "सेवाहरू सस्ता बनाउन"
+        ],
+        correct: 0
+    },
+    {
+        question: "नेपालको पहिलो डिजिटल वालेट कुन हो?",
+        answers: [
+            "Khalti",
+            "eSewa",
+            "IME Pay",
+            "Namaste Pay"
+        ],
+        correct: 1
+    },
+    {
+        question: "Blockchain टेक्नोलोजीलाई मुख्यत: केसँग जोडिन्छ?",
+        answers: [
+            "Cryptocurrency",
+            "डिजिटल लेजर",
+            "डाटा सुरक्षा",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "IT मा API को पूर्ण रूप के हो?",
+        answers: [
+            "Application Programming Interface",
+            "Automated Payment Integration",
+            "Advanced Process Integration",
+            "Artificial Processing Interface"
+        ],
+        correct: 0
+    },
+    {
+        question: "Firewall को मुख्य उद्देश्य के हो?",
+        answers: [
+            "नेटवर्क सुरक्षा सुनिश्चित गर्नु",
+            "सर्भर गति बढाउनु",
+            "डेटा ट्रान्सफर",
+            "पैसा स्थानान्तरण"
+        ],
+        correct: 0
+    },
+    {
+        question: "Nepal QR को मुख्य उद्देश्य के हो?",
+        answers: [
+            "डिजिटल भुक्तानी सहज बनाउने",
+            "डाटा ट्रान्सफर गर्ने",
+            "ग्राहकको खातामा ब्याज वृद्धि गर्ने",
+            "ग्राहकको खाता बन्द गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cloud Computing मा कुन सेवा प्रदान गरिदैन?",
+        answers: [
+            "Infrastructure as a Service (IaaS)",
+            "Software as a Service (SaaS)",
+            "Data Storage as a Service (DSaaS)",
+            "Platform as a Service (PaaS)"
+        ],
+        correct: 2
+    },
+    {
+        question: "Nepal Rastra Bank ले कुन IT प्रणालीलाई नियमन गर्छ?",
+        answers: [
+            "ATM प्रणाली",
+            "RTGS प्रणाली",
+            "Mobile Banking",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङ प्रणालीमा ISO 9001 को उद्देश्य के हो?",
+        answers: [
+            "गुणस्तर व्यवस्थापन सुनिश्चित गर्नु",
+            "सूचना सुरक्षा सुधार",
+            "डेटा एनालिटिक्स",
+            "डेटा ट्रान्सफर"
+        ],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ क्षेत्रका लागि CRM को प्रयोग केमा गरिन्छ?",
+        answers: [
+            "ग्राहक सम्बन्ध सुधार",
+            "पैसा स्थानान्तरण",
+            "डिजिटल वालेट निर्माण",
+            "सर्भर व्यवस्थापन"
+        ],
+        correct: 0
+    },
+    {
+        question: "बैंकिङमा IoT (Internet of Things) को उपयोग के हो?",
+        answers: [
+            "स्मार्ट ATM सेवाहरू",
+            "ग्राहक अनुभव सुधार",
+            "डाटा संकलन",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "SWIFT को मुख्य कार्य के हो?",
+        answers: [
+            "अन्तर्राष्ट्रिय पैसा स्थानान्तरण",
+            "स्थानीय पैसा स्थानान्तरण",
+            "ऋण व्यवस्थापन",
+            "ग्राहकको ब्याज व्यवस्थापन"
+        ],
+        correct: 0
+    },
+    {
+        question: "नेपालमा Cybersecurity Framework कुन संगठनले निर्धारण गर्छ?",
+        answers: [
+            "नेपाल राष्ट्र बैंक",
+            "नेपाल प्रहरी",
+            "IT मंत्रालय",
+            "CAN Federation"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cybercrime बाट बच्न बैंकहरूले कुन सुरक्षा उपाय प्रयोग गर्छन्?",
+        answers: [
+            "Firewall",
+            "Antivirus Software",
+            "Data Encryption",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "नेपालको पहिलो मोबाइल बैंकिंग सेवा कुन हो?",
+        answers: [
+            "eSewa",
+            "Khalti",
+            "M-Bank",
+            "ConnectIPS"
+        ],
+        correct: 2
+    },
+    {
+        question: "बैंकिङमा Virtual Private Network (VPN) को उपयोग के हो?",
+        answers: [
+            "सुरक्षित नेटवर्क पहुँच",
+            "ग्राहक डाटा स्टोर गर्ने",
+            "ब्याज गणना गर्ने",
+            "सर्भरमा डाटा व्यवस्थापन"
+        ],
+        correct: 0
+    },
+    {
+        question: "नेपाल राष्ट्र बैंकको RTGS प्रणालीको मुख्य लाभ के हो?",
+        answers: [
+            "तत्काल ठूलो रकम स्थानान्तरण",
+            "सस्तो ट्रान्सफर",
+            "ग्राहकको ब्याज व्यवस्थापन",
+            "ATM सेवा सुधार"
+        ],
+        correct: 0
+    },  {
+        question: "Core Banking System (CBS) को मुख्य फाइदा के हो?",
+        answers: [
+            "ग्राहक सेवा सुधार",
+            "डाटा केन्द्रीयकरण",
+            "रियल-टाइम लेनदेन",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङमा IoT को उदाहरण के हो?",
+        answers: [
+            "स्मार्ट ATM प्रणाली",
+            "ग्राहकलाई कस्टम अलर्ट",
+            "डिजिटल बचत योजना",
+            "Blockchain"
+        ],
+        correct: 0
+    },
+    {
+        question: "Nepal Rastra Bank ले कुन प्रणालीलाई प्राथमिकता दिन्छ?",
+        answers: [
+            "Blockchain",
+            "Real-Time Gross Settlement (RTGS)",
+            "Big Data",
+            "Artificial Intelligence"
+        ],
+        correct: 1
+    },
+    {
+        question: "बैंकमा UPI प्रणालीको उपयोग के हो?",
+        answers: [
+            "ग्राहकको लेनदेन सहज बनाउने",
+            "ATM को पहुँच बढाउने",
+            "ऋण अनुमोदन छिटो गर्ने",
+            "डेटा एनालिटिक्स सुधार गर्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ सेवामा Chatbots को मुख्य भूमिका के हो?",
+        answers: [
+            "ग्राहकलाई 24/7 सहयोग उपलब्ध गराउने",
+            "ग्राहकको खाता डाटा मेटाउने",
+            "ऋणको ब्याज घटाउने",
+            "ट्रान्सफरको लागत घटाउने"
+        ],
+        correct: 0
+    },
+    {
+        question: "Artificial Intelligence कुन क्षेत्रमा बैंकिङमा प्रयोग गरिन्छ?",
+        answers: [
+            "धोखाधडी पत्ता लगाउन",
+            "क्रेडिट स्कोर गणना गर्न",
+            "ग्राहकलाई सेवा सुझाव दिन",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङमा Blockchain टेक्नोलोजीको उपयोग किन गरिन्छ?",
+        answers: [
+            "सुरक्षित लेनदेनका लागि",
+            "डेटा गोप्यता सुधारका लागि",
+            "डिजिटल सम्झौता गर्न",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "QR कोड भुक्तानी प्रणालीको मुख्य लाभ के हो?",
+        answers: [
+            "द्रुत भुक्तानी",
+            "नगदको आवश्यकता कम",
+            "कम लागत",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "ATM प्रणालीको पहिलो कार्य कुन हो?",
+        answers: [
+            "नगद झिक्ने",
+            "ऋण दिने",
+            "पैसा स्थानान्तरण गर्ने",
+            "खाता खोल्ने"
+        ],
+        correct: 0
+    },
+    {
+        question: "CBS प्रणालीको मुख्य सुरक्षा सुविधा के हो?",
+        answers: [
+            "Two-Factor Authentication",
+            "Data Encryption",
+            "Firewall",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Nepal Rastra Bank को IT विभागले कुन प्रणालीको निगरानी गर्छ?",
+        answers: [
+            "ConnectIPS",
+            "RTGS",
+            "NCHL",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Nepal QR ले कस्ता भुक्तानीहरू समर्थन गर्दछ?",
+        answers: [
+            "POS उपकरणहरू",
+            "मेसिनले पठाउने भुक्तानी",
+            "पर्सनल भुक्तानी",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङमा API Gateway को प्रयोग किन गरिन्छ?",
+        answers: [
+            "डाटा प्रवाह नियन्त्रण गर्न",
+            "सर्भरको गति बढाउन",
+            "ग्राहकसँग संवाद बढाउन",
+            "कम ब्याज दर प्रस्ताव गर्न"
+        ],
+        correct: 0
+    },
+    {
+        question: "बैंकमा Cloud आधारित सेवा किन महत्त्वपूर्ण छ?",
+        answers: [
+            "डेटा सजिलै पहुँचयोग्य बनाउन",
+            "लागत बचत गर्न",
+            "रियल-टाइम रिपोर्टिंग सुधार्न",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Firewall कुन उद्देश्यका लागि बैंकिङमा प्रयोग गरिन्छ?",
+        answers: [
+            "अधिकारीक डाटा सुरक्षित राख्न",
+            "ग्राहक डाटा सार्वजनिक गर्न",
+            "डेटा एक्सेस कम गर्न",
+            "डिजिटल खाता बन्द गर्न"
+        ],
+        correct: 0
+    },
+    {
+        question: "IoT को मद्दतले कुन बैंकिङ सेवा सुधार हुन्छ?",
+        answers: [
+            "स्मार्ट ATM",
+            "डेटा सुरक्षा",
+            "लेनदेनको द्रुतता",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङमा Big Data Analytics को उपयोग के हो?",
+        answers: [
+            "ग्राहकको आवश्यकता बुझ्न",
+            "धोखाधडी पत्ता लगाउन",
+            "बजार प्रवृत्ति विश्लेषण गर्न",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "डिजिटल भुक्तानी प्रणालीमा कुन टेक्नोलोजी प्रयोग गरिन्छ?",
+        answers: [
+            "NFC (Near Field Communication)",
+            "AI",
+            "Blockchain",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Nepal Rastra Bank को RTGS प्रणाली कुन प्रकारको भुक्तानीका लागि हो?",
+        answers: [
+            "सानो रकम",
+            "ठूलो रकम",
+            "क्रेडिट कार्ड भुक्तानी",
+            "QR भुक्तानी"
+        ],
+        correct: 1
+    },
+    {
+        question: "Nepal Rastra Bank ले SWIFT को प्रयोग किन गर्छ?",
+        answers: [
+            "अन्तर्राष्ट्रिय भुक्तानीका लागि",
+            "स्थानीय खाताहरू लिंक गर्न",
+            "ATM सेवा सुधार्न",
+            "ऋण सेवाका लागि"
+        ],
+        correct: 0
+    },{
+        question: "CBS (Core Banking System) को मुख्य उद्देश्य के हो?",
+        answers: [
+            "ग्राहकको व्यक्तिगत विवरण मेटाउने",
+            "रियल-टाइम डाटा व्यवस्थापन गर्ने",
+            "बैंकको शाखा संख्या बढाउने",
+            "पैसा बचत गराउने"
+        ],
+        correct: 1
+    },
+    {
+        question: "Big Data बैंकिङमा कुन उद्देश्यका लागि प्रयोग गरिन्छ?",
+        answers: [
+            "ग्राहकको व्यवहार विश्लेषण गर्न",
+            "लेनदेनको सुरक्षा सुधार्न",
+            "भविष्यको योजना बनाउन",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Blockchain टेक्नोलोजीले बैंकिङ प्रणालीलाई कसरी फाइदा पुर्‍याउँछ?",
+        answers: [
+            "लेनदेनलाई सुरक्षित बनाउँछ",
+            "डाटा गोप्य राख्छ",
+            "धोखाधडी रोक्न सहयोग गर्छ",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "QR कोड भुक्तानी प्रणालीमा कुन प्रविधि प्रयोग गरिन्छ?",
+        answers: [
+            "NFC",
+            "Barcode",
+            "Optical Scanner",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Nepal Rastra Bank ले 'RTGS' को अर्थ के हो?",
+        answers: [
+            "Real-Time Gross Settlement",
+            "Real Transaction Gateway System",
+            "Real-Time Government Settlement",
+            "Remote Transaction General System"
+        ],
+        correct: 0
+    },
+    {
+        question: "Cloud Computing बैंकिङ क्षेत्रमा किन महत्त्वपूर्ण छ?",
+        answers: [
+            "डेटा सजिलै सुरक्षित राख्न",
+            "ग्राहकको रियल-टाइम पहुँच सुनिश्चित गर्न",
+            "बैंकिङ सेवा सस्तो बनाउन",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Cybersecurity बैंकिङमा किन आवश्यक छ?",
+        answers: [
+            "धोखाधडी रोक्न",
+            "ग्राहकको डाटा सुरक्षित गर्न",
+            "डिजिटल लेनदेनको जोखिम घटाउन",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Nepal Rastra Bank ले हाल कुन डिजिटल भुक्तानी प्रणालीलाई प्राथमिकता दिएको छ?",
+        answers: [
+            "Mobile Banking",
+            "E-Banking",
+            "QR Payment",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङमा OTP को पूर्ण रुप के हो?",
+        answers: [
+            "One-Time Password",
+            "Online Transaction Processing",
+            "Official Transaction Password",
+            "Optical Token Passcode"
+        ],
+        correct: 0
+    },
+    {
+        question: "Artificial Intelligence ले बैंकिङमा कसरी सहयोग गर्छ?",
+        answers: [
+            "धोखाधडी पहिचान गर्न",
+            "ग्राहकलाई कस्टम सेवा दिन",
+            "डाटा विश्लेषण सुधार्न",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङमा NFC को पूर्ण रुप के हो?",
+        answers: [
+            "Near Field Communication",
+            "Network Frequency Control",
+            "Near Frequency Connection",
+            "Network Field Communication"
+        ],
+        correct: 0
+    },
+    {
+        question: "Virtual Banking भनेको के हो?",
+        answers: [
+            "शाखारहित बैंकिङ",
+            "ATM मा आधारित बैंकिङ",
+            "ग्राहकलाई नगद वितरण सेवा",
+            "इमेल बैंकिङ"
+        ],
+        correct: 0
+    },
+    {
+        question: "ATM को पहिलो प्राथमिकता के हो?",
+        answers: [
+            "ग्राहकलाई नगद निकाल्ने सेवा दिनु",
+            "चेक जम्मा गर्न",
+            "बैंक खाता खोल्न",
+            "ऋण दिने"
+        ],
+        correct: 0
+    },
+    {
+        question: "Blockchain ले कुन प्रकारको डाटा सुरक्षित राख्छ?",
+        answers: [
+            "Transactional Data",
+            "Personal Data",
+            "Financial Records",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Nepal Rastra Bank ले कुन प्रणालीमा आधारित भुक्तानीलाई प्राथमिकता दिन्छ?",
+        answers: [
+            "RTGS",
+            "Blockchain",
+            "E-wallet",
+            "QR Code"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङमा Biometric Authentication को उपयोग के हो?",
+        answers: [
+            "ग्राहकको पहिचान सुरक्षित गर्न",
+            "डाटा प्रवाह तीव्र बनाउने",
+            "नयाँ खाता खोल्न सजिलो बनाउने",
+            "ATM को सेवा सुधार गर्न"
+        ],
+        correct: 0
+    },
+    {
+        question: "CRM (Customer Relationship Management) प्रणाली बैंकिङमा किन महत्त्वपूर्ण छ?",
+        answers: [
+            "ग्राहकको समस्या समाधान गर्न",
+            "सेवा गुणस्तर सुधार्न",
+            "ग्राहकसँग सम्बन्ध बलियो बनाउने",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङ क्षेत्रको लागि Cyber Law किन महत्त्वपूर्ण छ?",
+        answers: [
+            "डिजिटल लेनदेनलाई कानुनी सुरक्षा दिन",
+            "धोखाधडी कम गर्न",
+            "डेटा चोरी रोक्न",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "Nepal QR प्रणाली किन विकसित गरियो?",
+        answers: [
+            "रियल-टाइम भुक्तानी सजिलो बनाउन",
+            "ग्राहकलाई डिजिटल सेवा दिन",
+            "नगदको आवश्यकता कम गर्न",
+            "माथिका सबै"
+        ],
+        correct: 3
+    },
+    {
+        question: "बैंकिङमा API को पूर्ण रूप के हो?",
+        answers: [
+            "Application Programming Interface",
+            "Automated Payment Integration",
+            "Access Payment Information",
+            "Account Processing Integration"
+        ],
+        correct: 0
+    },{
+        question: "नेटवर्किङमा प्रयोग हुने प्रोटोकल कुन हो?",
+        answers: ["HTTP", "SMTP", "FTP", "सबै"],
+        correct: 3
+    },
+    {
+        question: "बैंकिङ प्रणालीमा प्रयोग हुने डाटाबेस कुन हो?",
+        answers: ["MySQL", "Oracle", "PostgreSQL", "सबै"],
+        correct: 3
+    },
+    {
+        question: "VPN को पूरा रूप के हो?",
+        answers: ["Virtual Private Network", "Very Private Network", "Virtual Protocol Network", "None"],
+        correct: 0
+    },
+    {
+        question: "कुन सफ्टवेयर बैंकिङमा प्रयोग गरिन्छ?",
+        answers: ["Tally", "SAP", "Finacle", "Excel"],
+        correct: 2
+    },
+    {
+        question: "ATM को फुल फर्म के हो?",
+        answers: ["Automatic Teller Machine", "Automated Teller Machine", "Automated Transaction Machine", "None"],
+        correct: 1
+    },
+    {
+        question: "बैंकिङमा 'RTGS' को अर्थ के हो?",
+        answers: ["Real Time Gross Settlement", "Rapid Transaction Gateway System", "Realtime Transaction Gateway System", "None"],
+        correct: 0
+    },
+    {
+        question: "CBS को पूरा रूप के हो?",
+        answers: ["Core Banking System", "Central Banking System", "Complete Banking Software", "None"],
+        correct: 0
+    },
+    {
+        question: "क्रेडिट कार्डमा सुरक्षित भुक्तानीको लागि कुन प्रविधि प्रयोग गरिन्छ?",
+        answers: ["EMV", "RTGS", "UPI", "PIN"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङमा KYC को पूरा रूप के हो?",
+        answers: ["Know Your Customer", "Keep Your Customer", "Know Your Cash", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ प्रणालीमा म्यासेजिङ प्रोटोकल कुन हो?",
+        answers: ["SWIFT", "SMTP", "HTTPS", "IP"],
+        correct: 0
+    },
+    {
+        question: "IP Address मा IPv4 कति बिट हुन्छ?",
+        answers: ["32", "64", "128", "256"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ नेटवर्क सुरक्षित गर्न कुन प्रविधि प्रयोग गरिन्छ?",
+        answers: ["Firewall", "VPN", "Encryption", "सबै"],
+        correct: 3
+    },
+    {
+        question: "डेटा ट्रान्सफरको लागि FTP को फुल फर्म के हो?",
+        answers: ["File Transfer Protocol", "Fast Transfer Protocol", "File Transfer Process", "None"],
+        correct: 0
+    },
+    {
+        question: "IP Address मा IPv6 कति बिट हुन्छ?",
+        answers: ["64", "128", "256", "32"],
+        correct: 1
+    },
+    {
+        question: "बैंकिङमा प्रयोग हुने लोकप्रिय अपरेटिङ सिस्टम कुन हो?",
+        answers: ["Linux", "Windows", "UNIX", "सबै"],
+        correct: 3
+    },
+    {
+        question: "नेटवर्कमा डेटा सुरक्षित गर्न कुन विधि प्रयोग गरिन्छ?",
+        answers: ["Encryption", "Compression", "Synchronization", "Backup"],
+        correct: 0
+    },
+    {
+        question: "कुन उपकरण नेटवर्क जडानको लागि प्रयोग गरिन्छ?",
+        answers: ["Router", "Switch", "Hub", "सबै"],
+        correct: 3
+    },
+    {
+        question: "Firewall को मुख्य काम के हो?",
+        answers: ["नेटवर्कलाई सुरक्षित बनाउने", "डेटा कम्प्रेस गर्ने", "डेटा स्टोर गर्ने", "None"],
+        correct: 0
+    },
+    {
+        question: "SQL को फुल फर्म के हो?",
+        answers: ["Structured Query Language", "Standard Query Language", "Simple Query Language", "None"],
+        correct: 0
+    },
+    {
+        question: "डेटाबेस व्यवस्थापनमा प्रयोग हुने सामान्य कमाण्ड कुन हो?",
+        answers: ["SELECT", "INSERT", "DELETE", "सबै"],
+        correct: 3
+    },
+    {
+        question: "USB को पूरा रूप के हो?",
+        answers: ["Universal Serial Bus", "Universal System Bus", "Uniform Serial Bus", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ प्रणालीमा SMS को फुल फर्म के हो?",
+        answers: ["Short Message Service", "Secure Message Service", "System Message Service", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङमा प्रयोग हुने ब्याकअप विधि कुन हो?",
+        answers: ["Cloud Backup", "On-Site Backup", "Off-Site Backup", "सबै"],
+        correct: 3
+    },
+    {
+        question: "पोर्ट नम्बर 80 कुन प्रोटोकलसँग सम्बन्धित छ?",
+        answers: ["HTTP", "HTTPS", "FTP", "SMTP"],
+        correct: 0
+    },
+    {
+        question: "PAN को पूरा रूप के हो?",
+        answers: ["Permanent Account Number", "Primary Account Number", "Personal Account Number", "None"],
+        correct: 1
+    },
+    {
+        question: "नेटवर्किङमा IPsec के हो?",
+        answers: ["Security Protocol", "Encryption Protocol", "Firewall", "None"],
+        correct: 0
+    },    {
+        question: "बैंकिङ प्रणालीमा प्रयोग हुने प्रणाली कुन हो?",
+        answers: ["CBS", "ATM", "RTGS", "सबै"],
+        correct: 3
+    },
+    {
+        question: "डाटा स्टोरेजका लागि प्रयोग हुने विधि कुन हो?",
+        answers: ["Cloud", "Local", "Hybrid", "सबै"],
+        correct: 3
+    },
+    {
+        question: "SWIFT को पूरा रूप के हो?",
+        answers: ["Society for Worldwide Interbank Financial Telecommunication", "System Wide Internet Financial Transaction", "Secure Worldwide Interbank Financial Technology", "None"],
+        correct: 0
+    },
+    {
+        question: "USB Type-C कुन वर्षमा प्रारम्भ भयो?",
+        answers: ["2014", "2015", "2016", "2013"],
+        correct: 0
+    },
+    {
+        question: "नेटवर्कलाई सुरक्षित गर्न कुन विधि प्रभावकारी हो?",
+        answers: ["Firewall", "Encryption", "Antivirus", "सबै"],
+        correct: 3
+    },
+    {
+        question: "कुन सफ्टवेयर बैंकिङ डाटाबेस व्यवस्थापनका लागि उपयुक्त छ?",
+        answers: ["Oracle", "MySQL", "PostgreSQL", "सबै"],
+        correct: 3
+    },
+    {
+        question: "बैंकिङ ट्रान्जेक्शन सुरक्षित गर्न कुन प्रविधि प्रयोग गरिन्छ?",
+        answers: ["SSL", "TLS", "Encryption", "सबै"],
+        correct: 3
+    },
+    {
+        question: "IP Address कति प्रकारका हुन्छन्?",
+        answers: ["IPv4 र IPv6", "IPv5 र IPv6", "IPv3 र IPv4", "IPv2 र IPv4"],
+        correct: 0
+    },
+    {
+        question: "नेटवर्कमा MAC Address के हो?",
+        answers: ["Hardware Address", "IP Address", "Logical Address", "Subnet Address"],
+        correct: 0
+    },
+    {
+        question: "DNS को फुल फर्म के हो?",
+        answers: ["Domain Name System", "Domain Network System", "Direct Name Service", "None"],
+        correct: 0
+    },
+    {
+        question: "TCP को पूरा रूप के हो?",
+        answers: ["Transmission Control Protocol", "Transaction Control Protocol", "Transport Communication Protocol", "None"],
+        correct: 0
+    },
+    {
+        question: "HTTP को पूरा रूप के हो?",
+        answers: ["Hypertext Transfer Protocol", "Hypertext Transmission Protocol", "Hypertext Transfer Path", "None"],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसको प्राथमिक कुञ्जी (Primary Key) के हो?",
+        answers: ["Unique Identifier", "Foreign Key", "Primary Table", "None"],
+        correct: 0
+    },
+    {
+        question: "SSL को फुल फर्म के हो?",
+        answers: ["Secure Sockets Layer", "Secure Systems Layer", "Secure Software Layer", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङमा प्रयोग हुने CBS कुन हो?",
+        answers: ["Core Banking System", "Central Banking System", "Cash Banking System", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ प्रणालीमा ATM कुन प्रोटोकलमा काम गर्छ?",
+        answers: ["TCP/IP", "HTTP", "FTP", "SMTP"],
+        correct: 0
+    },
+    {
+        question: "कुन वेबसाइट एन्क्रिप्टेड कनेक्सन हो भनेर संकेत गर्छ?",
+        answers: ["HTTPS", "HTTP", "FTP", "DNS"],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसमा SQL कुन प्रकारको भाषा हो?",
+        answers: ["Query Language", "Programming Language", "Markup Language", "None"],
+        correct: 0
+    },
+    {
+        question: "नेटवर्कमा VLAN के हो?",
+        answers: ["Virtual LAN", "Virtual Layer Network", "Virtual Logical Address Network", "None"],
+        correct: 0
+    },
+    {
+        question: "Ping कमाण्ड कुन प्रोटोकलमा आधारित छ?",
+        answers: ["ICMP", "HTTP", "FTP", "TCP"],
+        correct: 0
+    },
+    {
+        question: "Linux मा फाइल परमिशन परिवर्तन गर्न कुन कमाण्ड प्रयोग गरिन्छ?",
+        answers: ["chmod", "chown", "ls", "pwd"],
+        correct: 0
+    },
+    {
+        question: "सर्भर र क्लाइन्टबीच डेटा आदानप्रदान गर्न कुन प्रोटोकल उपयोग गरिन्छ?",
+        answers: ["HTTP", "FTP", "SMTP", "सबै"],
+        correct: 3
+    },
+    {
+        question: "डेटाबेसमा SQL का कुन प्रकारका कमाण्ड हुन्छन्?",
+        answers: ["DML", "DDL", "TCL", "सबै"],
+        correct: 3
+    },
+    {
+        question: "डेटाबेसको Foreign Key के हो?",
+        answers: ["Relational Key", "Primary Key", "Unique Key", "None"],
+        correct: 0
+    },
+    {
+        question: "DNS को मुख्य कार्य के हो?",
+        answers: ["IP Address लाई नामसँग म्याप गर्नु", "डेटा भण्डारण गर्नु", "डाटा रिकभर गर्नु", "None"],
+        correct: 0
+    },
+    {
+        question: "IPv6 मा कति बिट हुन्छ?",
+        answers: ["128", "64", "32", "256"],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसमा डेटा सुरक्षित गर्न कुन विधि प्रयोग गरिन्छ?",
+        answers: ["Encryption", "Replication", "Compression", "सबै"],
+        correct: 3
+    },
+    {
+        question: "नेटवर्कलाई सुरक्षित राख्न IPS को मतलब के हो?",
+        answers: ["Intrusion Prevention System", "Internet Protocol System", "Intrusion Protection Service", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ सफ्टवेयर Finacle कुन कम्पनीले बनाएको हो?",
+        answers: ["Infosys", "TCS", "Wipro", "Oracle"],
+        correct: 0
+    }, {
+        question: "डेटाबेसमा Backup लिनुको उद्देश्य के हो?",
+        answers: ["डेटा सुरक्षित राख्न", "डेटा शेयर गर्न", "डेटा घटाउन", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङमा AML को अर्थ के हो?",
+        answers: ["Anti-Money Laundering", "Automatic Machine Learning", "Advanced Money Loaning", "None"],
+        correct: 0
+    },
+    {
+        question: "नेटवर्कमा Routing Table कुन उपकरणमा राखिन्छ?",
+        answers: ["Router", "Switch", "Firewall", "Hub"],
+        correct: 0
+    },
+    {
+        question: "IP Address को Subnet Mask के हो?",
+        answers: ["Network विभाजन गर्न", "Firewall बनाउन", "डेटा एनक्रिप्ट गर्न", "None"],
+        correct: 0
+    },
+    {
+        question: "Firewall को मुख्य उद्देश्य के हो?",
+        answers: ["नेटवर्क सुरक्षाको लागि", "डेटा स्टोरेजको लागि", "नेटवर्क स्पीड बढाउन", "None"],
+        correct: 0
+    },
+    {
+        question: "ATM मा प्रयोग हुने PIN को अधिकतम संख्या कति हुन्छ?",
+        answers: ["4 अंक", "6 अंक", "8 अंक", "5 अंक"],
+        correct: 0
+    },
+    {
+        question: "VPN को पूरा रूप के हो?",
+        answers: ["Virtual Private Network", "Virtual Public Network", "Verified Private Network", "None"],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसमा Normalization को मुख्य उद्देश्य के हो?",
+        answers: ["डेटा दोहोरिनबाट रोक्न", "डेटा बढाउन", "डेटा एनक्रिप्ट गर्न", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ प्रणालीमा RTGS को मतलब के हो?",
+        answers: ["Real-Time Gross Settlement", "Rapid Transfer Gateway System", "Real-Time General System", "None"],
+        correct: 0
+    },
+    {
+        question: "LAN को पूरा रूप के हो?",
+        answers: ["Local Area Network", "Large Area Network", "Logical Address Network", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकमा Ledger कुन प्रकारको डाटा हो?",
+        answers: ["Financial Data", "Customer Data", "Transaction Data", "None"],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसमा Indexing किन प्रयोग गरिन्छ?",
+        answers: ["डाटा खोजी छिटो गर्न", "डाटा सुरक्षित गर्न", "डाटा मेटाउन", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ सफ्टवेयर T24 कुन कम्पनीले बनाएको हो?",
+        answers: ["Temenos", "Infosys", "Wipro", "Microsoft"],
+        correct: 0
+    },
+    {
+        question: "नेटवर्कमा DHCP को मुख्य भूमिका के हो?",
+        answers: ["IP Address असाइन गर्न", "नेटवर्क मोनिटर गर्न", "डेटा एनक्रिप्ट गर्न", "None"],
+        correct: 0
+    },
+    {
+        question: "IFSC को अर्थ के हो?",
+        answers: ["Indian Financial System Code", "International Financial System Code", "Integrated Financial Service Code", "None"],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसमा Foreign Key के गर्छ?",
+        answers: ["Relation निर्माण गर्न", "डेटा मेटाउन", "डेटा दोहोरो पार्न", "None"],
+        correct: 0
+    },
+    {
+        question: "नेटवर्कमा Bandwidth के हो?",
+        answers: ["डेटा ट्रान्सफर दर", "नेटवर्क सुरक्षा", "डेटा भण्डारण क्षमता", "None"],
+        correct: 0
+    },
+    {
+        question: "HTTP मा कुन पोर्ट प्रयोग हुन्छ?",
+        answers: ["80", "443", "21", "25"],
+        correct: 0
+    },
+    {
+        question: "डेटा एनक्रिप्शनको उद्देश्य के हो?",
+        answers: ["डेटा सुरक्षित गर्न", "डेटा सेयर गर्न", "डेटा स्टोर गर्न", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ प्रणालीमा उपयोग हुने BRS को अर्थ के हो?",
+        answers: ["Bank Reconciliation Statement", "Bank Regulation System", "Banking Recovery System", "None"],
+        correct: 0
+    },
+    {
+        question: "डेटाबेसमा ACID को मतलब के हो?",
+        answers: ["Atomicity, Consistency, Isolation, Durability", "Advanced Consistent Data", "Access Control and Isolation", "None"],
+        correct: 0
+    },
+    {
+        question: "Big Data को मुख्य विशेषता के हो?",
+        answers: ["Volume", "Variety", "Velocity", "सबै"],
+        correct: 3
+    },
+    {
+        question: "नेपाली बैंकिङ प्रणालीमा मोबाइल बैंकिङ सुरु कहिले भयो?",
+        answers: ["२०६५", "२०६७", "२०६९", "२०६३"],
+        correct: 1
+    },
+    {
+        question: "नेपाली बैंकको पहिलो एटीएम कहिले स्थापना भयो?",
+        answers: ["२०५२", "२०५०", "२०५५", "२०५१"],
+        correct: 0
+    },
+    {
+        question: "SQL मा Join किन प्रयोग गरिन्छ?",
+        answers: ["तालिकाहरू जोड्न", "डेटा हटाउन", "डेटा स्टोर गर्न", "None"],
+        correct: 0
+    },
+    {
+        question: "SSL Certificate को मुख्य उद्देश्य के हो?",
+        answers: ["डेटा सुरक्षित गर्नु", "डेटा स्टोर गर्नु", "डेटा प्रोसेस गर्नु", "None"],
+        correct: 0
+    },
+    {
+        question: "FTP को फुल फर्म के हो?",
+        answers: ["File Transfer Protocol", "File Tracking Protocol", "File Transfer Path", "None"],
+        correct: 0
+    },
+    {
+        question: "बैंकिङ ट्रान्जेक्शनमा KYC को अर्थ के हो?",
+        answers: ["Know Your Customer", "Know Your Client", "Know Your Code", "None"],
+        correct: 0
+    },
+    {
+        question: "Cloud Computing मा SaaS को मतलब के हो?",
+        answers: ["Software as a Service", "System as a Service", "Storage as a Service", "None"],
+        correct: 0
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+];
+
+  
+
+
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    
+    const questionText = document.getElementById('question-text');
+    const answerBtns = document.querySelectorAll('.answer-btn');
+    const feedback = document.getElementById('feedback');
+    const questionNumber = document.getElementById('question-number');
+    const finalScore = document.getElementById('finalScore');
+    const percentage = document.getElementById('percentage');
+    const resultContainer = document.querySelector('.result');
+    const viewResultBtn = document.getElementById('viewResultBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    
+    
+    
+    function displayQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionText.textContent = currentQuestion.question;
+        for (let i = 0; i < currentQuestion.answers.length; i++) {
+            answerBtns[i].textContent = currentQuestion.answers[i];
+        }
+        questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        feedback.textContent = "";
+        startTimer();
+    }
+    
+    function checkAnswer(selectedIndex) {
+        const currentQuestion = questions[currentQuestionIndex];
+        clearTimeout(timer);
+        if (selectedIndex === currentQuestion.correct) {
+            score++;
+            feedback.textContent = "Correct!";
+            feedback.className = "feedback-frame correct";
+        } else {
+            feedback.textContent = "Incorrect!";
+            feedback.className = "feedback-frame incorrect";
+        }
+        setTimeout(() => {
+            nextQuestion();
+        }, 1500);
+    }
+    
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+        }
+    }
+    
+    function showResults() {
+        const percentageScore = (score / questions.length) * 100;
+        finalScore.textContent = `Score: ${score} / ${questions.length}`;
+        percentage.textContent = `Percentage: ${percentageScore.toFixed(2)}%`;
+        
+        // Display the result section and hide the quiz
+        resultContainer.style.display = 'block';
+        document.querySelector('.question-container').style.display = 'none';
+        
+        // Chart.js for visual representation (pie and bar charts)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                    data: [score, questions.length - score],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            }
+        });
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Score'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [score],
+                    backgroundColor: '#28a745'
+                }]
+            }
+        });
+
+        viewResultBtn.style.display = 'none';
+    }
+
+    function stopQuiz() {
+        
+       
+        showResults();
+    }
+    
+    // Initialize the quiz
+    displayQuestion();
+    function checkAnswer(selectedIndex) {
+    const currentQuestion = questions[currentQuestionIndex];
+    clearInterval(timer);
+
+    // Check if the selected answer is correct
+    if (selectedIndex === currentQuestion.correct) {
+        score++;
+        feedback.textContent = "Correct!";
+        feedback.className = "feedback-frame correct";
+    } else {
+        feedback.textContent = `Incorrect! The correct answer is:   ${currentQuestion.answers[currentQuestion.correct]}`;
+        feedback.className = "feedback-frame incorrect";
+    }
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 1500);
+}
+
+</script>
+
+
+
+  
+
+</body>
+</html> 

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech System with Sound Wave Animation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        textarea {
+            width: 80%;
+            height: 150px;
+            font-size: 16px;
+            padding: 10px;
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .controller {
+            margin-top: 20px;
+        }
+        .controller label {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        .controller input {
+            width: 200px;
+        }
+        .language-selector {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        select {
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #4a90e2;
+            outline: none;
+        }
+
+        /* Sound wave container */
+        .sound-wave-container {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            height: 100px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* Individual sound wave bars */
+        .sound-wave {
+            width: 10px;
+            height: 40px;
+            margin: 0 3px;
+            background-color: #ff6f61;
+            border-radius: 5px;
+            animation: waveAnimation 1s infinite ease-in-out;
+        }
+
+        .sound-wave:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .sound-wave:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .sound-wave:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        .sound-wave:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+        .sound-wave:nth-child(5) {
+            animation-delay: 0.8s;
+        }
+
+        /* Wave animation */
+        @keyframes waveAnimation {
+            0% {
+                height: 40px;
+            }
+            50% {
+                height: 60px;
+            }
+            100% {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Text to Speech System with Sound Wave Animation</h1>
+    <textarea id="textInput" placeholder="Type your text here..."></textarea>
+    <br>
+    <button onclick="readText()">Speak</button>
+    <button onclick="stopSpeech()">Stop</button>
+
+    <div class="controller">
+        <label for="speedControl">Speed:</label>
+        <input type="range" id="speedControl" min="0.1" max="2" step="0.1" value="1">
+        <span id="speedValue">1.0</span>
+    </div>
+
+    <div class="language-selector">
+        <label for="languageSelect">Choose Language:</label>
+        <select id="languageSelect">
+            <option value="en-US">English</option>
+            <option value="ne-NP">Nepali</option>
+        </select>
+    </div>
+
+    <!-- Sound wave animation container -->
+    <div id="soundWaveContainer" class="sound-wave-container">
+        <div class="sound-wave"></div>
+        <div class="sound-wave"></div>
+        <div class="sound-wave"></div>
+        <div class="sound-wave"></div>
+        <div class="sound-wave"></div>
+    </div>
+
+    <script>
+        let speechSynthesisUtterance = null; // Declare a global variable for speech
+
+        function readText() {
+            const textInput = document.getElementById('textInput').value;
+            const speed = document.getElementById('speedControl').value;
+            const language = document.getElementById('languageSelect').value;
+            document.getElementById('speedValue').textContent = speed; // Update speed value display
+
+            if (!textInput.trim()) {
+                alert("Please enter some text to read!");
+                return;
+            }
+
+            if (speechSynthesis.speaking) { // If speech is already ongoing, stop it before starting a new one
+                speechSynthesis.cancel();
+            }
+
+            // Show sound wave animation
+            document.getElementById('soundWaveContainer').style.opacity = 1;
+
+            speechSynthesisUtterance = new SpeechSynthesisUtterance();
+            speechSynthesisUtterance.text = textInput;
+            speechSynthesisUtterance.lang = language; // Set language based on selection
+            speechSynthesisUtterance.rate = speed; // Set the speed based on the slider value
+            speechSynthesisUtterance.pitch = 1; // Normal pitch
+
+            speechSynthesisUtterance.onend = function() {
+                // Hide sound wave animation when speech ends
+                document.getElementById('soundWaveContainer').style.opacity = 0;
+            };
+
+            speechSynthesis.speak(speechSynthesisUtterance);
+        }
+
+        function stopSpeech() {
+            if (speechSynthesis.speaking) { // Stop speech if it's speaking
+                speechSynthesis.cancel();
+                document.getElementById('soundWaveContainer').style.opacity = 0; // Hide the sound wave animation
+            }
+        }
+
+        // Update the speed value text when the slider changes
+        document.getElementById('speedControl').addEventListener('input', function() {
+            document.getElementById('speedValue').textContent = this.value;
+        });
+    </script>
+</body>
+</html>

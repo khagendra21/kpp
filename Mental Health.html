@@ -1,0 +1,3395 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Mental Health</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background-color: rgba(59, 47, 47, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background-color: rgba(255, 165, 0, 1); /* Vibrant orange */
+            
+        }
+
+        .feedback-frame {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .correct {
+            border: 3px solid #28a745;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .incorrect {
+            border: 3px solid #dc3545;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            gap: 10px;
+        }
+
+        .timer-icon {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: green;
+            width: 100%;
+            border-radius: 10px;
+            animation: countdown 10s linear forwards;
+        }
+
+        @keyframes countdown {
+            0% {
+                width: 100%;
+            }
+            100% {
+                width: 0%;
+                background-color: red;
+            }
+        }
+
+        .navigation-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        p{
+            color:ye
+        }
+        .result-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .btn-result {
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-result:hover {
+            background-color: #218838;
+        }
+
+        /* Stop button */
+        .btn-stop {
+            padding: 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-stop:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design for small screens */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 95%;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .answer-btn {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .feedback-frame {
+                font-size: 1em;
+            }
+
+            .timer {
+                font-size: 1.2em;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Display Question Number -->
+        
+        <div class="question-number" id="question-number">Question 1 of 6</div>
+
+        <div class="timer">
+           
+            
+        </div>
+
+        <div class="question-container">
+            <div class="question" id="question-text">Question will appear here</div>
+            <div class="answers">
+                <button class="answer-btn" id="btn1" onclick="checkAnswer(0)">Option 1</button>
+                <button class="answer-btn" id="btn2" onclick="checkAnswer(1)">Option 2</button>
+                <button class="answer-btn" id="btn3" onclick="checkAnswer(2)">Option 3</button>
+                <button class="answer-btn" id="btn4" onclick="checkAnswer(3)">Option 4</button>
+            </div>
+            <div class="feedback-frame" id="feedback"></div>
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+            <button class="btn-result" id="viewResultBtn" onclick="showResults()" style="display:none;">View Result</button>
+            <button class="btn-stop" id="stopBtn" onclick="stopQuiz()">Stop Quiz</button>
+        </div>
+
+        <div class="result">
+            <div class="result-header">Quiz Results</div>
+            <div id="finalScore">Score: 0</div>
+            <div id="percentage">Percentage: 0%</div>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+     <script>
+   const questions = [
+   {
+        question: "What is the most common type of mood disorder?",
+        answers: ["Depression", "Bipolar disorder", "Anxiety disorder", "Schizophrenia"],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment for schizophrenia?",
+        answers: ["Antipsychotic medications", "Cognitive-behavioral therapy", "Electroconvulsive therapy", "Psychodynamic therapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common symptom of ADHD?",
+        answers: ["Inattention", "Hyperactivity", "Impulsivity", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a characteristic of a panic attack?",
+        answers: ["Excessive worry", "Rapid heart rate", "Feeling of choking", "Both B and C"],
+        correct: 3
+    },
+    {
+        question: "What is the first-line treatment for generalized anxiety disorder?",
+        answers: ["Cognitive-behavioral therapy", "Antidepressants", "Benzodiazepines", "Exercise"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a major risk factor for developing depression?",
+        answers: ["Family history of depression", "Childhood trauma", "Chronic stress", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a symptom of autism spectrum disorder?",
+        answers: ["Social communication challenges", "Repetitive behaviors", "Restricted interests", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which therapy is considered effective for post-traumatic stress disorder (PTSD)?",
+        answers: ["Cognitive-behavioral therapy", "Exposure therapy", "Eye movement desensitization and reprocessing (EMDR)", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which medication class is commonly used to treat depression?",
+        answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Antipsychotics", "Stimulants", "Benzodiazepines"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of an 'intervention' in mental health?",
+        answers: ["To force a person into treatment", "To help a person understand the need for help", "To provide medications immediately", "To diagnose a mental health disorder"],
+        correct: 1
+    },
+    {
+        question: "Which of the following is a potential complication of untreated depression?",
+        answers: ["Increased risk of suicide", "Impaired ability to function", "Strained relationships", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the focus of cognitive-behavioral therapy (CBT)?",
+        answers: ["Changing negative thought patterns", "Exploring past trauma", "Improving social skills", "Creating a safe environment"],
+        correct: 0
+    },
+    {
+        question: "Which personality disorder is characterized by a pattern of grandiosity, need for admiration, and lack of empathy?",
+        answers: ["Narcissistic personality disorder", "Borderline personality disorder", "Antisocial personality disorder", "Avoidant personality disorder"],
+        correct: 0
+    },
+    {
+        question: "What is a hallmark symptom of obsessive-compulsive disorder (OCD)?",
+        answers: ["Repetitive behaviors or mental acts", "Extreme fear of social situations", "Paranoia", "Chronic sadness"],
+        correct: 0
+    },
+    {
+        question: "Which disorder is characterized by an intense fear of gaining weight and a distorted body image?",
+        answers: ["Anorexia nervosa", "Bulimia nervosa", "Binge-eating disorder", "Obesity"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is true about the relationship between mental health and physical health?",
+        answers: ["Mental health problems can contribute to physical illnesses", "Physical illness can worsen mental health problems", "Both are interconnected", "None of the above"],
+        correct: 2
+    },
+    {
+        question: "What is the primary focus of dialectical behavior therapy (DBT)?",
+        answers: ["Helping patients tolerate distress", "Changing negative thought patterns", "Focusing on childhood trauma", "Improving sleep habits"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of social anxiety disorder?",
+        answers: ["Fear of being judged in social situations", "Intense worry about embarrassment", "Avoidance of social gatherings", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which is considered a common cause of post-traumatic stress disorder (PTSD)?",
+        answers: ["War combat", "Natural disasters", "Sexual assault", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the most common treatment for bipolar disorder?",
+        answers: ["Mood stabilizers", "Antidepressants", "Cognitive-behavioral therapy", "Antipsychotic medications"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of a manic episode in bipolar disorder?",
+        answers: ["Excessive energy and decreased need for sleep", "Feelings of worthlessness", "Low mood and sadness", "Loss of appetite"],
+        correct: 0
+    },
+    {
+        question: "Which of the following disorders is most often diagnosed in childhood?",
+        answers: ["Attention-deficit hyperactivity disorder (ADHD)", "Schizophrenia", "Depression", "Bipolar disorder"],
+        correct: 0
+    },
+    {
+        question: "Which type of therapy focuses on resolving unconscious conflicts and past trauma?",
+        answers: ["Psychodynamic therapy", "Cognitive-behavioral therapy", "Humanistic therapy", "Interpersonal therapy"],
+        correct: 0
+    },
+    {
+        question: "What is the purpose of antidepressants?",
+        answers: ["To balance chemicals in the brain associated with mood", "To eliminate intrusive thoughts", "To prevent sleep disturbances", "To cure anxiety disorders"],
+        correct: 0
+    },
+    {
+        question: "What is one of the key challenges in treating personality disorders?",
+        answers: ["The difficulty in changing ingrained patterns of thinking and behavior", "The inability to diagnose them", "The rarity of the disorders", "The ease of treatment with medications"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is true about suicide prevention?",
+        answers: ["Seeking professional help can reduce the risk of suicide", "Most people who experience suicidal thoughts will not attempt suicide", "Suicide prevention strategies are ineffective", "None of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is commonly seen in someone with borderline personality disorder?",
+        answers: ["Unstable relationships and mood swings", "Excessive fear of social situations", "Difficulty with maintaining relationships", "Chronic feelings of emptiness"],
+        correct: 0
+    },
+    {
+        question: "Which mental health condition involves a person having intrusive and disturbing thoughts, and often engaging in compulsive behaviors?",
+        answers: ["Obsessive-compulsive disorder (OCD)", "Generalized anxiety disorder", "Social anxiety disorder", "Panic disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an example of a substance use disorder?",
+        answers: ["Alcohol addiction", "Prescription drug abuse", "Cocaine addiction", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is a key feature of autism spectrum disorder?",
+        answers: ["Difficulty with social communication", "Excessive aggression", "Compulsive eating behaviors", "Frequent mood swings"],
+        correct: 0
+    },
+    {
+        question: "Which of the following can help manage stress and improve mental health?",
+        answers: ["Exercise", "Meditation", "Social support", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is a key characteristic of antisocial personality disorder?",
+        answers: ["A disregard for the rights of others", "Chronic sadness", "Extreme mood swings", "Fear of abandonment"],
+        correct: 0
+    },
+    {
+        question: "What is one of the main goals of family therapy in treating mental health disorders?",
+        answers: ["To improve communication and reduce conflict within the family", "To diagnose mental health disorders", "To change individual behaviors", "To focus only on the patient"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of anorexia nervosa?",
+        answers: ["Severe restriction of food intake", "Binge eating", "Excessive focus on exercise", "All of the above"],
+        correct: 0
+    },
+    {
+        question: "Which disorder involves a persistent pattern of inattention and/or hyperactivity-impulsivity?",
+        answers: ["Attention-deficit hyperactivity disorder (ADHD)", "Generalized anxiety disorder", "Obsessive-compulsive disorder", "Bipolar disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common treatment for sleep disorders?",
+        answers: ["Cognitive behavioral therapy", "Sleep medications", "Relaxation techniques", "All of the above"],
+        correct: 3
+    },{
+        question: "What is the hallmark symptom of agoraphobia?",
+        answers: ["Fear of open spaces or being in places where escape might be difficult", "Fear of specific social situations", "Fear of small spaces", "Fear of loud noises"],
+        correct: 0
+    },
+    {
+        question: "Which disorder is characterized by alternating periods of elevated mood and depression?",
+        answers: ["Bipolar disorder", "Major depressive disorder", "Schizophrenia", "Generalized anxiety disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the main goal of exposure therapy for anxiety disorders?",
+        answers: ["To gradually reduce fear by exposing the patient to anxiety-provoking situations", "To explore past traumatic experiences", "To suppress anxiety through medication", "To avoid anxiety triggers completely"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an example of a dissociative disorder?",
+        answers: ["Dissociative identity disorder", "Schizophrenia", "Post-traumatic stress disorder", "Obsessive-compulsive disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the primary focus of the psychodynamic therapy approach?",
+        answers: ["Exploring unconscious thoughts and childhood experiences", "Changing negative thought patterns", "Focusing on current behaviors and thoughts", "Teaching relaxation techniques"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a possible symptom of bipolar disorder during a manic episode?",
+        answers: ["Increased talkativeness", "Impulsivity", "Grandiose thinking", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the role of a mental health counselor?",
+        answers: ["To diagnose mental health disorders", "To provide therapeutic support", "To prescribe medications", "To act as a primary care physician"],
+        correct: 1
+    },
+    {
+        question: "Which of the following mental health conditions is typically treated with antipsychotic medications?",
+        answers: ["Schizophrenia", "Generalized anxiety disorder", "Panic disorder", "Post-traumatic stress disorder"],
+        correct: 0
+    },
+    {
+        question: "What is a common symptom of obsessive-compulsive disorder (OCD)?",
+        answers: ["Intrusive, unwanted thoughts", "Excessive worry about everyday issues", "Mood swings", "Panic attacks"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of psychosis?",
+        answers: ["Hallucinations", "Memory loss", "Obsessive thoughts", "Nightmares"],
+        correct: 0
+    },
+    {
+        question: "What is a primary treatment for eating disorders like bulimia nervosa?",
+        answers: ["Cognitive-behavioral therapy", "Medication", "Family therapy", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a characteristic of post-traumatic stress disorder (PTSD)?",
+        answers: ["Flashbacks", "Nightmares", "Avoidance of reminders", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which disorder is characterized by severe mood swings, including episodes of mania and depression?",
+        answers: ["Bipolar disorder", "Major depressive disorder", "Generalized anxiety disorder", "Schizophrenia"],
+        correct: 0
+    },
+    {
+        question: "Which is a common symptom of generalized anxiety disorder (GAD)?",
+        answers: ["Excessive, uncontrollable worry", "Panic attacks", "Social withdrawal", "Aggressive behavior"],
+        correct: 0
+    },
+    {
+        question: "Which therapy is most often used for children with autism spectrum disorder?",
+        answers: ["Applied behavior analysis (ABA)", "Cognitive-behavioral therapy", "Exposure therapy", "Electroconvulsive therapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a risk factor for depression?",
+        answers: ["Family history of depression", "Chronic illness", "Major life stressors", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which treatment is typically used for attention-deficit hyperactivity disorder (ADHD)?",
+        answers: ["Stimulant medications", "Antipsychotic medications", "Cognitive-behavioral therapy", "Mood stabilizers"],
+        correct: 0
+    },
+    {
+        question: "What is one common treatment for insomnia?",
+        answers: ["Cognitive-behavioral therapy for insomnia", "Medication", "Relaxation techniques", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a hallmark symptom of schizophrenia?",
+        answers: ["Hallucinations", "Extreme mood swings", "Compulsive behaviors", "Intense fears"],
+        correct: 0
+    },
+    {
+        question: "Which of the following can contribute to the development of anxiety disorders?",
+        answers: ["Stressful life events", "Genetic factors", "Chemical imbalances in the brain", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which is a characteristic of narcissistic personality disorder?",
+        answers: ["A need for admiration", "Lack of empathy", "Sense of superiority", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a potential consequence of untreated depression?",
+        answers: ["Impaired ability to work", "Relationship difficulties", "Increased risk of suicide", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the goal of mindfulness-based therapy?",
+        answers: ["To improve focus and awareness in the present moment", "To explore unconscious thoughts", "To change maladaptive thought patterns", "To recall past traumatic experiences"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is often a symptom of social anxiety disorder?",
+        answers: ["Fear of being judged in social situations", "Excessive fear of public speaking", "Avoiding social interactions", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary focus of cognitive-behavioral therapy (CBT)?",
+        answers: ["Changing negative thought patterns", "Exploring unconscious thoughts", "Building self-esteem", "Improving social skills"],
+        correct: 0
+    },
+    {
+        question: "What is a possible symptom of a manic episode in bipolar disorder?",
+        answers: ["Increased energy", "Decreased need for sleep", "Racing thoughts", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a symptom of a depressive episode in bipolar disorder?",
+        answers: ["Low mood", "Decreased energy", "Loss of interest in activities", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following disorders is commonly treated with selective serotonin reuptake inhibitors (SSRIs)?",
+        answers: ["Major depressive disorder", "Panic disorder", "Social anxiety disorder", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a key symptom of post-traumatic stress disorder (PTSD)?",
+        answers: ["Flashbacks to a traumatic event", "Avoidance of reminders of the trauma", "Hypervigilance", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary goal of family therapy in mental health treatment?",
+        answers: ["To improve family communication and dynamics", "To diagnose mental health conditions", "To treat only the patient", "To focus on individual issues"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is true about the use of medication in treating mental health disorders?",
+        answers: ["Medications are used to manage symptoms", "Medications cure mental health disorders", "Medications are always the first line of treatment", "None of the above"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a potential benefit of psychotherapy?",
+        answers: ["Improved coping strategies", "Increased self-awareness", "Better emotional regulation", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which disorder is characterized by persistent and excessive fear of separation from attachment figures?",
+        answers: ["Separation anxiety disorder", "Generalized anxiety disorder", "Social anxiety disorder", "Panic disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the most effective approach to treating addiction?",
+        answers: ["Combination of therapy and medication", "Detoxification", "Support groups", "Abstinence alone"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common treatment for generalized anxiety disorder?",
+        answers: ["Cognitive-behavioral therapy", "Antidepressants", "Relaxation techniques", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which disorder is often associated with difficulty focusing, impulsivity, and hyperactivity?",
+        answers: ["Attention-deficit hyperactivity disorder (ADHD)", "Autism spectrum disorder", "Schizophrenia", "Major depressive disorder"],
+        correct: 0
+    },{
+        question: "Which of the following is an example of an anxiety disorder?",
+        answers: ["Generalized anxiety disorder", "Dissociative identity disorder", "Bipolar disorder", "Schizophrenia"],
+        correct: 0
+    },
+    {
+        question: "What does cognitive-behavioral therapy (CBT) focus on?",
+        answers: ["Changing negative thought patterns", "Exploring past experiences", "Dream analysis", "Understanding unconscious motives"],
+        correct: 0
+    },
+    {
+        question: "Which disorder is characterized by persistent and exaggerated fear of a specific object or situation?",
+        answers: ["Phobia", "Bipolar disorder", "Schizophrenia", "Obsessive-compulsive disorder"],
+        correct: 0
+    },
+    {
+        question: "Which mental health disorder involves alternating periods of extreme energy and deep depression?",
+        answers: ["Bipolar disorder", "Depression", "Schizophrenia", "Generalized anxiety disorder"],
+        correct: 0
+    },
+    {
+        question: "What is a common symptom of panic disorder?",
+        answers: ["Sudden intense fear and physical symptoms like rapid heartbeat", "Feeling of grandiosity", "Excessive worry over future events", "Extreme social withdrawal"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a type of mood disorder?",
+        answers: ["Depression", "Obsessive-compulsive disorder", "Phobia", "Panic disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment for schizophrenia?",
+        answers: ["Antipsychotic medication", "Antidepressant medication", "Cognitive-behavioral therapy", "Electroconvulsive therapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of borderline personality disorder?",
+        answers: ["Intense mood swings", "Perfectionism", "Excessive concern with cleanliness", "Obsessive thoughts"],
+        correct: 0
+    },
+    {
+        question: "What is the most common form of therapy for treating depression?",
+        answers: ["Cognitive-behavioral therapy (CBT)", "Psychodynamic therapy", "Dialectical behavior therapy", "Supportive therapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common symptom of obsessive-compulsive disorder (OCD)?",
+        answers: ["Intrusive thoughts and compulsive behaviors", "Mania and depression", "Hallucinations", "Mood swings"],
+        correct: 0
+    },
+    {
+        question: "Which disorder is associated with fear of being judged or humiliated in social situations?",
+        answers: ["Social anxiety disorder", "Obsessive-compulsive disorder", "Generalized anxiety disorder", "Post-traumatic stress disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the main goal of exposure therapy in treating anxiety disorders?",
+        answers: ["Gradually exposing the patient to feared situations to reduce anxiety", "Eliminating all anxiety triggers", "Increasing stress levels", "Curing the underlying cause of anxiety"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a key symptom of post-traumatic stress disorder (PTSD)?",
+        answers: ["Flashbacks to a traumatic event", "Manic episodes", "Excessive worry about future events", "Compulsive behaviors"],
+        correct: 0
+    },
+    {
+        question: "Which mental health disorder is characterized by persistent sadness and loss of interest in activities?",
+        answers: ["Depression", "Bipolar disorder", "Generalized anxiety disorder", "Post-traumatic stress disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following therapies is most commonly used for children with autism spectrum disorder?",
+        answers: ["Applied behavior analysis (ABA)", "Cognitive-behavioral therapy", "Exposure therapy", "Electroconvulsive therapy"],
+        correct: 0
+    },
+    {
+        question: "What type of disorder is characterized by difficulty in maintaining attention, hyperactivity, and impulsivity?",
+        answers: ["Attention-deficit hyperactivity disorder (ADHD)", "Schizophrenia", "Bipolar disorder", "Social anxiety disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a potential side effect of antidepressant medications?",
+        answers: ["Weight gain", "Drowsiness", "Dry mouth", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the role of a psychologist in treating mental health conditions?",
+        answers: ["Provide therapy and counseling", "Prescribe medication", "Diagnose medical conditions", "Perform surgical procedures"],
+        correct: 0
+    },
+    {
+        question: "Which of the following best describes a symptom of dissociative identity disorder?",
+        answers: ["Presence of two or more distinct personality states", "Extreme social withdrawal", "Excessive worry", "Manic episodes"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a risk factor for developing anxiety disorders?",
+        answers: ["Family history of anxiety", "Chronic stress", "Childhood trauma", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is a common treatment for post-traumatic stress disorder (PTSD)?",
+        answers: ["Cognitive-behavioral therapy (CBT)", "Exposure therapy", "Medication", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a characteristic of obsessive-compulsive disorder (OCD)?",
+        answers: ["Obsessions and compulsions", "Hallucinations", "Extreme sadness", "Mood swings"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an example of a mood disorder?",
+        answers: ["Depression", "Panic disorder", "Schizophrenia", "Phobia"],
+        correct: 0
+    },
+    {
+        question: "Which of the following mental health professionals prescribes medication?",
+        answers: ["Psychiatrist", "Psychologist", "Social worker", "Counselor"],
+        correct: 0
+    },
+    {
+        question: "What is the hallmark symptom of generalized anxiety disorder?",
+        answers: ["Excessive worry about everyday situations", "Sudden panic attacks", "Hallucinations", "Loss of interest in activities"],
+        correct: 0
+    },
+    {
+        question: "Which disorder is characterized by repeated binge eating followed by compensatory behaviors like purging?",
+        answers: ["Bulimia nervosa", "Anorexia nervosa", "Binge eating disorder", "Generalized anxiety disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the main treatment for attention-deficit hyperactivity disorder (ADHD)?",
+        answers: ["Stimulant medications", "Antipsychotic medications", "Antidepressants", "Cognitive-behavioral therapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of a manic episode in bipolar disorder?",
+        answers: ["Increased energy and activity", "Decreased energy and sadness", "Extreme guilt", "Social withdrawal"],
+        correct: 0
+    },
+    {
+        question: "Which mental health disorder is characterized by severe mood swings, including depressive episodes and manic episodes?",
+        answers: ["Bipolar disorder", "Schizophrenia", "Obsessive-compulsive disorder", "Generalized anxiety disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of major depressive disorder?",
+        answers: ["Loss of interest in activities", "Extreme fatigue", "Changes in appetite", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary treatment for major depressive disorder?",
+        answers: ["Antidepressant medications", "Antipsychotic medications", "Electroconvulsive therapy", "Cognitive-behavioral therapy"],
+        correct: 3
+    },
+    {
+        question: "Which of the following mental health conditions is most commonly associated with eating disorders?",
+        answers: ["Body dysmorphia", "Anxiety disorders", "Mood disorders", "Obsessive-compulsive disorder"],
+        correct: 0
+    },
+    {
+        question: "What is one possible side effect of antipsychotic medication?",
+        answers: ["Weight gain", "Drowsiness", "Dry mouth", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which mental health disorder is characterized by extreme fear of being judged or embarrassed in social situations?",
+        answers: ["Social anxiety disorder", "Post-traumatic stress disorder", "Schizophrenia", "Generalized anxiety disorder"],
+        correct: 0
+    },
+    {
+        question: "What is a common symptom of schizophrenia?",
+        answers: ["Hallucinations", "Extreme mood swings", "Obsessions", "Compulsions"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a key feature of narcissistic personality disorder?",
+        answers: ["Exaggerated sense of self-importance", "Fear of abandonment", "Extreme sensitivity to criticism", "Extreme difficulty in making decisions"],
+        correct: 0
+    }, {
+        question: "What is the primary focus of dialectical behavior therapy (DBT)?",
+        answers: ["Emotion regulation and mindfulness", "Exploring unconscious thoughts", "Analyzing past relationships", "Changing negative thinking patterns"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common side effect of stimulant medications used for ADHD?",
+        answers: ["Decreased appetite", "Increased energy", "Trouble sleeping", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the first step in treating mental health disorders?",
+        answers: ["Seeking professional help", "Ignoring the symptoms", "Self-medicating", "Talking to family members"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of panic disorder?",
+        answers: ["Sudden, overwhelming fear with physical symptoms", "Constant feelings of sadness", "Obsessive thoughts", "Severe mood swings"],
+        correct: 0
+    },
+    {
+        question: "What is an example of a mental health disorder that affects a person's ability to experience pleasure in activities they once enjoyed?",
+        answers: ["Anhedonia", "Phobia", "Bipolar disorder", "Psychosis"],
+        correct: 0
+    },
+    {
+        question: "Which of the following mental health conditions is often treated with both medication and therapy?",
+        answers: ["Depression", "Schizophrenia", "Bipolar disorder", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following disorders is characterized by intense fear of gaining weight and an obsession with body image?",
+        answers: ["Anorexia nervosa", "Bulimia nervosa", "Body dysmorphic disorder", "Binge eating disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a disorder where a person experiences excessive and unrealistic worry about various life aspects?",
+        answers: ["Generalized anxiety disorder", "Obsessive-compulsive disorder", "Post-traumatic stress disorder", "Phobia"],
+        correct: 0
+    },
+    {
+        question: "Which mental health condition involves sudden mood changes, excessive energy, and reckless behavior followed by depressive episodes?",
+        answers: ["Bipolar disorder", "Depression", "Schizophrenia", "Post-traumatic stress disorder"],
+        correct: 0
+    },
+    {
+        question: "What is a key feature of dissociative identity disorder?",
+        answers: ["Multiple distinct personalities or identities", "Excessive anxiety", "Impulsive behavior", "Hallucinations"],
+        correct: 0
+    },
+    {
+        question: "Which type of therapy focuses on changing unhelpful thoughts and behaviors?",
+        answers: ["Cognitive-behavioral therapy (CBT)", "Psychodynamic therapy", "Humanistic therapy", "Family therapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a possible cause of mental health disorders?",
+        answers: ["Genetic factors", "Environmental stress", "Brain chemistry imbalances", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following mental health conditions can be treated with antidepressant medications?",
+        answers: ["Depression", "Social anxiety disorder", "Post-traumatic stress disorder", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is a common treatment for individuals with schizophrenia?",
+        answers: ["Antipsychotic medication", "Antidepressant medication", "Cognitive-behavioral therapy", "Electroconvulsive therapy"],
+        correct: 0
+    },
+    {
+        question: "Which disorder is characterized by intrusive thoughts and repetitive actions to relieve anxiety?",
+        answers: ["Obsessive-compulsive disorder (OCD)", "Phobia", "Social anxiety disorder", "Panic disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the primary treatment for eating disorders like anorexia nervosa and bulimia nervosa?",
+        answers: ["Therapy and nutritional counseling", "Antipsychotic medications", "Electroconvulsive therapy", "Surgical interventions"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a sign of depression?",
+        answers: ["Constant feelings of sadness", "Loss of interest in previously enjoyable activities", "Fatigue", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the focus of family therapy in treating mental health issues?",
+        answers: ["Improving communication and dynamics within the family", "Changing individual behaviors", "Analyzing childhood experiences", "Exploring the unconscious mind"],
+        correct: 0
+    },
+    {
+        question: "Which mental health disorder is marked by the inability to recognize reality, often accompanied by hallucinations or delusions?",
+        answers: ["Schizophrenia", "Bipolar disorder", "Depression", "Anxiety disorders"],
+        correct: 0
+    },
+    {
+        question: "Which therapy involves focusing on increasing self-awareness and personal growth?",
+        answers: ["Humanistic therapy", "Cognitive-behavioral therapy", "Psychoanalytic therapy", "Behavior therapy"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a key component of mindfulness-based therapies?",
+        answers: ["Focus on the present moment", "Reliving past traumatic events", "Changing negative thought patterns", "Exploring unconscious desires"],
+        correct: 0
+    },
+    {
+        question: "What is the term for a mental health disorder where individuals have difficulty focusing, organizing tasks, and controlling impulses?",
+        answers: ["Attention-deficit hyperactivity disorder (ADHD)", "Anxiety disorder", "Schizophrenia", "Bipolar disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following disorders is most commonly associated with feelings of isolation and detachment from others?",
+        answers: ["Depression", "Schizophrenia", "Social anxiety disorder", "Antisocial personality disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is an effective way to manage stress?",
+        answers: ["Exercise", "Meditation", "Time management", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which therapy approach helps individuals develop healthier thinking patterns and problem-solving skills?",
+        answers: ["Cognitive-behavioral therapy (CBT)", "Psychodynamic therapy", "Dialectical behavior therapy (DBT)", "Gestalt therapy"],
+        correct: 0
+    },
+    {
+        question: "What is a common side effect of benzodiazepine medications used to treat anxiety?",
+        answers: ["Drowsiness", "Weight loss", "Hallucinations", "Insomnia"],
+        correct: 0
+    },
+    {
+        question: "Which mental health disorder is most commonly treated with a combination of therapy and medication?",
+        answers: ["Major depressive disorder", "Schizophrenia", "Post-traumatic stress disorder", "All of the above"],
+        correct: 3
+    },
+
+    {
+        question: "Which of the following is an essential component of self-care for individuals with mental health challenges?",
+        answers: ["Regular exercise", "Healthy eating", "Adequate sleep", "All of the above"],
+        correct: 3
+    },
+    {
+    question: "Which of the following is a common symptom of depression?",
+    answers: ["Fatigue", "Increased energy", "Euphoria", "Excessive sleep"],
+    correct: 0
+},
+{
+    question: "What is the primary goal of cognitive-behavioral therapy (CBT)?",
+    answers: ["To change negative thinking patterns", "To develop coping skills", "To explore past trauma", "To provide medication management"],
+    correct: 0
+},
+{
+    question: "Which disorder is characterized by excessive worry and fear?",
+    answers: ["Generalized anxiety disorder", "Bipolar disorder", "Schizophrenia", "Obsessive-compulsive disorder"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly prescribed for managing schizophrenia?",
+    answers: ["Haloperidol", "Fluoxetine", "Sertraline", "Lorazepam"],
+    correct: 0
+},
+{
+    question: "What is the most common form of therapy used for patients with anxiety disorders?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Psychoanalysis", "Supportive psychotherapy", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "What is the primary characteristic of post-traumatic stress disorder (PTSD)?",
+    answers: ["Flashbacks", "Euphoria", "Decreased appetite", "Hypomania"],
+    correct: 0
+},
+{
+    question: "Which of the following is a first-line treatment for panic disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Mood stabilizers"],
+    correct: 0
+},
+{
+    question: "Which of the following is a hallmark sign of bipolar disorder?",
+    answers: ["Mood swings between manic and depressive states", "Consistent low mood", "Constant irritability", "Excessive worry"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly used to treat obsessive-compulsive disorder (OCD)?",
+    answers: ["Fluoxetine", "Lorazepam", "Haloperidol", "Valproate"],
+    correct: 0
+},
+{
+    question: "What is the main purpose of the DSM-5 (Diagnostic and Statistical Manual of Mental Disorders)?",
+    answers: ["To diagnose mental health conditions", "To recommend treatment options", "To assess physical health conditions", "To evaluate behavioral performance"],
+    correct: 0
+},
+{
+    question: "Which condition is associated with excessive fear of social situations?",
+    answers: ["Social anxiety disorder", "Agoraphobia", "Panic disorder", "Phobias"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of mania in bipolar disorder?",
+    answers: ["Increased energy", "Feelings of hopelessness", "Slow speech", "Depressive thoughts"],
+    correct: 0
+},
+{
+    question: "Which of the following is a type of psychotic disorder?",
+    answers: ["Schizophrenia", "Anxiety disorder", "Depression", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for major depressive disorder?",
+    answers: ["Antidepressant medications", "Antipsychotic medications", "Therapy", "Mood stabilizers"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Sexual dysfunction", "Weight gain", "Hypertension", "Hair loss"],
+    correct: 0
+},
+{
+    question: "Which of the following is an example of a mood stabilizer used in bipolar disorder?",
+    answers: ["Lithium", "Alprazolam", "Mirtazapine", "Sertraline"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is characterized by intense fear of gaining weight?",
+    answers: ["Anorexia nervosa", "Bulimia nervosa", "Body dysmorphic disorder", "Binge-eating disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common risk factor for suicide?",
+    answers: ["Mental illness", "Substance abuse", "Previous suicide attempt", "All of the above"],
+    correct: 3
+},
+{
+    question: "Which of the following is NOT a symptom of generalized anxiety disorder?",
+    answers: ["Excessive worry", "Fatigue", "Restlessness", "Euphoria"],
+    correct: 3
+},
+{
+    question: "What is the primary treatment for alcohol use disorder?",
+    answers: ["Detoxification and counseling", "Medication only", "Psychotherapy", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "Which of the following is a potential side effect of antipsychotic medications?",
+    answers: ["Tardive dyskinesia", "Weight loss", "Low blood pressure", "Insomnia"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common therapy used in the treatment of eating disorders?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Dialectical behavior therapy (DBT)", "Mindfulness-based therapy", "Art therapy"],
+    correct: 0
+},
+{
+    question: "Which of the following disorders is characterized by repetitive behaviors or rituals?",
+    answers: ["Obsessive-compulsive disorder (OCD)", "Schizophrenia", "Post-traumatic stress disorder (PTSD)", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "Which is a commonly prescribed antidepressant medication?",
+    answers: ["Sertraline", "Diazepam", "Quetiapine", "Haloperidol"],
+    correct: 0
+},
+{
+    question: "Which of the following is NOT typically associated with psychotic disorders?",
+    answers: ["Hallucinations", "Delusions", "Increased energy", "Disorganized thinking"],
+    correct: 2
+},
+{
+    question: "Which therapy is primarily focused on improving communication and interpersonal relationships?",
+    answers: ["Interpersonal therapy (IPT)", "Cognitive-behavioral therapy (CBT)", "Psychodynamic therapy", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following medications is commonly used in the management of ADHD?",
+    answers: ["Methylphenidate", "Lithium", "Fluoxetine", "Haloperidol"],
+    correct: 0
+},
+{
+    question: "What is the most common symptom of schizophrenia?",
+    answers: ["Hallucinations", "Euphoria", "Depression", "Sleep disturbances"],
+    correct: 0
+},
+{
+    question: "What is the primary focus of psychodynamic therapy?",
+    answers: ["Unconscious thoughts and early life experiences", "Negative thinking patterns", "Behavior modification", "Cognitive distortions"],
+    correct: 0
+},
+{
+    question: "Which of the following is a typical symptom of PTSD?",
+    answers: ["Flashbacks", "Extreme happiness", "Increased appetite", "Excessive energy"],
+    correct: 0
+},
+{
+    question: "What is the most common age of onset for schizophrenia?",
+    answers: ["Late adolescence to early adulthood", "Mid-life", "Childhood", "Late adulthood"],
+    correct: 0
+},
+{
+    question: "What is the most appropriate treatment for an individual experiencing a panic attack?",
+    answers: ["Breathing exercises", "Medication management only", "Electroconvulsive therapy", "Long-term psychotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of a personality disorder?",
+    answers: ["Persistent pattern of behavior", "Episodic mood swings", "Sudden changes in sleep pattern", "Chronic sadness"],
+    correct: 0
+},
+{
+    question: "Which of the following is a potential sign of a manic episode in bipolar disorder?",
+    answers: ["Increased activity", "Low energy", "Depressed mood", "Withdrawal from social situations"],
+    correct: 0
+},
+{
+    question: "What is a major characteristic of borderline personality disorder?",
+    answers: ["Instability in relationships", "Excessive energy", "Constant euphoria", "Rigid thinking patterns"],
+    correct: 0
+},
+{
+    question: "Which of the following medications is used to manage insomnia?",
+    answers: ["Zolpidem", "Mirtazapine", "Lithium", "Alprazolam"],
+    correct: 0
+},
+{
+    question: "Which of the following is a first-line treatment for generalized anxiety disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Antidepressant medications", "Benzodiazepines", "Electroconvulsive therapy"],
+    correct: 0
+},
+{
+    question: "Which disorder involves episodes of extreme mood swings, including depressive and manic episodes?",
+    answers: ["Bipolar disorder", "Major depressive disorder", "Schizophrenia", "Generalized anxiety disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is a form of psychotherapy that emphasizes the importance of present thoughts and behaviors?",
+    answers: ["Cognitive-behavioral therapy", "Psychoanalysis", "Existential therapy", "Client-centered therapy"],
+    correct: 0
+},
+{
+    question: "What is a key feature of schizophrenia?",
+    answers: ["Hallucinations", "Euphoria", "Hyperactivity", "Sudden mood swings"],
+    correct: 0
+}
+,{
+    question: "Which of the following is a core symptom of schizophrenia?",
+    answers: ["Hallucinations", "Fatigue", "Overeating", "Paranoia"],
+    correct: 0
+},
+{
+    question: "What is the primary goal of behavior therapy?",
+    answers: ["To modify dysfunctional behavior", "To understand unconscious conflicts", "To explore childhood experiences", "To medicate patients"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of generalized anxiety disorder (GAD)?",
+    answers: ["Constant worry", "Sudden mood swings", "Rapid weight gain", "Visual hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following medications is most commonly used to treat depression?",
+    answers: ["Fluoxetine", "Lorazepam", "Haloperidol", "Valproate"],
+    correct: 0
+},
+{
+    question: "Which of the following is a side effect of lithium therapy in bipolar disorder?",
+    answers: ["Tremors", "Euphoria", "Weight loss", "Hyperactivity"],
+    correct: 0
+},
+{
+    question: "What is the primary focus of person-centered therapy?",
+    answers: ["Empathy and unconditional positive regard", "Cognitive restructuring", "Behavior modification", "Psychoanalysis"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common complication of untreated schizophrenia?",
+    answers: ["Social isolation", "Increased appetite", "Hyperactivity", "Increased energy levels"],
+    correct: 0
+},
+{
+    question: "Which of the following is an example of a mood disorder?",
+    answers: ["Major depressive disorder", "Schizophrenia", "Obsessive-compulsive disorder", "Phobias"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common treatment for panic disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Benzodiazepines", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is the hallmark feature of borderline personality disorder?",
+    answers: ["Intense mood swings and fear of abandonment", "Delusions and hallucinations", "Extreme energy and euphoria", "Hypersexuality"],
+    correct: 0
+},
+{
+    question: "Which of the following is NOT typically used to treat schizophrenia?",
+    answers: ["Antipsychotic medications", "Selective serotonin reuptake inhibitors (SSRIs)", "Cognitive-behavioral therapy (CBT)", "Mood stabilizers"],
+    correct: 1
+},
+{
+    question: "Which therapy involves patients confronting their fears in a controlled environment?",
+    answers: ["Exposure therapy", "Cognitive-behavioral therapy", "Psychodynamic therapy", "Gestalt therapy"],
+    correct: 0
+},
+{
+    question: "Which of the following symptoms is associated with anorexia nervosa?",
+    answers: ["Extreme weight loss", "Excessive sleep", "Increased appetite", "Elevated energy levels"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat generalized anxiety disorder (GAD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Beta blockers", "Antipsychotics", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is a side effect of selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Sexual dysfunction", "Hallucinations", "Memory loss", "Severe fatigue"],
+    correct: 0
+},
+{
+    question: "What is a key feature of major depressive disorder?",
+    answers: ["Depressed mood for at least two weeks", "Euphoria", "Increased energy", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following is an example of a psychotic disorder?",
+    answers: ["Schizophrenia", "Bipolar disorder", "Anxiety disorder", "Depression"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of mania in bipolar disorder?",
+    answers: ["Increased energy", "Hypersomnia", "Low energy", "Anxiety"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a trigger for post-traumatic stress disorder (PTSD)?",
+    answers: ["Exposure to trauma", "Excessive sleep", "Severe anxiety", "Chronic pain"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Benzodiazepines", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is most commonly prescribed for the treatment of anxiety disorders?",
+    answers: ["Benzodiazepines", "Antidepressants", "Mood stabilizers", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is characterized by recurring episodes of intense fear and physical symptoms like rapid heartbeat?",
+    answers: ["Panic disorder", "Generalized anxiety disorder", "Bipolar disorder", "Schizophrenia"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of antipsychotic medications?",
+    answers: ["Tardive dyskinesia", "Excessive hunger", "Elevated mood", "Sudden weight loss"],
+    correct: 0
+},
+{
+    question: "Which of the following is an example of a personality disorder?",
+    answers: ["Borderline personality disorder", "Major depressive disorder", "Generalized anxiety disorder", "Schizophrenia"],
+    correct: 0
+},
+{
+    question: "Which of the following is a characteristic of obsessive-compulsive disorder (OCD)?",
+    answers: ["Repetitive thoughts and behaviors", "Elevated mood", "Delusions", "Social withdrawal"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common characteristic of substance use disorders?",
+    answers: ["Compulsive use despite harmful consequences", "Mood swings", "Difficulty concentrating", "Increased appetite"],
+    correct: 0
+},
+{
+    question: "Which of the following is an example of an anxiety disorder?",
+    answers: ["Social anxiety disorder", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder"],
+    correct: 0
+},
+{
+    question: "What is the primary symptom of agoraphobia?",
+    answers: ["Fear of being in places where escape is difficult", "Intense sadness", "Increased energy", "Lack of appetite"],
+    correct: 0
+},
+{
+    question: "Which of the following therapies focuses on identifying and challenging negative thought patterns?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Psychodynamic therapy", "Interpersonal therapy", "Family therapy"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly used in the treatment of depression?",
+    answers: ["Fluoxetine", "Lorazepam", "Methylphenidate", "Lithium"],
+    correct: 0
+},
+{
+    question: "What is the most common first-line treatment for bipolar disorder?",
+    answers: ["Lithium", "Antidepressants", "Antipsychotic medication", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is a key feature of an eating disorder?",
+    answers: ["Preoccupation with food, weight, and body image", "Excessive energy", "Constant euphoria", "Extreme irritability"],
+    correct: 0
+},
+{
+    question: "Which of the following is often used to treat PTSD?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Psychodynamic therapy", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of dissociative identity disorder?",
+    answers: ["Presence of two or more distinct identities", "Intense sadness", "Excessive energy", "Increased appetite"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is most associated with auditory hallucinations?",
+    answers: ["Schizophrenia", "Major depressive disorder", "Bipolar disorder", "Anxiety disorders"],
+    correct: 0
+},
+{
+    question: "What is the best therapeutic approach for someone with panic disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Antidepressant medications", "Benzodiazepines", "Antipsychotic medications"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a feature of psychotic disorders?",
+    answers: ["Hallucinations", "Fatigue", "Excessive appetite", "Disorganized thinking"],
+    correct: 0
+},
+{
+    question: "What is the common side effect of selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Sexual dysfunction", "Hallucinations", "Increased energy", "Tremors"],
+    correct: 0
+},
+{
+    question: "Which of the following is a risk factor for developing depression?",
+    answers: ["Chronic stress", "High levels of exercise", "Strong social support", "Healthy diet"],
+    correct: 0
+}
+,{
+    question: "What is a key feature of generalized anxiety disorder (GAD)?",
+    answers: ["Excessive worry about multiple events or activities", "Sudden intense mood changes", "Frequent hallucinations", "Memory loss"],
+    correct: 0
+},
+{
+    question: "What is the primary goal of cognitive-behavioral therapy (CBT)?",
+    answers: ["To identify and change negative thought patterns", "To analyze childhood experiences", "To administer medication", "To explore unconscious thoughts"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common symptom of major depressive disorder?",
+    answers: ["Depressed mood for most of the day", "Excessive energy", "Paranoia", "Elevated mood"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly used to treat panic disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Antipsychotic medications", "Antihistamines", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of antipsychotic drugs?",
+    answers: ["Tardive dyskinesia", "Increased appetite", "Insomnia", "Drowsiness"],
+    correct: 0
+},
+{
+    question: "What is a hallmark feature of obsessive-compulsive disorder (OCD)?",
+    answers: ["Repetitive thoughts and compulsive behaviors", "Elevated mood", "Frequent delusions", "Low energy levels"],
+    correct: 0
+},
+{
+    question: "Which of the following is a characteristic of bipolar disorder?",
+    answers: ["Extreme mood swings between mania and depression", "Constant sadness", "Hallucinations", "Paranoia"],
+    correct: 0
+},
+{
+    question: "Which of the following therapies is considered effective for treating post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Hypnosis", "Medication only"],
+    correct: 0
+},
+{
+    question: "What is a common symptom of schizophrenia?",
+    answers: ["Hallucinations and delusions", "Euphoria", "Increased appetite", "Hyperactivity"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is commonly associated with a fear of social situations?",
+    answers: ["Social anxiety disorder", "Schizophrenia", "Bipolar disorder", "Major depressive disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Sexual dysfunction", "Weight gain", "Hyperactivity", "Fatigue"],
+    correct: 0
+},
+{
+    question: "Which of the following is a treatment modality for phobias?",
+    answers: ["Exposure therapy", "Medication only", "Sleep therapy", "Rehabilitation"],
+    correct: 0
+},
+{
+    question: "Which of the following medications is used in the treatment of bipolar disorder?",
+    answers: ["Lithium", "Antidepressants", "Benzodiazepines", "Barbiturates"],
+    correct: 0
+},
+{
+    question: "What is the primary symptom of agoraphobia?",
+    answers: ["Fear of being in situations where escape may be difficult", "Excessive eating", "Hallucinations", "Extreme fatigue"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a trigger for panic attacks?",
+    answers: ["Stressful situations", "Sleep deprivation", "Excessive exercise", "All of the above"],
+    correct: 3
+},
+{
+    question: "What is the primary goal of electroconvulsive therapy (ECT)?",
+    answers: ["To treat severe depression", "To improve cognitive abilities", "To help with anxiety", "To improve sleep patterns"],
+    correct: 0
+},
+{
+    question: "Which of the following is a feature of anorexia nervosa?",
+    answers: ["Extreme weight loss and preoccupation with food", "Increased appetite and lack of energy", "Frequent mood swings", "Euphoria"],
+    correct: 0
+},
+{
+    question: "Which of the following mental health conditions is associated with chronic worry and tension?",
+    answers: ["Generalized anxiety disorder (GAD)", "Post-traumatic stress disorder (PTSD)", "Bipolar disorder", "Schizophrenia"],
+    correct: 0
+},
+{
+    question: "Which of the following is a key treatment for social anxiety disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Medication only", "Exposure therapy", "Electroconvulsive therapy"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following symptoms is typically associated with depression?",
+    answers: ["Lack of interest in activities", "Increased energy", "Hallucinations", "Elevated mood"],
+    correct: 0
+},
+{
+    question: "What is the main focus of dialectical behavior therapy (DBT)?",
+    answers: ["Managing emotions and improving relationships", "Changing negative thought patterns", "Exposure to phobias", "Medication management"],
+    correct: 0
+},
+{
+    question: "Which of the following is a potential side effect of lithium therapy?",
+    answers: ["Tremors", "Weight loss", "Hyperactivity", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is the most effective form of therapy for treating borderline personality disorder?",
+    answers: ["Dialectical behavior therapy (DBT)", "Cognitive-behavioral therapy (CBT)", "Psychoanalysis", "Medication only"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of PTSD?",
+    answers: ["Flashbacks and nightmares", "Euphoria", "Increased appetite", "Paranoia"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common treatment for schizophrenia?",
+    answers: ["Antipsychotic medications", "Electroconvulsive therapy (ECT)", "Cognitive-behavioral therapy (CBT)", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following medications is used to treat generalized anxiety disorder (GAD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Beta-blockers", "Antipsychotics", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of mania in bipolar disorder?",
+    answers: ["Elevated mood and excessive energy", "Low energy and sadness", "Hyperactivity and paranoia", "Anxiety and insomnia"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common medication for the treatment of depression?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Antihistamines"],
+    correct: 0
+},
+{
+    question: "Which of the following is a major symptom of panic disorder?",
+    answers: ["Sudden and intense fear", "Lack of appetite", "Sleep disturbances", "Delusions"],
+    correct: 0
+},
+{
+    question: "Which of the following is most commonly associated with eating disorders?",
+    answers: ["Preoccupation with body weight and food", "Paranoia", "Manic episodes", "Increased energy levels"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for schizophrenia?",
+    answers: ["Antipsychotic medications", "Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Medication for depression"],
+    correct: 0
+},
+{
+    question: "Which of the following is often the first-line treatment for panic attacks?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Antipsychotics", "Benzodiazepines", "Electroconvulsive therapy"],
+    correct: 0
+},
+{
+    question: "What is the main symptom of dissociative identity disorder?",
+    answers: ["Presence of two or more distinct personalities", "Mood swings", "Depression", "Mania"],
+    correct: 0
+},
+{
+    question: "Which of the following is the primary symptom of agoraphobia?",
+    answers: ["Fear of being in situations where escape is difficult", "Elevated mood", "Delusions", "Excessive sleep"],
+    correct: 0
+},
+{
+    question: "Which of the following is a core symptom of bipolar disorder?",
+    answers: ["Extreme mood swings", "Hallucinations", "Memory loss", "Lack of appetite"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common symptom of depression?",
+    answers: ["Persistent sadness", "Euphoria", "Hallucinations", "Sudden weight loss"],
+    correct: 0
+}
+,{
+    question: "Which of the following is a primary treatment for generalized anxiety disorder (GAD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Opioids", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is the main characteristic of borderline personality disorder?",
+    answers: ["Intense and unstable relationships", "Euphoria and excessive energy", "Frequent nightmares", "Delusions"],
+    correct: 0
+},
+{
+    question: "What medication is commonly prescribed for obsessive-compulsive disorder (OCD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Antihistamines"],
+    correct: 0
+},
+{
+    question: "Which is the most common symptom of social anxiety disorder?",
+    answers: ["Intense fear of being judged or embarrassed in social situations", "Excessive mood swings", "Lack of appetite", "Excessive sleeping"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of major depressive disorder?",
+    answers: ["Loss of interest in activities once enjoyed", "Excessive energy", "Paranoia", "Increased appetite"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Medication only", "Hypnosis"],
+    correct: 0
+},
+{
+    question: "Which of the following medications is used to treat bipolar disorder?",
+    answers: ["Lithium", "Benzodiazepines", "Antidepressants", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of antidepressants?",
+    answers: ["Sexual dysfunction", "Increased appetite", "Excessive sweating", "Fatigue"],
+    correct: 0
+},
+{
+    question: "Which of the following best describes the mood of a person experiencing mania?",
+    answers: ["Elevated or irritable mood", "Deep sadness", "Extreme fatigue", "General apathy"],
+    correct: 0
+},
+{
+    question: "Which therapy is most effective for treating phobias?",
+    answers: ["Exposure therapy", "Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat panic disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Antipsychotics", "Antihistamines", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "What is a hallmark symptom of schizophrenia?",
+    answers: ["Hallucinations and delusions", "Excessive energy", "Sudden mood swings", "Chronic fatigue"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder is characterized by persistent, intrusive thoughts and compulsive behaviors?",
+    answers: ["Obsessive-compulsive disorder (OCD)", "Generalized anxiety disorder (GAD)", "Social anxiety disorder", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of mania in bipolar disorder?",
+    answers: ["Excessive energy and inflated self-esteem", "Severe depression", "Frequent delusions", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of lithium for bipolar disorder?",
+    answers: ["Tremors", "Severe weight gain", "Excessive sweating", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Stimulant medications", "Antipsychotics", "Benzodiazepines", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "Which of the following is most likely to occur in someone with post-traumatic stress disorder (PTSD)?",
+    answers: ["Flashbacks and nightmares", "Increased appetite", "Euphoria", "Frequent mood swings"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of agoraphobia?",
+    answers: ["Fear of being in situations where escape might be difficult", "Loss of appetite", "Inability to sleep", "Elevated mood"],
+    correct: 0
+},
+{
+    question: "Which of the following conditions is characterized by feelings of persistent sadness and loss of interest in usual activities?",
+    answers: ["Major depressive disorder", "Generalized anxiety disorder", "Bipolar disorder", "Schizophrenia"],
+    correct: 0
+},
+{
+    question: "What is a characteristic symptom of dissociative identity disorder?",
+    answers: ["Presence of two or more distinct personalities", "Extreme sadness", "Increased energy", "Paranoia"],
+    correct: 0
+},
+{
+    question: "Which of the following conditions is associated with eating disorders like anorexia nervosa?",
+    answers: ["Distorted body image and preoccupation with food", "Hallucinations", "Severe mood swings", "Frequent delusions"],
+    correct: 0
+},
+{
+    question: "What is the main goal of psychoanalysis?",
+    answers: ["To explore unconscious thoughts and experiences", "To change behavior", "To improve cognitive function", "To provide relaxation"],
+    correct: 0
+},
+{
+    question: "Which of the following is a side effect of antipsychotic medications?",
+    answers: ["Tardive dyskinesia", "Weight loss", "Excessive energy", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a characteristic of narcissistic personality disorder?",
+    answers: ["Grandiosity and lack of empathy", "Fear of social situations", "Low self-esteem", "Chronic sadness"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for substance use disorder?",
+    answers: ["Behavioral therapy", "Medication only", "Electroconvulsive therapy (ECT)", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is often treated with exposure therapy?",
+    answers: ["Phobias", "Schizophrenia", "Bipolar disorder", "Major depressive disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following symptoms is common in patients with generalized anxiety disorder (GAD)?",
+    answers: ["Excessive worry", "Extreme mood swings", "Memory loss", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is the primary aim of dialectical behavior therapy (DBT)?",
+    answers: ["To help individuals manage emotions and improve relationships", "To treat depression", "To eliminate phobias", "To reduce anxiety"],
+    correct: 0
+},
+{
+    question: "Which of the following is most often treated with selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Depression and anxiety disorders", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used in the treatment of panic attacks?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Hypnotherapy", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is a major feature of substance use disorder?",
+    answers: ["Inability to control the use of a substance", "Excessive eating", "Delusions", "Frequent mood swings"],
+    correct: 0
+},
+{
+    question: "What is the most effective treatment for social anxiety disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following symptoms is characteristic of schizophrenia?",
+    answers: ["Hallucinations and delusions", "Excessive mood swings", "Euphoria", "Constant sadness"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Medication only", "Electroconvulsive therapy (ECT)", "Surgical intervention"],
+    correct: 0
+},
+{
+    question: "What is the primary goal of therapy for patients with eating disorders?",
+    answers: ["Restoring a healthy relationship with food", "Changing body image perception", "Reducing excessive weight loss", "Increasing energy levels"],
+    correct: 0
+},
+{
+    question: "Which of the following is a key symptom of bipolar disorder?",
+    answers: ["Extreme mood swings between mania and depression", "Hallucinations", "Chronic fatigue", "Excessive sweating"],
+    correct: 0
+},
+{
+    question: "Which of the following conditions is characterized by intense fear of being in situations where escape may be difficult?",
+    answers: ["Agoraphobia", "Generalized anxiety disorder", "Schizophrenia", "OCD"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for depression?",
+    answers: ["Antidepressant medication and psychotherapy", "Electroconvulsive therapy (ECT)", "Medication only", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a component of treatment for post-traumatic stress disorder (PTSD)?",
+    answers: ["Trauma-focused cognitive-behavioral therapy (TF-CBT)", "Electroconvulsive therapy (ECT)", "Hypnotherapy", "Medication only"],
+    correct: 0
+}
+,
+{
+    question: "Which of the following is the primary treatment for major depressive disorder?",
+    answers: ["Antidepressants and psychotherapy", "Antipsychotics", "Electroconvulsive therapy", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "What is the most common characteristic of panic disorder?",
+    answers: ["Sudden and unexpected episodes of intense fear", "Extreme sadness", "Increased appetite", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is a hallmark symptom of schizophrenia?",
+    answers: ["Hallucinations and delusions", "Excessive energy", "Extreme fatigue", "General apathy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common treatment for generalized anxiety disorder (GAD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Opioids", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is often used in the treatment of bipolar disorder?",
+    answers: ["Lithium", "Benzodiazepines", "Antidepressants", "Antihistamines"],
+    correct: 0
+},
+{
+    question: "Which of the following best describes the mood of a person experiencing mania?",
+    answers: ["Elevated or irritable mood", "Deep sadness", "Extreme fatigue", "General apathy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of antipsychotic medications?",
+    answers: ["Tardive dyskinesia", "Weight loss", "Excessive energy", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following is a major characteristic of borderline personality disorder?",
+    answers: ["Intense and unstable relationships", "Frequent nightmares", "Delusions", "Euphoria"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is most closely related to the development of obsessions and compulsions?",
+    answers: ["Obsessive-compulsive disorder (OCD)", "Social anxiety disorder", "Post-traumatic stress disorder (PTSD)", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following treatments is commonly used for post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Medication only", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of agoraphobia?",
+    answers: ["Fear of being in situations where escape may be difficult", "Loss of appetite", "Inability to sleep", "Elevated mood"],
+    correct: 0
+},
+{
+    question: "What is the most common side effect of selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Sexual dysfunction", "Excessive sweating", "Fatigue", "Paranoia"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of dissociative identity disorder?",
+    answers: ["Presence of two or more distinct personalities", "Extreme sadness", "Increased energy", "Paranoia"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for panic disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following best describes a symptom of obsessive-compulsive disorder (OCD)?",
+    answers: ["Intrusive, unwanted thoughts and repetitive behaviors", "Frequent mood swings", "Frequent nightmares", "Delusions"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat social anxiety disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of major depressive disorder?",
+    answers: ["Loss of interest in activities once enjoyed", "Excessive energy", "Paranoia", "Increased appetite"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common characteristic of narcissistic personality disorder?",
+    answers: ["Grandiosity and lack of empathy", "Fear of social situations", "Low self-esteem", "Chronic sadness"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder is characterized by persistent intrusive thoughts and compulsive behaviors?",
+    answers: ["Obsessive-compulsive disorder (OCD)", "Generalized anxiety disorder (GAD)", "Social anxiety disorder", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for generalized anxiety disorder (GAD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Antidepressants", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "What is the main goal of psychoanalysis?",
+    answers: ["To explore unconscious thoughts and experiences", "To change behavior", "To improve cognitive function", "To provide relaxation"],
+    correct: 0
+},
+{
+    question: "What is the treatment of choice for attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Stimulant medications", "Antipsychotics", "Benzodiazepines", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of bipolar disorder?",
+    answers: ["Extreme mood swings between depression and mania", "Chronic sadness", "Excessive energy", "Frequent delusions"],
+    correct: 0
+},
+{
+    question: "Which of the following is most often treated with selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Depression and anxiety disorders", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "Which of the following is used in the treatment of alcohol use disorder?",
+    answers: ["Disulfiram (Antabuse)", "Benzodiazepines", "Antipsychotics", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of bulimia nervosa?",
+    answers: ["Episodes of binge eating followed by purging", "Severe mood swings", "Frequent delusions", "Extreme fatigue"],
+    correct: 0
+},
+{
+    question: "Which of the following is the primary treatment for bipolar disorder?",
+    answers: ["Lithium and mood stabilizers", "Antipsychotics", "Benzodiazepines", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "What is the main symptom of dissociative identity disorder?",
+    answers: ["Presence of two or more distinct personalities", "Mood swings", "Increased energy", "Fatigue"],
+    correct: 0
+},
+{
+    question: "Which of the following is most closely associated with the development of obsessive-compulsive disorder (OCD)?",
+    answers: ["Persistent intrusive thoughts and compulsive behaviors", "Intense fear of social situations", "Excessive energy", "Chronic fatigue"],
+    correct: 0
+},
+{
+    question: "Which therapy is most effective for treating phobias?",
+    answers: ["Exposure therapy", "Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "What is the primary goal of dialectical behavior therapy (DBT)?",
+    answers: ["To help individuals manage emotions and improve relationships", "To treat depression", "To eliminate phobias", "To reduce anxiety"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a characteristic of narcissistic personality disorder?",
+    answers: ["Grandiosity and lack of empathy", "Fear of social situations", "Low self-esteem", "Chronic sadness"],
+    correct: 0
+},
+{
+    question: "Which medication is used to treat psychosis associated with schizophrenia?",
+    answers: ["Antipsychotics", "Benzodiazepines", "Antidepressants", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of generalized anxiety disorder?",
+    answers: ["Excessive worry and physical symptoms like restlessness", "Extreme fatigue", "Delusions", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is the treatment of choice for a patient with schizophrenia?",
+    answers: ["Antipsychotic medications", "Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "What is the primary feature of post-traumatic stress disorder (PTSD)?",
+    answers: ["Flashbacks and nightmares", "Excessive worry", "Chronic fatigue", "Frequent delusions"],
+    correct: 0
+},
+{
+    question: "Which of the following is a hallmark of an anxiety disorder?",
+    answers: ["Excessive fear or worry", "Severe mood swings", "Delusions", "Increased energy"],
+    correct: 0
+},
+{
+    question: "Which of the following is most commonly used to treat social anxiety disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+}
+,{
+    question: "Which of the following is a key characteristic of generalized anxiety disorder (GAD)?",
+    answers: ["Excessive and uncontrollable worry", "Euphoria", "Extreme fatigue", "Elevated mood"],
+    correct: 0
+},
+{
+    question: "What is a common first-line treatment for depression?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is often used in the treatment of panic attacks?",
+    answers: ["Benzodiazepines", "Antipsychotics", "Lithium", "Antihistamines"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is most closely associated with persistent intrusive thoughts and compulsive behaviors?",
+    answers: ["Obsessive-compulsive disorder (OCD)", "Schizophrenia", "Bipolar disorder", "Anxiety disorder"],
+    correct: 0
+},
+{
+    question: "What is the key symptom of agoraphobia?",
+    answers: ["Fear of being in places where escape may be difficult", "Sudden mood swings", "Excessive energy", "Depression"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat schizophrenia?",
+    answers: ["Antipsychotic medications", "Benzodiazepines", "Antidepressants", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder is characterized by alternating periods of mania and depression?",
+    answers: ["Bipolar disorder", "Generalized anxiety disorder", "Schizophrenia", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "Which therapy is most effective in treating post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Medication only", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly used to treat generalized anxiety disorder (GAD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of social anxiety disorder?",
+    answers: ["Fear of being judged or embarrassed in social situations", "Loss of appetite", "Excessive energy", "Grandiosity"],
+    correct: 0
+},
+{
+    question: "Which of the following best describes the symptoms of obsessive-compulsive disorder (OCD)?",
+    answers: ["Intrusive thoughts and repetitive behaviors", "Frequent mood swings", "Chronic fatigue", "Delusions"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for major depressive disorder?",
+    answers: ["Antidepressants and psychotherapy", "Antipsychotics", "Electroconvulsive therapy (ECT)", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a feature of borderline personality disorder?",
+    answers: ["Unstable relationships and self-image", "Frequent nightmares", "Chronic fatigue", "Delusions"],
+    correct: 0
+},
+{
+    question: "Which of the following is a hallmark symptom of schizophrenia?",
+    answers: ["Hallucinations and delusions", "Excessive energy", "Extreme fatigue", "General apathy"],
+    correct: 0
+},
+{
+    question: "What is the most common characteristic of panic disorder?",
+    answers: ["Sudden and unexpected episodes of intense fear", "Extreme sadness", "Increased appetite", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following best describes the mood of a person experiencing mania?",
+    answers: ["Elevated or irritable mood", "Deep sadness", "Extreme fatigue", "General apathy"],
+    correct: 0
+},
+{
+    question: "Which of the following is most commonly used for treating obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Opioids", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which mental health condition involves periods of intense fear or panic attacks?",
+    answers: ["Panic disorder", "Bipolar disorder", "Schizophrenia", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for generalized anxiety disorder (GAD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Opioids", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a characteristic of narcissistic personality disorder?",
+    answers: ["Grandiosity and lack of empathy", "Fear of social situations", "Low self-esteem", "Chronic sadness"],
+    correct: 0
+},
+{
+    question: "Which of the following is used in the treatment of alcohol use disorder?",
+    answers: ["Disulfiram (Antabuse)", "Benzodiazepines", "Antipsychotics", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat bipolar disorder?",
+    answers: ["Lithium", "Benzodiazepines", "Antidepressants", "Antihistamines"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of post-traumatic stress disorder (PTSD)?",
+    answers: ["Flashbacks and nightmares", "Elevated mood", "Frequent delusions", "Excessive worry"],
+    correct: 0
+},
+{
+    question: "Which of the following is used to treat bulimia nervosa?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Medication only", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following is often used in the treatment of social anxiety disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Inattention, hyperactivity, and impulsivity", "Extreme fatigue", "Chronic sadness", "Delusions"],
+    correct: 0
+},
+{
+    question: "Which of the following is often used in the treatment of psychosis associated with schizophrenia?",
+    answers: ["Antipsychotic medications", "Benzodiazepines", "Antidepressants", "Opioids"],
+    correct: 0
+},
+{
+    question: "What is the goal of psychodynamic therapy?",
+    answers: ["To explore unconscious thoughts and experiences", "To change behavior", "To improve cognitive function", "To provide relaxation"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is most commonly treated with selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Depression and anxiety disorders", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Medication only", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for schizophrenia?",
+    answers: ["Antipsychotic medications", "Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of major depressive disorder?",
+    answers: ["Loss of interest in activities once enjoyed", "Excessive energy", "Paranoia", "Increased appetite"],
+    correct: 0
+},
+{
+    question: "What is the primary symptom of major depressive disorder?",
+    answers: ["Depressed mood or loss of interest", "Excessive energy", "Increased appetite", "Delusions"],
+    correct: 0
+},
+{
+    question: "What is the most common side effect of selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Sexual dysfunction", "Excessive sweating", "Fatigue", "Paranoia"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of eating disorders like anorexia nervosa?",
+    answers: ["Severe restriction of food intake", "Frequent delusions", "Excessive energy", "Increased appetite"],
+    correct: 0
+},
+{
+    question: "What is the treatment for obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT) and SSRIs", "Electroconvulsive therapy (ECT)", "Benzodiazepines", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used in the treatment of anxiety disorders?",
+    answers: ["Benzodiazepines", "Antipsychotics", "Opioids", "Antidepressants"],
+    correct: 0
+}
+,{
+    question: "Which of the following is the most common characteristic of schizophrenia?",
+    answers: ["Hallucinations and delusions", "Mood swings", "Excessive energy", "Chronic fatigue"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for panic disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Antipsychotic medications", "Electroconvulsive therapy (ECT)", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is used to treat depression in elderly patients?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Benzodiazepines", "Stimulants"],
+    correct: 0
+},
+{
+    question: "What is a common sign of bulimia nervosa?",
+    answers: ["Binge eating followed by purging", "Excessive mood swings", "Hallucinations", "Extreme apathy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a characteristic of bipolar disorder?",
+    answers: ["Mood swings between depression and mania", "Persistent delusions", "Excessive fear", "Chronic fatigue"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT) and SSRIs", "Antipsychotics", "Electroconvulsive therapy (ECT)", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of generalized anxiety disorder (GAD)?",
+    answers: ["Excessive worry and tension", "Elevated mood", "Frequent hallucinations", "Excessive energy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common treatment for post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Opioids", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "Which of the following conditions is most commonly treated with antipsychotic medications?",
+    answers: ["Schizophrenia", "Generalized anxiety disorder", "Depression", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common symptom of borderline personality disorder?",
+    answers: ["Unstable relationships and self-image", "Elevated mood", "Excessive energy", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is a key symptom of social anxiety disorder?",
+    answers: ["Fear of being judged or embarrassed in social situations", "Extreme mood swings", "Chronic fatigue", "Delusions"],
+    correct: 0
+},
+{
+    question: "Which of the following is a characteristic of narcissistic personality disorder?",
+    answers: ["Grandiosity and lack of empathy", "Fear of rejection", "Chronic sadness", "Frequent mood swings"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat schizophrenia?",
+    answers: ["Antipsychotic medications", "Lithium", "Benzodiazepines", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is characterized by extreme and irrational fear of a specific object or situation?",
+    answers: ["Phobia", "Panic disorder", "Generalized anxiety disorder", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Inattention, hyperactivity, and impulsivity", "Extreme sadness", "Increased appetite", "Frequent delusions"],
+    correct: 0
+},
+{
+    question: "What is a common treatment for bipolar disorder?",
+    answers: ["Lithium", "Benzodiazepines", "Stimulants", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is the hallmark symptom of major depressive disorder?",
+    answers: ["Persistent sadness or loss of interest", "Euphoria", "Extreme mood swings", "Increased appetite"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for generalized anxiety disorder (GAD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is most commonly used for treating depression?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following therapies is commonly used to treat obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Hypnotherapy", "Electroconvulsive therapy (ECT)", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is a treatment commonly used for alcohol use disorder?",
+    answers: ["Disulfiram (Antabuse)", "Antipsychotics", "Benzodiazepines", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly used for the treatment of post-traumatic stress disorder (PTSD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Benzodiazepines", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of eating disorders like anorexia nervosa?",
+    answers: ["Extreme restriction of food intake", "Frequent delusions", "Chronic fatigue", "Mood swings"],
+    correct: 0
+},
+{
+    question: "Which of the following conditions is often treated with selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Depression and anxiety disorders", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "Which therapy is most commonly used for patients with post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Opioids", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is used to treat bipolar disorder?",
+    answers: ["Lithium", "Benzodiazepines", "Stimulants", "Opioids"],
+    correct: 0
+},
+{
+    question: "What is the main focus of cognitive-behavioral therapy (CBT)?",
+    answers: ["Changing negative thought patterns", "Electroconvulsive therapy (ECT)", "Medication management", "Reliving past trauma"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common feature of panic disorder?",
+    answers: ["Sudden, intense fear or discomfort", "Excessive energy", "Chronic fatigue", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is the primary characteristic of antisocial personality disorder?",
+    answers: ["Disregard for the rights of others", "Excessive fear of rejection", "Grandiosity", "Chronic fatigue"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common treatment for depression in adolescents?",
+    answers: ["Cognitive-behavioral therapy (CBT) and SSRIs", "Antipsychotics", "Benzodiazepines", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is a treatment for bipolar disorder during manic episodes?",
+    answers: ["Lithium or antipsychotics", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Hypnotherapy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of social anxiety disorder?",
+    answers: ["Fear of being judged or humiliated", "Excessive energy", "Paranoia", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following is used to treat obsessive-compulsive disorder (OCD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Antipsychotics", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "What is a key symptom of generalized anxiety disorder (GAD)?",
+    answers: ["Excessive and uncontrollable worry", "Extreme fatigue", "Grandiosity", "Elevated mood"],
+    correct: 0
+},
+{
+    question: "What type of medication is often used in the treatment of anxiety disorders?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Opioids", "Antipsychotics", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is used in the treatment of schizophrenia?",
+    answers: ["Antipsychotic medications", "Lithium", "Benzodiazepines", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "What is the hallmark symptom of anorexia nervosa?",
+    answers: ["Severe restriction of food intake", "Excessive fear", "Chronic sadness", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following is a characteristic of narcissistic personality disorder?",
+    answers: ["Grandiosity and need for admiration", "Extreme fear of rejection", "Chronic depression", "Mood swings"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Stimulants", "Benzodiazepines", "Antipsychotics", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is used to treat panic disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Opioids", "Benzodiazepines"],
+    correct: 0
+}
+,{
+    question: "What is the primary cause of major depressive disorder?",
+    answers: ["Genetic, biological, environmental factors", "Traumatic brain injury", "Excessive use of alcohol", "Chronic sleep deprivation"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat generalized anxiety disorder (GAD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Antipsychotics", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is a key symptom of post-traumatic stress disorder (PTSD)?",
+    answers: ["Flashbacks and nightmares", "Grandiosity", "Excessive energy", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following conditions is most commonly treated with lithium?",
+    answers: ["Bipolar disorder", "Generalized anxiety disorder", "Obsessive-compulsive disorder", "Schizophrenia"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is often characterized by extreme irritability, impulsivity, and emotional instability?",
+    answers: ["Borderline personality disorder", "Generalized anxiety disorder", "Bipolar disorder", "Schizophrenia"],
+    correct: 0
+},
+{
+    question: "What is a hallmark symptom of bulimia nervosa?",
+    answers: ["Binge eating followed by purging", "Severe restriction of food intake", "Extreme fear of weight gain", "Excessive energy"],
+    correct: 0
+},
+{
+    question: "Which therapy is most effective for treating obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Psychodynamic therapy", "Stimulants"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used for the treatment of schizophrenia?",
+    answers: ["Antipsychotic medications", "Benzodiazepines", "Opioids", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "Which of the following is the primary goal of cognitive-behavioral therapy (CBT)?",
+    answers: ["To change negative thought patterns", "To explore unconscious thoughts", "To improve physical health", "To provide medication management"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly used to treat attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Stimulants", "Antipsychotics", "Benzodiazepines", "Opioids"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Nausea and insomnia", "Chronic fatigue", "Increased appetite", "Frequent hallucinations"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of narcissistic personality disorder?",
+    answers: ["Grandiosity and a need for admiration", "Fear of rejection", "Frequent mood swings", "Chronic sadness"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for bipolar disorder?",
+    answers: ["Mood stabilizers and antipsychotics", "Antidepressants", "Benzodiazepines", "Selective serotonin reuptake inhibitors (SSRIs)"],
+    correct: 0
+},
+{
+    question: "Which of the following is often a symptom of social anxiety disorder?",
+    answers: ["Fear of being judged or humiliated in social situations", "Excessive energy", "Chronic mood swings", "Frequent delusions"],
+    correct: 0
+},
+{
+    question: "What is a characteristic symptom of anorexia nervosa?",
+    answers: ["Severe restriction of food intake", "Binge eating", "Excessive exercise", "Fear of social situations"],
+    correct: 0
+},
+{
+    question: "Which of the following is used to treat panic disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Benzodiazepines", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is most often associated with excessive worry and tension?",
+    answers: ["Generalized anxiety disorder", "Bipolar disorder", "Depression", "Schizophrenia"],
+    correct: 0
+},
+{
+    question: "Which of the following is the first-line treatment for depression?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Antipsychotics", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is used to treat obsessive-compulsive disorder (OCD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Antipsychotics", "Lithium", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "What is a symptom of antisocial personality disorder?",
+    answers: ["Disregard for the rights of others", "Chronic sadness", "Mood swings", "Fear of rejection"],
+    correct: 0
+},
+{
+    question: "Which of the following therapies is most commonly used to treat depression?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Benzodiazepines", "Stimulants"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common symptom of borderline personality disorder?",
+    answers: ["Unstable relationships and self-image", "Mood swings", "Hallucinations", "Excessive worry"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for bipolar disorder during a manic episode?",
+    answers: ["Lithium or antipsychotic medications", "Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "What is the hallmark feature of schizophrenia?",
+    answers: ["Hallucinations and delusions", "Excessive energy", "Mood swings", "Chronic fatigue"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common cause of anxiety disorders?",
+    answers: ["Stress and traumatic experiences", "Chemical imbalances in the brain", "Childhood experiences", "Bacterial infections"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common treatment for eating disorders?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Medication management", "Psychodynamic therapy"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is characterized by persistent fear of specific objects or situations?",
+    answers: ["Phobia", "Generalized anxiety disorder", "Schizophrenia", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used in the treatment of schizophrenia?",
+    answers: ["Antipsychotic medications", "Lithium", "Benzodiazepines", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for social anxiety disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Selective serotonin reuptake inhibitors (SSRIs)", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is most commonly used for the treatment of panic attacks?",
+    answers: ["Benzodiazepines", "Antipsychotics", "Lithium", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "Which of the following is used to treat bipolar disorder?",
+    answers: ["Lithium", "Antidepressants", "Benzodiazepines", "Stimulants"],
+    correct: 0
+},
+{
+    question: "Which of the following is often associated with post-traumatic stress disorder (PTSD)?",
+    answers: ["Flashbacks to the traumatic event", "Elevated mood", "Excessive energy", "Chronic fatigue"],
+    correct: 0
+},
+{
+    question: "Which therapy is most effective for treating phobias?",
+    answers: ["Exposure therapy", "Electroconvulsive therapy (ECT)", "Stimulants", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which of the following is most commonly treated with selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Depression and anxiety disorders", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly prescribed for generalized anxiety disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Opioids"],
+    correct: 0
+},
+{
+    question: "What is the hallmark of obsessive-compulsive disorder (OCD)?",
+    answers: ["Intrusive thoughts and repetitive behaviors", "Grandiosity", "Mood swings", "Excessive worry"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for depression?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Stimulants", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is the treatment for obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT) and SSRIs", "Lithium", "Stimulants", "Benzodiazepines"],
+    correct: 0
+}
+,{
+    question: "What is the primary purpose of mental health nursing?",
+    answers: ["To promote mental wellness and recovery", "To provide medication management only", "To diagnose mental illnesses", "To provide long-term inpatient care"],
+    correct: 0
+},
+{
+    question: "Which of the following symptoms is most closely associated with schizophrenia?",
+    answers: ["Hallucinations", "Increased energy", "Mania", "Severe headache"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for depression?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Electroconvulsive therapy (ECT)", "Benzodiazepines", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is the goal of dialectical behavior therapy (DBT)?",
+    answers: ["To help patients manage emotional instability", "To provide medication management", "To cure depression", "To provide long-term inpatient care"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of antidepressants?",
+    answers: ["Weight gain", "Increased libido", "Sleep disturbances", "Euphoria"],
+    correct: 0
+},
+{
+    question: "What is the most effective approach for treating anxiety disorders?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Benzodiazepines", "Stimulants"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly used for bipolar disorder?",
+    answers: ["Lithium", "Antipsychotics", "SSRIs", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "What is the hallmark symptom of obsessive-compulsive disorder (OCD)?",
+    answers: ["Repetitive behaviors and intrusive thoughts", "Extreme mood swings", "Hallucinations", "Grandiose thoughts"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common feature of personality disorders?",
+    answers: ["Chronic patterns of behavior and inner experience", "Recurrent episodes of psychosis", "Acute mood disturbances", "Transient thoughts of suicide"],
+    correct: 0
+},
+{
+    question: "What is the most common cause of depression?",
+    answers: ["Chemical imbalance in the brain", "Genetic factors", "Trauma", "Environmental stress"],
+    correct: 0
+},
+{
+    question: "Which of the following therapies is commonly used for PTSD?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Lithium"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for panic disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Stimulants"],
+    correct: 0
+},
+{
+    question: "Which of the following symptoms is most commonly seen in major depressive disorder?",
+    answers: ["Low energy and interest in activities", "Excessive energy and euphoria", "Paranoia and hallucinations", "Irritability and impulsiveness"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is most closely associated with extreme fear of social situations?",
+    answers: ["Social anxiety disorder", "Bipolar disorder", "Schizophrenia", "Antisocial personality disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is a key symptom of bulimia nervosa?",
+    answers: ["Binge eating followed by purging", "Severe restriction of food intake", "Extreme fear of weight gain", "Excessive exercise"],
+    correct: 0
+},
+{
+    question: "What is the recommended treatment for post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Lithium", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which medication is most commonly used to treat generalized anxiety disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Stimulants", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is a primary treatment for attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Stimulant medications", "Benzodiazepines", "Antipsychotics", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used to treat schizophrenia?",
+    answers: ["Antipsychotic medications", "Lithium", "Benzodiazepines", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for generalized anxiety disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Lithium", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which disorder is characterized by persistent and excessive worry about various aspects of life?",
+    answers: ["Generalized anxiety disorder", "Social anxiety disorder", "Obsessive-compulsive disorder (OCD)", "Post-traumatic stress disorder (PTSD)"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common side effect of antipsychotic medications?",
+    answers: ["Sedation and weight gain", "Euphoria", "Excessive energy", "Sleep disturbances"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of dissociative identity disorder (DID)?",
+    answers: ["Presence of two or more distinct identities", "Hallucinations", "Paranoia", "Recurrent depressive episodes"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for obsessive-compulsive disorder (OCD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common mental health disorder in the general population?",
+    answers: ["Anxiety disorders", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder"],
+    correct: 0
+},
+{
+    question: "What is the most effective treatment for borderline personality disorder?",
+    answers: ["Dialectical behavior therapy (DBT)", "Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which of the following medications is used to treat panic disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Lithium", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common treatment for bipolar disorder?",
+    answers: ["Lithium and mood stabilizers", "Antipsychotics", "Antidepressants", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of paranoid personality disorder?",
+    answers: ["Suspicion and distrust of others", "Hallucinations", "Mood swings", "Binge eating"],
+    correct: 0
+},
+{
+    question: "What is the treatment for severe major depressive disorder?",
+    answers: ["Electroconvulsive therapy (ECT)", "Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is used for the treatment of attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Stimulant medications", "Lithium", "Antipsychotics", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for social anxiety disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Cognitive-behavioral therapy (CBT)", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which of the following is a hallmark symptom of major depressive disorder?",
+    answers: ["Persistent sadness and loss of interest", "Excessive energy", "Hallucinations", "Grandiosity"],
+    correct: 0
+},
+{
+    question: "What is the recommended treatment for bipolar disorder during depressive episodes?",
+    answers: ["Mood stabilizers and antidepressants", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Lithium"],
+    correct: 0
+},
+{
+    question: "What is the hallmark symptom of anorexia nervosa?",
+    answers: ["Severe restriction of food intake", "Excessive weight gain", "Binge eating", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is characterized by excessive concern about germs or contamination?",
+    answers: ["Obsessive-compulsive disorder (OCD)", "Generalized anxiety disorder", "Social anxiety disorder", "Post-traumatic stress disorder (PTSD)"],
+    correct: 0
+},
+{
+    question: "Which of the following therapies is most effective for treating eating disorders?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Lithium", "Stimulants"],
+    correct: 0
+}
+,{
+    question: "Which of the following is a symptom of bipolar disorder?",
+    answers: ["Mood swings from mania to depression", "Constant low mood", "Excessive worry", "Intrusive thoughts"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for schizophrenia?",
+    answers: ["Antipsychotic medications", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Selective serotonin reuptake inhibitors (SSRIs)"],
+    correct: 0
+},
+{
+    question: "What is the main characteristic of antisocial personality disorder?",
+    answers: ["Disregard for others' rights and lack of empathy", "Excessive fear of social situations", "Constant worry and anxiety", "Repetitive behaviors"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder is most associated with feelings of inadequacy and extreme self-criticism?",
+    answers: ["Depression", "Bipolar disorder", "Social anxiety disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "What is the hallmark symptom of a manic episode in bipolar disorder?",
+    answers: ["Elevated mood, increased energy", "Persistent sadness", "Excessive worry", "Obsessive thoughts"],
+    correct: 0
+},
+{
+    question: "Which therapy is often used to treat patients with post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Antipsychotic medication", "Electroconvulsive therapy (ECT)", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "What is the primary characteristic of major depressive disorder?",
+    answers: ["Persistent sadness and loss of interest in activities", "Excessive happiness", "Constant worry", "Binge eating"],
+    correct: 0
+},
+{
+    question: "Which medication is most commonly used for anxiety disorders?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Antipsychotics", "Benzodiazepines", "Mood stabilizers"],
+    correct: 0
+},
+{
+    question: "Which condition is characterized by a preoccupation with perceived defects or flaws in physical appearance?",
+    answers: ["Body dysmorphic disorder", "Anorexia nervosa", "Bulimia nervosa", "Depersonalization disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of panic disorder?",
+    answers: ["Rapid heartbeat, sweating, and feelings of choking", "Excessive energy", "Persistent sadness", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for generalized anxiety disorder (GAD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common feature of obsessive-compulsive disorder (OCD)?",
+    answers: ["Recurrent, intrusive thoughts and compulsive behaviors", "Excessive worrying", "Mania", "Rapid mood swings"],
+    correct: 0
+},
+{
+    question: "What is the most common cause of schizophrenia?",
+    answers: ["Genetic factors", "Trauma", "Chemical imbalances", "Stress"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder involves excessive preoccupation with health and fear of having a serious illness?",
+    answers: ["Hypochondriasis", "Body dysmorphic disorder", "Anxiety disorder", "Panic disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is commonly used in the treatment of obsessive-compulsive disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Lithium"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for anorexia nervosa?",
+    answers: ["Nutritional therapy and psychotherapy", "Antipsychotic medication", "Benzodiazepines", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "What is the main goal of therapeutic communication in mental health nursing?",
+    answers: ["To establish a trusting relationship and gather patient information", "To prescribe medication", "To perform diagnostic testing", "To make decisions for the patient"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of obsessive-compulsive disorder (OCD)?",
+    answers: ["Compulsive hand washing", "Increased energy", "Grandiose thoughts", "Hallucinations"],
+    correct: 0
+},
+{
+    question: "What is the most common first-line medication for treating depression?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Antipsychotics", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "What is the hallmark of dissociative identity disorder (DID)?",
+    answers: ["Presence of two or more distinct identities", "Mood swings", "Constant sadness", "Obsessive behaviors"],
+    correct: 0
+},
+{
+    question: "Which type of therapy is most commonly used for children with ADHD?",
+    answers: ["Behavioral therapy", "Electroconvulsive therapy (ECT)", "Lithium", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which disorder is characterized by a chronic pattern of instability in interpersonal relationships, self-image, and emotions?",
+    answers: ["Borderline personality disorder", "Social anxiety disorder", "Depression", "Panic disorder"],
+    correct: 0
+},
+{
+    question: "Which medication is commonly used to manage symptoms of bipolar disorder?",
+    answers: ["Lithium", "Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which of the following is a risk factor for suicide?",
+    answers: ["Previous suicide attempt", "Strong family support", "Lack of mental illness", "Good coping skills"],
+    correct: 0
+},
+{
+    question: "Which of the following disorders involves extreme mood swings between depression and mania?",
+    answers: ["Bipolar disorder", "Depression", "Anxiety disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Stimulant medications", "Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder involves a fear of being in situations where escape might be difficult or help unavailable?",
+    answers: ["Agoraphobia", "Social anxiety disorder", "Depression", "Panic disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is the most common type of anxiety disorder?",
+    answers: ["Generalized anxiety disorder", "Social anxiety disorder", "Panic disorder", "Post-traumatic stress disorder (PTSD)"],
+    correct: 0
+},
+{
+    question: "What is the hallmark symptom of a depressive episode in bipolar disorder?",
+    answers: ["Low energy, sadness, and loss of interest", "Grandiosity", "Rapid speech", "Excessive energy"],
+    correct: 0
+},
+{
+    question: "What type of disorder is characterized by excessive worry about a wide range of everyday problems?",
+    answers: ["Generalized anxiety disorder", "Panic disorder", "Post-traumatic stress disorder (PTSD)", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "What is a common side effect of antipsychotic medications?",
+    answers: ["Sedation and weight gain", "Increased energy", "Hallucinations", "Euphoria"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common symptom of narcissistic personality disorder?",
+    answers: ["Exaggerated sense of self-importance", "Severe mood swings", "Excessive fear of rejection", "Obsessive thoughts"],
+    correct: 0
+},
+{
+    question: "What is the primary purpose of family therapy in the treatment of mental health disorders?",
+    answers: ["To improve family communication and support", "To prescribe medication", "To diagnose mental health disorders", "To provide long-term care"],
+    correct: 0
+},
+{
+    question: "Which disorder is characterized by a persistent fear of being judged or evaluated negatively by others?",
+    answers: ["Social anxiety disorder", "Generalized anxiety disorder", "Panic disorder", "Obsessive-compulsive disorder"],
+    correct: 0
+},
+{
+    question: "What is the most common type of psychosis?",
+    answers: ["Schizophrenia", "Mood disorders", "Anxiety disorders", "Personality disorders"],
+    correct: 0
+},
+{
+    question: "What is the goal of cognitive-behavioral therapy (CBT) for depression?",
+    answers: ["To identify and change negative thought patterns", "To prescribe medication", "To perform diagnostic testing", "To create a treatment plan for a new diagnosis"],
+    correct: 0
+},
+{
+    question: "Which of the following is often prescribed to treat obsessive-compulsive disorder (OCD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Antipsychotics", "Lithium"],
+    correct: 0
+}
+,{
+    question: "What is the primary characteristic of panic disorder?",
+    answers: ["Recurrent, unexpected panic attacks", "Constant sadness", "Mood swings", "Social withdrawal"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder is commonly associated with a significant fear of gaining weight and a distorted body image?",
+    answers: ["Anorexia nervosa", "Social anxiety disorder", "Bipolar disorder", "Post-traumatic stress disorder (PTSD)"],
+    correct: 0
+},
+{
+    question: "Which medication is often used in the treatment of depression and anxiety?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Lithium", "Benzodiazepines", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "What is a key symptom of obsessive-compulsive disorder (OCD)?",
+    answers: ["Repetitive behaviors and intrusive thoughts", "Depression and low mood", "Mania and impulsivity", "Severe mood swings"],
+    correct: 0
+},
+{
+    question: "Which of the following is an effective therapy for individuals with borderline personality disorder?",
+    answers: ["Dialectical behavior therapy (DBT)", "Electroconvulsive therapy (ECT)", "Lithium therapy", "Psychoanalysis"],
+    correct: 0
+},
+{
+    question: "What is the most common co-occurring condition with schizophrenia?",
+    answers: ["Substance abuse", "Anxiety disorders", "Obsessive-compulsive disorder (OCD)", "Bipolar disorder"],
+    correct: 0
+},
+{
+    question: "Which of the following is a typical symptom of major depressive disorder?",
+    answers: ["Persistent feelings of sadness and hopelessness", "Manic behavior", "Excessive euphoria", "Increased energy"],
+    correct: 0
+},
+{
+    question: "Which of the following is a treatment option for generalized anxiety disorder (GAD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Stimulants", "Mood stabilizers"],
+    correct: 0
+},
+{
+    question: "Which class of medications is commonly used to treat bipolar disorder?",
+    answers: ["Mood stabilizers", "Benzodiazepines", "Antipsychotics", "Antidepressants"],
+    correct: 0
+},
+{
+    question: "What is the most common treatment for post-traumatic stress disorder (PTSD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder is characterized by excessive fear of negative judgment in social situations?",
+    answers: ["Social anxiety disorder", "Generalized anxiety disorder", "Panic disorder", "Post-traumatic stress disorder (PTSD)"],
+    correct: 0
+},
+{
+    question: "Which of the following is a symptom of borderline personality disorder?",
+    answers: ["Intense, unstable relationships", "Excessive worry about health", "Repetitive behaviors", "Constant euphoria"],
+    correct: 0
+},
+{
+    question: "What is the first-line treatment for social anxiety disorder?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Electroconvulsive therapy (ECT)", "Stimulants"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder is most often treated with selective serotonin reuptake inhibitors (SSRIs)?",
+    answers: ["Depression and anxiety disorders", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "What is the first-line therapy for attention-deficit hyperactivity disorder (ADHD)?",
+    answers: ["Stimulant medications", "Antipsychotic medications", "Selective serotonin reuptake inhibitors (SSRIs)", "Lithium"],
+    correct: 0
+},
+{
+    question: "Which disorder involves a fear of being in places or situations where escape might be difficult or help unavailable?",
+    answers: ["Agoraphobia", "Social anxiety disorder", "Panic disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "What is the most common type of psychotic disorder?",
+    answers: ["Schizophrenia", "Mood disorders", "Anxiety disorders", "Personality disorders"],
+    correct: 0
+},
+{
+    question: "What is the key feature of narcissistic personality disorder?",
+    answers: ["Exaggerated sense of self-importance", "Severe mood swings", "Fear of rejection", "Obsessive behaviors"],
+    correct: 0
+},
+{
+    question: "What is the hallmark symptom of schizophrenia?",
+    answers: ["Hallucinations and delusions", "Persistent sadness", "Repetitive behaviors", "Excessive worry"],
+    correct: 0
+},
+{
+    question: "Which medication is often prescribed for patients with schizophrenia?",
+    answers: ["Antipsychotics", "Benzodiazepines", "Lithium", "Stimulants"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common characteristic of dissociative identity disorder (DID)?",
+    answers: ["Presence of two or more distinct identities", "Persistent sadness", "Increased energy", "Obsessive thoughts"],
+    correct: 0
+},
+{
+    question: "Which of the following is a sign of a panic attack?",
+    answers: ["Rapid heartbeat, dizziness, sweating", "Elevated mood", "Excessive sleep", "Persistent worry"],
+    correct: 0
+},
+{
+    question: "What is the primary symptom of obsessive-compulsive disorder (OCD)?",
+    answers: ["Recurrent, intrusive thoughts and compulsive behaviors", "Persistent sadness", "Extreme mood swings", "Excessive worry"],
+    correct: 0
+},
+{
+    question: "Which of the following is a common treatment for bipolar disorder?",
+    answers: ["Mood stabilizers", "Antipsychotics", "Antidepressants", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "What is the most effective treatment for major depressive disorder?",
+    answers: ["Antidepressants and psychotherapy", "Electroconvulsive therapy (ECT)", "Lithium", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is a characteristic of generalized anxiety disorder (GAD)?",
+    answers: ["Excessive, uncontrollable worry about daily events", "Severe mood swings", "Hallucinations", "Mania"],
+    correct: 0
+},
+{
+    question: "What is the primary treatment for anorexia nervosa?",
+    answers: ["Nutritional therapy and psychotherapy", "Antipsychotic medications", "Benzodiazepines", "Electroconvulsive therapy (ECT)"],
+    correct: 0
+},
+{
+    question: "Which mental health condition is most commonly treated with antidepressants?",
+    answers: ["Depression and anxiety disorders", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "What is the most common first-line medication for generalized anxiety disorder (GAD)?",
+    answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Benzodiazepines", "Lithium", "Antipsychotics"],
+    correct: 0
+},
+{
+    question: "Which therapy is often used to treat obsessive-compulsive disorder (OCD)?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Antipsychotic medications", "Benzodiazepines"],
+    correct: 0
+},
+{
+    question: "Which of the following is a characteristic symptom of dissociative identity disorder (DID)?",
+    answers: ["Presence of multiple distinct personalities", "Excessive worry about health", "Repetitive behaviors", "Extreme euphoria"],
+    correct: 0
+},
+{
+    question: "Which disorder is characterized by intense fear of being judged or evaluated negatively by others?",
+    answers: ["Social anxiety disorder", "Generalized anxiety disorder", "Panic disorder", "Obsessive-compulsive disorder (OCD)"],
+    correct: 0
+},
+{
+    question: "Which of the following medications is commonly used to treat schizophrenia?",
+    answers: ["Antipsychotic drugs", "Lithium", "Benzodiazepines", "Stimulants"],
+    correct: 0
+},
+{
+    question: "Which disorder involves intrusive memories and flashbacks after experiencing a traumatic event?",
+    answers: ["Post-traumatic stress disorder (PTSD)", "Obsessive-compulsive disorder (OCD)", "Anxiety disorder", "Panic disorder"],
+    correct: 0
+},
+{
+    question: "Which therapy is commonly used to treat individuals with bipolar disorder?",
+    answers: ["Cognitive-behavioral therapy (CBT)", "Electroconvulsive therapy (ECT)", "Lithium therapy", "Psychoanalysis"],
+    correct: 0
+},
+{
+    question: "What is the most common co-occurring condition with bipolar disorder?",
+    answers: ["Substance abuse", "Social anxiety disorder", "Obsessive-compulsive disorder (OCD)", "Depression"],
+    correct: 0
+},
+{
+    question: "Which mental health disorder is most commonly associated with manic and depressive episodes?",
+    answers: ["Bipolar disorder", "Schizophrenia", "Depression", "Panic disorder"],
+    correct: 0
+}
+,
+    {
+        question: "Which of the following is a primary characteristic of Generalized Anxiety Disorder (GAD)?",
+        answers: ["Intense fear of specific objects", "Excessive worry about daily life", "Persistent intrusive thoughts", "Episodes of intense sadness"],
+        correct: 1
+    },
+    {
+        question: "What is the first-line treatment for major depressive disorder?",
+        answers: ["Cognitive-behavioral therapy", "Antidepressants", "Electroconvulsive therapy", "Exercise and lifestyle changes"],
+        correct: 1
+    },
+    {
+        question: "Which neurotransmitter is most commonly associated with depression?",
+        answers: ["Dopamine", "Serotonin", "GABA", "Norepinephrine"],
+        correct: 1
+    },
+    {
+        question: "What is the hallmark symptom of schizophrenia?",
+        answers: ["Delusions", "Hallucinations", "Disorganized thinking", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which type of therapy is most commonly used to treat anxiety disorders?",
+        answers: ["Cognitive-behavioral therapy (CBT)", "Dialectical behavior therapy (DBT)", "Psychoanalysis", "Interpersonal therapy (IPT)"],
+        correct: 0
+    },
+    {
+        question: "What is the most common eating disorder?",
+        answers: ["Bulimia nervosa", "Anorexia nervosa", "Binge-eating disorder", "Pica"],
+        correct: 2
+    },
+    {
+        question: "What is the primary symptom of bipolar disorder?",
+        answers: ["Mood swings between depression and mania", "Excessive worry", "Intrusive thoughts", "Delusions and hallucinations"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a symptom of post-traumatic stress disorder (PTSD)?",
+        answers: ["Intrusive memories of a traumatic event", "Avoidance of reminders of the trauma", "Hypervigilance", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is a common side effect of selective serotonin reuptake inhibitors (SSRIs)?",
+        answers: ["Nausea", "Weight gain", "Sexual dysfunction", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is a characteristic of obsessive-compulsive disorder (OCD)?",
+        answers: ["Intrusive thoughts and repetitive behaviors", "Extreme mood swings", "Severe memory loss", "Disorganized thinking"],
+        correct: 0
+    },
+    {
+        question: "What is the main purpose of cognitive-behavioral therapy (CBT)?",
+        answers: ["Changing distorted thinking patterns", "Addressing unconscious conflicts", "Focusing on childhood experiences", "Understanding the client's past relationships"],
+        correct: 0
+    },
+    {
+        question: "What is the most common cause of delirium in older adults?",
+        answers: ["Medications", "Infections", "Dehydration", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which mental health disorder is characterized by intense fear of social situations?",
+        answers: ["Social anxiety disorder", "Generalized anxiety disorder", "Panic disorder", "Specific phobia"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common symptom of borderline personality disorder?",
+        answers: ["Intense fear of abandonment", "Chronic low mood", "Severe mood swings", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for a loss of contact with reality, often seen in psychotic disorders?",
+        answers: ["Hallucinations", "Delusions", "Psychosis", "Confusion"],
+        correct: 2
+    },
+    {
+        question: "Which type of antidepressant works by inhibiting the reuptake of both serotonin and norepinephrine?",
+        answers: ["Selective serotonin reuptake inhibitors (SSRIs)", "Monoamine oxidase inhibitors (MAOIs)", "Serotonin-norepinephrine reuptake inhibitors (SNRIs)", "Tricyclic antidepressants (TCAs)"],
+        correct: 2
+    },
+    {
+        question: "Which of the following best describes the concept of 'resilience' in mental health?",
+        answers: ["Ability to cope with stress and adversity", "A personality trait that is hard to change", "Inability to handle stress", "Avoiding emotional difficulties"],
+        correct: 0
+    },
+    {
+        question: "What is the goal of dialectical behavior therapy (DBT)?",
+        answers: ["Managing extreme emotions and improving interpersonal relationships", "Understanding unconscious motivations", "Exploring early childhood experiences", "Reducing panic attacks"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is considered a primary risk factor for suicide?",
+        answers: ["Chronic pain", "Depression", "Alcohol use", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the term for a disorder characterized by excessive sleepiness or episodes of sleep during the day?",
+        answers: ["Narcolepsy", "Insomnia", "Sleep apnea", "Restless legs syndrome"],
+        correct: 0
+    },
+    {
+        question: "Which disorder is characterized by a person experiencing periods of intense fear or discomfort that peak within minutes?",
+        answers: ["Panic disorder", "Generalized anxiety disorder", "Post-traumatic stress disorder", "Social anxiety disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a key feature of antisocial personality disorder?",
+        answers: ["Disregard for others' rights", "Fear of abandonment", "Chronic feelings of emptiness", "Frequent mood swings"],
+        correct: 0
+    },
+    {
+        question: "Which mental health disorder is most commonly associated with self-harm behavior?",
+        answers: ["Borderline personality disorder", "Schizophrenia", "Bipolar disorder", "Obsessive-compulsive disorder"],
+        correct: 0
+    },
+    {
+        question: "What is the recommended treatment for insomnia?",
+        answers: ["Cognitive behavioral therapy for insomnia (CBT-I)", "Sleep medication", "Relaxation techniques", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is the hallmark feature of narcissistic personality disorder?",
+        answers: ["Exaggerated sense of self-importance", "Fear of rejection", "Impulsivity", "Chronic feelings of emptiness"],
+        correct: 0
+    },
+    {
+        question: "What is the best treatment for panic disorder?",
+        answers: ["Cognitive-behavioral therapy", "Antidepressants", "Benzodiazepines", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which disorder is characterized by persistent, excessive worry about a variety of different events or activities?",
+        answers: ["Generalized anxiety disorder", "Specific phobia", "Post-traumatic stress disorder", "Panic disorder"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common symptom of dissociative identity disorder?",
+        answers: ["Memory loss for personal information", "Hearing voices", "Feeling of being detached from the body", "Multiple personalities"],
+        correct: 3
+    },
+    {
+        question: "What is the primary treatment for attention-deficit hyperactivity disorder (ADHD)?",
+        answers: ["Stimulant medications", "Cognitive-behavioral therapy", "Antidepressants", "Family therapy"],
+        correct: 0
+    },
+    {
+        question: "Which mental health disorder involves a person engaging in binge-eating episodes followed by purging behaviors?",
+        answers: ["Bulimia nervosa", "Binge-eating disorder", "Anorexia nervosa", "Pica"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a characteristic of somatic symptom disorder?",
+        answers: ["Excessive focus on physical symptoms", "Fear of developing a serious illness", "Frequent hospital visits", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "Which of the following is commonly used in the treatment of schizophrenia?",
+        answers: ["Antipsychotic medications", "Cognitive-behavioral therapy", "Electroconvulsive therapy", "All of the above"],
+        correct: 3
+    },
+    {
+        question: "What is the primary goal of motivational interviewing?",
+        answers: ["To enhance motivation to change unhealthy behaviors", "To explore unconscious conflicts", "To assess symptoms", "To teach coping skills"],
+        correct: 0
+    },
+    {
+        question: "Which of the following is a common side effect of antipsychotic medications?",
+        answers: ["Weight gain", "Drowsiness", "Movement disorders", "All of the above"],
+        correct: 3
+    },
+
+
+
+];
+
+
+  
+
+
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    
+    const questionText = document.getElementById('question-text');
+    const answerBtns = document.querySelectorAll('.answer-btn');
+    const feedback = document.getElementById('feedback');
+    const questionNumber = document.getElementById('question-number');
+    const finalScore = document.getElementById('finalScore');
+    const percentage = document.getElementById('percentage');
+    const resultContainer = document.querySelector('.result');
+    const viewResultBtn = document.getElementById('viewResultBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    
+    
+    
+    function displayQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionText.textContent = currentQuestion.question;
+        for (let i = 0; i < currentQuestion.answers.length; i++) {
+            answerBtns[i].textContent = currentQuestion.answers[i];
+        }
+        questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        feedback.textContent = "";
+        startTimer();
+    }
+    
+    function checkAnswer(selectedIndex) {
+        const currentQuestion = questions[currentQuestionIndex];
+        clearTimeout(timer);
+        if (selectedIndex === currentQuestion.correct) {
+            score++;
+            feedback.textContent = "Correct!";
+            feedback.className = "feedback-frame correct";
+        } else {
+            feedback.textContent = "Incorrect!";
+            feedback.className = "feedback-frame incorrect";
+        }
+        setTimeout(() => {
+            nextQuestion();
+        }, 1500);
+    }
+    
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+        }
+    }
+    
+    function showResults() {
+        const percentageScore = (score / questions.length) * 100;
+        finalScore.textContent = `Score: ${score} / ${questions.length}`;
+        percentage.textContent = `Percentage: ${percentageScore.toFixed(2)}%`;
+        
+        // Display the result section and hide the quiz
+        resultContainer.style.display = 'block';
+        document.querySelector('.question-container').style.display = 'none';
+        
+        // Chart.js for visual representation (pie and bar charts)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                    data: [score, questions.length - score],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            }
+        });
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Score'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [score],
+                    backgroundColor: '#28a745'
+                }]
+            }
+        });
+
+        viewResultBtn.style.display = 'none';
+    }
+
+    function stopQuiz() {
+        
+       
+        showResults();
+    }
+    
+    // Initialize the quiz
+    displayQuestion();
+    function checkAnswer(selectedIndex) {
+    const currentQuestion = questions[currentQuestionIndex];
+    clearInterval(timer);
+
+    // Check if the selected answer is correct
+    if (selectedIndex === currentQuestion.correct) {
+        score++;
+        feedback.textContent = "Correct!";
+        feedback.className = "feedback-frame correct";
+    } else {
+        feedback.textContent = `Incorrect! The correct answer is:   ${currentQuestion.answers[currentQuestion.correct]}`;
+        feedback.className = "feedback-frame incorrect";
+    }
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 1500);
+}
+
+</script>
+
+
+
+  
+
+</body>
+</html> 

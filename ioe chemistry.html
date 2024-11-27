@@ -1,0 +1,3125 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            padding: 15px;
+            background-color: rgba(59, 47, 47, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background-color: rgba(255, 165, 0, 1); /* Vibrant orange */
+            
+        }
+
+        .feedback-frame {
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .correct {
+            border: 3px solid #28a745;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .incorrect {
+            border: 3px solid #dc3545;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+            gap: 10px;
+        }
+
+        .timer-icon {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+
+        .timer-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background-color: green;
+            width: 100%;
+            border-radius: 10px;
+            animation: countdown 10s linear forwards;
+        }
+
+        @keyframes countdown {
+            0% {
+                width: 100%;
+            }
+            100% {
+                width: 0%;
+                background-color: red;
+            }
+        }
+
+        .navigation-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        p{
+            color:ye
+        }
+        .result-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .btn-result {
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-result:hover {
+            background-color: #218838;
+        }
+
+        /* Stop button */
+        .btn-stop {
+            padding: 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-stop:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive Design for small screens */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                width: 95%;
+            }
+
+            .question {
+                font-size: 1.2em;
+            }
+
+            .answer-btn {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .feedback-frame {
+                font-size: 1em;
+            }
+
+            .timer {
+                font-size: 1.2em;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            canvas {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Display Question Number -->
+        
+        <div class="question-number" id="question-number">Question 1 of 6</div>
+
+        <div class="timer">
+           
+            
+        </div>
+
+        <div class="question-container">
+            <div class="question" id="question-text">Question will appear here</div>
+            <div class="answers">
+                <button class="answer-btn" id="btn1" onclick="checkAnswer(0)">Option 1</button>
+                <button class="answer-btn" id="btn2" onclick="checkAnswer(1)">Option 2</button>
+                <button class="answer-btn" id="btn3" onclick="checkAnswer(2)">Option 3</button>
+                <button class="answer-btn" id="btn4" onclick="checkAnswer(3)">Option 4</button>
+            </div>
+            <div class="feedback-frame" id="feedback"></div>
+            <div class="navigation-buttons">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+            <button class="btn-result" id="viewResultBtn" onclick="showResults()" style="display:none;">View Result</button>
+            <button class="btn-stop" id="stopBtn" onclick="stopQuiz()">Stop Quiz</button>
+        </div>
+
+        <div class="result">
+            <div class="result-header">Quiz Results</div>
+            <div id="finalScore">Score: 0</div>
+            <div id="percentage">Percentage: 0%</div>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+     <script>
+   const questions = [
+   
+    {
+        question: "What is the atomic number of Oxygen?",
+        answers: ["8", "16", "2", "10"],
+        correct: 0 // 8
+    },
+    {
+        question: "The formula for Sulfuric Acid is:",
+        answers: ["HCl", "H2SO4", "HNO3", "H2CO3"],
+        correct: 1 // H2SO4
+    },
+    {
+        question: "What is the main constituent of natural gas?",
+        answers: ["Methane", "Ethane", "Propane", "Butane"],
+        correct: 0 // Methane
+    },
+    {
+        question: "Which of the following elements is a liquid at room temperature?",
+        answers: ["Oxygen", "Mercury", "Sodium", "Carbon"],
+        correct: 1 // Mercury
+    },
+    {
+        question: "What is the oxidation state of chromium in Cr2O7^2-?",
+        answers: ["+6", "+3", "+2", "0"],
+        correct: 0 // +6
+    },
+    {
+        question: "Which of the following is a strong acid?",
+        answers: ["Acetic acid", "Sulfuric acid", "Phosphoric acid", "Citric acid"],
+        correct: 1 // Sulfuric acid
+    },
+    {
+        question: "The reaction of an acid with a metal produces:",
+        answers: ["Salt and hydrogen gas", "Salt and oxygen gas", "Oxygen gas", "Water and salt"],
+        correct: 0 // Salt and hydrogen gas
+    },
+    {
+        question: "What is the primary source of nitrogen in the atmosphere?",
+        answers: ["Volcanoes", "Nitrogen-fixing bacteria", "Lightning", "Air pollution"],
+        correct: 1 // Nitrogen-fixing bacteria
+    },
+    {
+        question: "Which of the following substances is not an electrolyte?",
+        answers: ["NaCl", "HCl", "Sugar", "KOH"],
+        correct: 2 // Sugar
+    },
+    {
+        question: "The Haber process is used to synthesize:",
+        answers: ["Ammonia", "Methane", "Nitric acid", "Sulfuric acid"],
+        correct: 0 // Ammonia
+    },
+    {
+        question: "What is the process called when a solid changes directly into a gas?",
+        answers: ["Sublimation", "Condensation", "Evaporation", "Fusion"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "Which of the following is a non-polar molecule?",
+        answers: ["H2O", "CO2", "NH3", "HCl"],
+        correct: 1 // CO2
+    },
+    {
+        question: "The atomic number of an element represents:",
+        answers: ["Number of neutrons", "Number of protons", "Number of electrons", "Sum of protons and neutrons"],
+        correct: 1 // Number of protons
+    },
+    {
+        question: "Which of the following elements is used in the production of nuclear energy?",
+        answers: ["Uranium", "Iron", "Neon", "Aluminum"],
+        correct: 0 // Uranium
+    },
+    {
+        question: "What type of bond exists between Na and Cl in NaCl?",
+        answers: ["Covalent bond", "Ionic bond", "Hydrogen bond", "Metallic bond"],
+        correct: 1 // Ionic bond
+    },
+    {
+        question: "The formula for the compound calcium chloride is:",
+        answers: ["CaCl", "CaCl2", "Ca2Cl", "Ca2Cl3"],
+        correct: 1 // CaCl2
+    },
+    {
+        question: "Which of the following is a characteristic of covalent bonds?",
+        answers: ["Electrons are shared between atoms", "Electrons are transferred", "They form between metals and non-metals", "They are brittle"],
+        correct: 0 // Electrons are shared between atoms
+    },
+    {
+        question: "The rate of a chemical reaction depends on:",
+        answers: ["Concentration of reactants", "Temperature", "Catalyst", "All of the above"],
+        correct: 3 // All of the above
+    },
+    {
+        question: "Which of the following elements is least reactive?",
+        answers: ["Alkali metals", "Noble gases", "Halogens", "Metalloids"],
+        correct: 1 // Noble gases
+    },
+    {
+        question: "The energy required to remove an electron from an atom is called:",
+        answers: ["Ionization energy", "Electron affinity", "Electron shielding", "Bond dissociation energy"],
+        correct: 0 // Ionization energy
+    },
+    {
+        question: "Which of the following compounds is acidic in nature?",
+        answers: ["NaOH", "CaO", "SO2", "Na2O"],
+        correct: 2 // SO2
+    },
+    {
+        question: "What is the function of a catalyst in a chemical reaction?",
+        answers: ["It lowers the activation energy", "It increases the activation energy", "It increases the concentration of reactants", "It is consumed in the reaction"],
+        correct: 0 // It lowers the activation energy
+    },
+    {
+        question: "What is the general formula for alkanes?",
+        answers: ["CnH2n+2", "CnH2n", "CnH2n-2", "CnH2n+1"],
+        correct: 0 // CnH2n+2
+    },
+    {
+        question: "What type of bond is found in H2O (water)?",
+        answers: ["Ionic bond", "Covalent bond", "Hydrogen bond", "Metallic bond"],
+        correct: 1 // Covalent bond
+    },
+    {
+        question: "Which of the following is a characteristic of gases?",
+        answers: ["Fixed volume and shape", "Fixed shape but variable volume", "Variable volume and shape", "Fixed volume but variable shape"],
+        correct: 2 // Variable volume and shape
+    },
+    {
+        question: "Which of the following elements is most likely to form a cation?",
+        answers: ["Oxygen", "Nitrogen", "Sodium", "Chlorine"],
+        correct: 2 // Sodium
+    },
+    {
+        question: "What is the process by which a solid turns into a liquid?",
+        answers: ["Freezing", "Evaporation", "Condensation", "Melting"],
+        correct: 3 // Melting
+    },
+    {
+        question: "Which of the following molecules has a bent shape?",
+        answers: ["CO2", "H2O", "CH4", "NH3"],
+        correct: 1 // H2O
+    },
+    {
+        question: "Which of the following metals is used in the extraction of aluminum?",
+        answers: ["Copper", "Iron", "Bauxite", "Zinc"],
+        correct: 2 // Bauxite
+    },
+    {
+        question: "The molar mass of CO2 is:",
+        answers: ["44 g/mol", "22 g/mol", "32 g/mol", "16 g/mol"],
+        correct: 0 // 44 g/mol
+    },
+    {
+        question: "What is the chemical formula for hydrochloric acid?",
+        answers: ["H2SO4", "HCl", "HNO3", "H3PO4"],
+        correct: 1 // HCl
+    },
+    {
+        question: "Which of the following is a noble gas?",
+        answers: ["Oxygen", "Helium", "Carbon", "Nitrogen"],
+        correct: 1 // Helium
+    },
+    {
+        question: "What is the main purpose of using indicators in titrations?",
+        answers: ["To increase the reaction rate", "To signal the endpoint of the reaction", "To increase the temperature", "To dissolve the solute"],
+        correct: 1 // To signal the endpoint of the reaction
+    },
+    {
+        question: "Which of the following is a physical change?",
+        answers: ["Burning of wood", "Rusting of iron", "Melting of ice", "Cooking of food"],
+        correct: 2 // Melting of ice
+    },
+    {
+        question: "Which of the following compounds is an example of an isomer?",
+        answers: ["Butane", "Pentane", "Cyclohexane", "Butanol"],
+        correct: 0 // Butane
+    },
+    {
+        question: "What is the name of the process in which a liquid changes into a gas at its boiling point?",
+        answers: ["Evaporation", "Condensation", "Freezing", "Boiling"],
+        correct: 3 // Boiling
+    },
+    {
+        question: "Which of the following is the heaviest element?",
+        answers: ["Iron", "Uranium", "Gold", "Mercury"],
+        correct: 1 // Uranium
+    },
+    {
+        question: "Which of the following gases is most abundant in the Earth's atmosphere?",
+        answers: ["Oxygen", "Carbon dioxide", "Nitrogen", "Argon"],
+        correct: 2 // Nitrogen
+    },
+    {
+        question: "Which of the following reactions is an example of a redox reaction?",
+        answers: ["NaOH + HCl → NaCl + H2O", "2H2 + O2 → 2H2O", "Na + Cl2 → NaCl", "CaCO3 → CaO + CO2"],
+        correct: 1 // 2H2 + O2 → 2H2O
+    },
+    {
+        question: "Which of the following elements is a transition metal?",
+        answers: ["Iron", "Magnesium", "Zinc", "Aluminum"],
+        correct: 0 // Iron
+    }, {
+    question: "What is the value of Planck’s constant (h)?",
+    answers: ["6.63 x 10^-34 J.s", "9.81 x 10^-34 J.s", "5.67 x 10^-34 J.s", "7.63 x 10^-34 J.s"],
+    correct: 0 // 6.63 x 10^-34 J.s
+  },
+  {
+    question: "Which of the following is the most stable isotope of Hydrogen?",
+    answers: ["Deuterium", "Tritium", "Hydrogen-1", "Hydrogen-2"],
+    correct: 2 // Hydrogen-1
+  },
+  {
+    question: "What is the angular momentum of an electron in the first orbit of a hydrogen atom?",
+    answers: ["h/2π", "h", "h/4π", "h/3π"],
+    correct: 0 // h/2π
+  },
+  {
+    question: "The energy levels in an atom are quantized. Who proposed this theory?",
+    answers: ["Bohr", "Heisenberg", "Einstein", "Schrodinger"],
+    correct: 0 // Bohr
+  },
+  {
+    question: "What is the charge on an electron?",
+    answers: ["+1", "-1", "0", "None of the above"],
+    correct: 1 // -1
+  },
+  {
+    question: "Which of the following particles was discovered by J.J. Thomson?",
+    answers: ["Neutron", "Proton", "Electron", "Alpha particle"],
+    correct: 2 // Electron
+  },
+  {
+    question: "Who proposed the quantum theory of light?",
+    answers: ["Bohr", "Einstein", "Planck", "Heisenberg"],
+    correct: 2 // Planck
+  },
+  {
+    question: "What is the energy of the photon in the ultraviolet region of the electromagnetic spectrum?",
+    answers: ["High", "Medium", "Low", "None of the above"],
+    correct: 0 // High
+  },
+  {
+    question: "Which model of the atom is based on the idea of quantized orbits?",
+    answers: ["Bohr's model", "Thomson's model", "Rutherford's model", "Heisenberg's model"],
+    correct: 0 // Bohr's model
+  },
+  {
+    question: "The total number of electrons in the second energy level (n=2) is:",
+    answers: ["2", "8", "18", "32"],
+    correct: 1 // 8
+  },
+  {
+    question: "What is the wavelength of light emitted by a hydrogen atom when it transitions from n=3 to n=2?",
+    answers: ["656 nm", "486 nm", "434 nm", "410 nm"],
+    correct: 1 // 486 nm
+  },
+  {
+    question: "Which of the following orbitals can hold a maximum of 6 electrons?",
+    answers: ["s orbital", "p orbital", "d orbital", "f orbital"],
+    correct: 1 // p orbital
+  },
+  {
+    question: "What is the principle behind Heisenberg’s Uncertainty Principle?",
+    answers: ["The exact position and momentum of a particle cannot be measured simultaneously", "Energy levels are quantized", "The electron moves in fixed orbits", "The speed of light is constant"],
+    correct: 0 // The exact position and momentum of a particle cannot be measured simultaneously
+  },
+  {
+    question: "Which of the following elements has the highest ionization energy?",
+    answers: ["Lithium", "Beryllium", "Oxygen", "Fluorine"],
+    correct: 3 // Fluorine
+  },
+  {
+    question: "Which of the following is true for the Aufbau principle?",
+    answers: ["Electrons fill the lowest energy levels first", "Electrons fill the highest energy levels first", "Electrons only fill the s orbital", "Electrons fill all orbitals simultaneously"],
+    correct: 0 // Electrons fill the lowest energy levels first
+  },
+  {
+    question: "What is the maximum number of electrons that can be accommodated in the third energy level (n=3)?",
+    answers: ["2", "8", "18", "32"],
+    correct: 2 // 18
+  },
+  {
+    question: "Which of the following elements is the most electronegative?",
+    answers: ["Fluorine", "Chlorine", "Oxygen", "Nitrogen"],
+    correct: 0 // Fluorine
+  },
+  {
+    question: "The atomic number of an element is defined as the number of:",
+    answers: ["Neutrons", "Protons", "Electrons", "Protons and neutrons"],
+    correct: 1 // Protons
+  },
+  {
+    question: "What is the term for the energy required to remove an electron from an atom?",
+    answers: ["Ionization energy", "Electron affinity", "Electronegativity", "Bond dissociation energy"],
+    correct: 0 // Ionization energy
+  },
+  {
+    question: "Which of the following is not a property of metals?",
+    answers: ["Good conductors of heat", "Malleable", "Dull", "Shiny"],
+    correct: 2 // Dull
+  },
+  {
+    question: "The nucleus of an atom consists of:",
+    answers: ["Protons and neutrons", "Protons and electrons", "Neutrons and electrons", "Electrons only"],
+    correct: 0 // Protons and neutrons
+  },
+  {
+    question: "What is the half-life of a radioactive substance?",
+    answers: ["The time required for half of the atoms to decay", "The time required for all atoms to decay", "The time it takes to reach equilibrium", "The time for complete conversion"],
+    correct: 0 // The time required for half of the atoms to decay
+  },
+  {
+    question: "Which of the following elements is most likely to form an anion?",
+    answers: ["Sodium", "Chlorine", "Potassium", "Calcium"],
+    correct: 1 // Chlorine
+  },
+  {
+    question: "What is the shape of a molecule of methane (CH4)?",
+    answers: ["Tetrahedral", "Linear", "Bent", "Trigonal Planar"],
+    correct: 0 // Tetrahedral
+  },
+  {
+    question: "Which of the following molecules exhibits hydrogen bonding?",
+    answers: ["CH4", "H2O", "CO2", "Cl2"],
+    correct: 1 // H2O
+  },
+  {
+    question: "Which of the following elements is not a noble gas?",
+    answers: ["Neon", "Helium", "Argon", "Oxygen"],
+    correct: 3 // Oxygen
+  },
+  {
+    question: "Which of the following has the highest atomic radius?",
+    answers: ["Lithium", "Beryllium", "Sodium", "Magnesium"],
+    correct: 2 // Sodium
+  },
+  {
+    question: "What is the primary factor that determines the chemical behavior of an element?",
+    answers: ["Number of neutrons", "Number of protons", "Number of electrons in the outer shell", "Mass of the atom"],
+    correct: 2 // Number of electrons in the outer shell
+  },
+  {
+    question: "Which of the following is a characteristic of covalent bonds?",
+    answers: ["Electrons are transferred", "Electrons are shared", "Form between metals and nonmetals", "Form crystals"],
+    correct: 1 // Electrons are shared
+  }, {
+        question: "What is the molecular formula of benzene?",
+        answers: ["C6H6", "C6H12", "C7H8", "C8H8"],
+        correct: 0 // C6H6
+    },
+    {
+        question: "Which of the following is a non-metallic element?",
+        answers: ["Iron", "Sulfur", "Copper", "Zinc"],
+        correct: 1 // Sulfur
+    },
+    {
+        question: "Which of the following elements has the smallest atomic radius?",
+        answers: ["Lithium", "Oxygen", "Fluorine", "Neon"],
+        correct: 3 // Neon
+    },
+    {
+        question: "What is the name of the compound NaCl?",
+        answers: ["Sodium Chloride", "Sodium Sulfide", "Sodium Bromide", "Sodium Nitrate"],
+        correct: 0 // Sodium Chloride
+    },
+    {
+        question: "Which of the following is an example of a base?",
+        answers: ["HCl", "NaOH", "H2SO4", "CH3COOH"],
+        correct: 1 // NaOH
+    },
+    {
+        question: "What is the pH of a neutral solution?",
+        answers: ["7", "0", "14", "1"],
+        correct: 0 // 7
+    },
+    {
+        question: "What type of bond is formed in a sodium chloride (NaCl) molecule?",
+        answers: ["Ionic Bond", "Covalent Bond", "Metallic Bond", "Hydrogen Bond"],
+        correct: 0 // Ionic Bond
+    },
+    {
+        question: "Which of the following is a property of an acid?",
+        answers: ["Slippery to touch", "Turns red litmus paper blue", "Reacts with metals to release hydrogen", "Tastes bitter"],
+        correct: 2 // Reacts with metals to release hydrogen
+    },
+    {
+        question: "Which of the following gases is most abundant in Earth's atmosphere?",
+        answers: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Argon"],
+        correct: 2 // Nitrogen
+    },
+    {
+        question: "What is the molar mass of water (H2O)?",
+        answers: ["18 g/mol", "16 g/mol", "20 g/mol", "22 g/mol"],
+        correct: 0 // 18 g/mol
+    },
+    {
+        question: "What is the name of the process by which a solid changes directly into a gas?",
+        answers: ["Sublimation", "Evaporation", "Condensation", "Fusion"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "Which of the following compounds is an alkane?",
+        answers: ["C2H4", "C2H6", "C3H8", "C2H2"],
+        correct: 1 // C2H6 (Ethane)
+    },
+    {
+        question: "Which of the following elements is a halogen?",
+        answers: ["Nitrogen", "Oxygen", "Fluorine", "Phosphorus"],
+        correct: 2 // Fluorine
+    },
+    {
+        question: "What is the boiling point of water at standard atmospheric pressure?",
+        answers: ["100°C", "90°C", "110°C", "120°C"],
+        correct: 0 // 100°C
+    },
+    {
+        question: "Which of the following is an example of a chemical change?",
+        answers: ["Melting of ice", "Dissolving salt in water", "Burning of wood", "Boiling of water"],
+        correct: 2 // Burning of wood
+    },
+    {
+        question: "Which of the following is a product of the reaction between an acid and a base?",
+        answers: ["Water", "Salt", "Hydrogen", "Oxygen"],
+        correct: 1 // Salt
+    },
+    {
+        question: "What is the valency of chlorine in sodium chloride (NaCl)?",
+        answers: ["1", "2", "3", "0"],
+        correct: 0 // 1
+    },
+    {
+        question: "What type of reaction is represented by the equation: A + B → AB?",
+        answers: ["Combination reaction", "Decomposition reaction", "Displacement reaction", "Double displacement reaction"],
+        correct: 0 // Combination reaction
+    },
+    {
+        question: "Which of the following is a characteristic of a catalyst?",
+        answers: ["It is consumed in the reaction", "It changes the equilibrium position", "It speeds up the reaction without being consumed", "It increases the activation energy of the reaction"],
+        correct: 2 // It speeds up the reaction without being consumed
+    },
+    {
+        question: "Which of the following elements is the least reactive?",
+        answers: ["Sodium", "Magnesium", "Neon", "Oxygen"],
+        correct: 2 // Neon
+    },
+    {
+        question: "What is the process of converting a liquid to a gas called?",
+        answers: ["Sublimation", "Vaporization", "Freezing", "Condensation"],
+        correct: 1 // Vaporization
+    },
+    {
+        question: "Which of the following acids is found in vinegar?",
+        answers: ["Acetic acid", "Sulfuric acid", "Hydrochloric acid", "Nitric acid"],
+        correct: 0 // Acetic acid
+    },
+    {
+        question: "Which of the following elements is a noble gas?",
+        answers: ["Oxygen", "Hydrogen", "Argon", "Carbon"],
+        correct: 2 // Argon
+    },
+    {
+        question: "What is the primary component of natural gas?",
+        answers: ["Methane", "Ethane", "Propane", "Butane"],
+        correct: 0 // Methane
+    },
+    {
+        question: "What is the name of the process in which a gas is converted into a liquid?",
+        answers: ["Condensation", "Vaporization", "Freezing", "Sublimation"],
+        correct: 0 // Condensation
+    },
+    {
+        question: "Which of the following is an allotrope of carbon?",
+        answers: ["Ozone", "Diamond", "Oxygen", "Methane"],
+        correct: 1 // Diamond
+    },
+    {
+        question: "What is the oxidation state of oxygen in water (H2O)?",
+        answers: ["-1", "0", "+1", "-2"],
+        correct: 3 // -2
+    },
+    {
+        question: "Which of the following is the formula for methane?",
+        answers: ["CH4", "C2H6", "C3H8", "C4H10"],
+        correct: 0 // CH4
+    },
+    {
+        question: "Which of the following substances is a nonpolar molecule?",
+        answers: ["Water", "Ammonia", "Carbon dioxide", "Hydrogen chloride"],
+        correct: 2 // Carbon dioxide
+    }, {
+        question: "What is the chemical formula of sulfuric acid?",
+        answers: ["H2SO4", "HCl", "HNO3", "H2CO3"],
+        correct: 0 // H2SO4
+    },
+    {
+        question: "Which of the following is a property of alkali metals?",
+        answers: ["Good conductors of heat", "Low melting points", "High density", "Non-reactive with water"],
+        correct: 1 // Low melting points
+    },
+    {
+        question: "Which of the following is the first ionization energy trend?",
+        answers: ["It increases down a group", "It decreases across a period", "It increases across a period", "It remains constant across a period"],
+        correct: 2 // It increases across a period
+    },
+    {
+        question: "What is the molar mass of carbon dioxide (CO2)?",
+        answers: ["44 g/mol", "46 g/mol", "48 g/mol", "50 g/mol"],
+        correct: 0 // 44 g/mol
+    },
+    {
+        question: "Which of the following compounds is a strong acid?",
+        answers: ["Hydrochloric acid", "Acetic acid", "Citric acid", "Formic acid"],
+        correct: 0 // Hydrochloric acid
+    },
+    {
+        question: "What is the product when hydrochloric acid reacts with sodium hydroxide?",
+        answers: ["Water and salt", "Water and hydrogen gas", "Salt and oxygen", "Hydrogen gas and chlorine gas"],
+        correct: 0 // Water and salt
+    },
+    {
+        question: "Which of the following elements is a noble gas?",
+        answers: ["Neon", "Oxygen", "Hydrogen", "Nitrogen"],
+        correct: 0 // Neon
+    },
+    {
+        question: "What is the boiling point of water?",
+        answers: ["100°C", "90°C", "110°C", "150°C"],
+        correct: 0 // 100°C
+    },
+    {
+        question: "Which of the following is a redox reaction?",
+        answers: ["Combustion of hydrocarbons", "Sublimation of iodine", "Dissolution of salt in water", "Freezing of water"],
+        correct: 0 // Combustion of hydrocarbons
+    },
+    {
+        question: "What is the oxidation state of chlorine in HClO3?",
+        answers: ["+1", "+3", "+5", "+7"],
+        correct: 2 // +5
+    },
+    {
+        question: "What is the name of the compound NaOH?",
+        answers: ["Sodium hydroxide", "Sodium chloride", "Sodium sulfate", "Sodium bicarbonate"],
+        correct: 0 // Sodium hydroxide
+    },
+    {
+        question: "Which of the following is an example of a chemical property?",
+        answers: ["Color", "Density", "Reactivity with oxygen", "Boiling point"],
+        correct: 2 // Reactivity with oxygen
+    },
+    {
+        question: "Which element has the highest electronegativity?",
+        answers: ["Oxygen", "Fluorine", "Nitrogen", "Chlorine"],
+        correct: 1 // Fluorine
+    },
+    {
+        question: "Which of the following acids is found in stomach acid?",
+        answers: ["Hydrochloric acid", "Sulfuric acid", "Nitric acid", "Acetic acid"],
+        correct: 0 // Hydrochloric acid
+    },
+    {
+        question: "What is the electronic configuration of sodium (Na)?",
+        answers: ["1s² 2s² 2p⁶ 3s¹", "1s² 2s² 2p⁶ 3p⁶", "1s² 2s² 2p⁶ 3s²", "1s² 2s² 2p⁶ 3s² 3p⁶"],
+        correct: 0 // 1s² 2s² 2p⁶ 3s¹
+    },
+    {
+        question: "Which of the following is a characteristic of acids?",
+        answers: ["Turns blue litmus paper red", "Tastes bitter", "Slippery to touch", "Produces oxygen gas when reacted with metals"],
+        correct: 0 // Turns blue litmus paper red
+    },
+    {
+        question: "What is the pH of a neutral solution?",
+        answers: ["7", "0", "14", "1"],
+        correct: 0 // 7
+    },
+    {
+        question: "Which of the following compounds is a base?",
+        answers: ["NaOH", "HCl", "H2SO4", "HNO3"],
+        correct: 0 // NaOH
+    },
+    {
+        question: "What is the molar mass of sodium chloride (NaCl)?",
+        answers: ["58.5 g/mol", "59.5 g/mol", "60.5 g/mol", "61.5 g/mol"],
+        correct: 0 // 58.5 g/mol
+    },
+    {
+        question: "Which of the following compounds is formed when carbon dioxide reacts with water?",
+        answers: ["Carbonic acid", "Sulfuric acid", "Hydrochloric acid", "Acetic acid"],
+        correct: 0 // Carbonic acid
+    },
+    {
+        question: "Which of the following gases is used in balloons?",
+        answers: ["Hydrogen", "Helium", "Oxygen", "Carbon dioxide"],
+        correct: 1 // Helium
+    },
+    {
+        question: "What is the chemical formula of methane?",
+        answers: ["CH4", "C2H6", "C3H8", "C4H10"],
+        correct: 0 // CH4
+    },
+    {
+        question: "What is the heat capacity of a substance?",
+        answers: ["The amount of heat required to change its temperature by 1°C", "The amount of heat required to melt the substance", "The temperature at which the substance changes phase", "The energy required to vaporize the substance"],
+        correct: 0 // The amount of heat required to change its temperature by 1°C
+    },
+    {
+        question: "Which of the following is a type of chemical bond?",
+        answers: ["Covalent bond", "Electrostatic force", "Gravitational force", "Magnetic force"],
+        correct: 0 // Covalent bond
+    },
+    {
+        question: "Which of the following gases is responsible for the greenhouse effect?",
+        answers: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"],
+        correct: 2 // Carbon dioxide
+    },
+    {
+        question: "Which of the following is an example of a physical change?",
+        answers: ["Rusting of iron", "Melting of ice", "Burning of wood", "Dissolving salt in water"],
+        correct: 1 // Melting of ice
+    },
+    {
+        question: "What is the name of the process in which a liquid changes to a gas?",
+        answers: ["Vaporization", "Condensation", "Sublimation", "Freezing"],
+        correct: 0 // Vaporization
+    },
+    {
+        question: "Which of the following is a type of isomerism?",
+        answers: ["Structural isomerism", "Orbital isomerism", "Phase isomerism", "Energy isomerism"],
+        correct: 0 // Structural isomerism
+    },
+    {
+        question: "Which of the following elements is found in all organic compounds?",
+        answers: ["Hydrogen", "Oxygen", "Nitrogen", "Carbon"],
+        correct: 3 // Carbon
+    },
+    {
+        question: "What is the process of converting a gas to a solid called?",
+        answers: ["Sublimation", "Vaporization", "Deposition", "Condensation"],
+        correct: 2 // Deposition
+    },
+    {
+        question: "Which of the following is an example of a redox reaction?",
+        answers: ["The combustion of methane", "The melting of ice", "The dissolving of sugar in water", "The freezing of water"],
+        correct: 0 // The combustion of methane
+    },
+    {
+        question: "What is the unit of measurement for electric charge?",
+        answers: ["Volt", "Ampere", "Coulomb", "Ohm"],
+        correct: 2 // Coulomb
+    },
+    {
+        question: "What is the symbol for the element gold?",
+        answers: ["Au", "Ag", "Pb", "Fe"],
+        correct: 0 // Au
+    },
+    {
+        question: "Which of the following is a strong base?",
+        answers: ["Sodium hydroxide", "Ammonium hydroxide", "Calcium hydroxide", "Magnesium hydroxide"],
+        correct: 0 // Sodium hydroxide
+    },
+    {
+        question: "What is the name of the compound NH3?",
+        answers: ["Ammonia", "Ammonium", "Nitrogen dioxide", "Nitrous oxide"],
+        correct: 0 // Ammonia
+    },
+    {
+        question: "What is the process in which a liquid turns into a solid?",
+        answers: ["Condensation", "Freezing", "Vaporization", "Sublimation"],
+        correct: 1 // Freezing
+    }, {
+        question: "What is the chemical formula of water?",
+        answers: ["H2O", "CO2", "O2", "H2SO4"],
+        correct: 0 // H2O
+    },
+    {
+        question: "Which of the following is an alkali metal?",
+        answers: ["Sodium", "Calcium", "Magnesium", "Boron"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "What is the pH of pure water?",
+        answers: ["7", "0", "14", "10"],
+        correct: 0 // 7
+    },
+    {
+        question: "Which of the following is a non-metal?",
+        answers: ["Oxygen", "Calcium", "Sodium", "Iron"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "What is the molar mass of nitrogen gas (N2)?",
+        answers: ["28 g/mol", "32 g/mol", "44 g/mol", "22 g/mol"],
+        correct: 0 // 28 g/mol
+    },
+    {
+        question: "Which element has the atomic number 6?",
+        answers: ["Carbon", "Oxygen", "Nitrogen", "Hydrogen"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "Which of the following is an example of a noble gas?",
+        answers: ["Argon", "Oxygen", "Nitrogen", "Chlorine"],
+        correct: 0 // Argon
+    },
+    {
+        question: "What is the symbol for silver?",
+        answers: ["Ag", "Si", "Au", "Pb"],
+        correct: 0 // Ag
+    },
+    {
+        question: "What type of bond is formed by the sharing of electrons?",
+        answers: ["Covalent bond", "Ionic bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Covalent bond
+    },
+    {
+        question: "Which of the following acids is found in citrus fruits?",
+        answers: ["Citric acid", "Sulfuric acid", "Hydrochloric acid", "Acetic acid"],
+        correct: 0 // Citric acid
+    },
+    {
+        question: "What is the chemical formula for sodium chloride?",
+        answers: ["NaCl", "Na2SO4", "NaOH", "NaHCO3"],
+        correct: 0 // NaCl
+    },
+    {
+        question: "Which of the following is a characteristic of acids?",
+        answers: ["Turns blue litmus paper red", "Feels slippery", "Tastes bitter", "Produces oxygen gas"],
+        correct: 0 // Turns blue litmus paper red
+    },
+    {
+        question: "What is the process by which a liquid turns into gas?",
+        answers: ["Vaporization", "Condensation", "Sublimation", "Melting"],
+        correct: 0 // Vaporization
+    },
+    {
+        question: "Which of the following compounds is a base?",
+        answers: ["Sodium hydroxide", "Hydrochloric acid", "Sulfuric acid", "Acetic acid"],
+        correct: 0 // Sodium hydroxide
+    },
+    {
+        question: "What is the boiling point of water?",
+        answers: ["100°C", "90°C", "110°C", "200°C"],
+        correct: 0 // 100°C
+    },
+    {
+        question: "Which of the following compounds is a salt?",
+        answers: ["Sodium chloride", "Sodium hydroxide", "Sulfuric acid", "Nitric acid"],
+        correct: 0 // Sodium chloride
+    },
+    {
+        question: "What is the oxidation number of hydrogen in H2O?",
+        answers: ["+1", "-1", "0", "+2"],
+        correct: 0 // +1
+    },
+    {
+        question: "What is the chemical formula for methane?",
+        answers: ["CH4", "C2H6", "C3H8", "C4H10"],
+        correct: 0 // CH4
+    },
+    {
+        question: "Which of the following is an example of a combustion reaction?",
+        answers: ["Burning of wood", "Dissolving sugar in water", "Freezing water", "Boiling water"],
+        correct: 0 // Burning of wood
+    },
+    {
+        question: "Which gas is used in fire extinguishers?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Helium"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "What is the chemical formula of hydrochloric acid?",
+        answers: ["HCl", "H2SO4", "HNO3", "CH3COOH"],
+        correct: 0 // HCl
+    },
+    {
+        question: "Which of the following is a common use of sulfuric acid?",
+        answers: ["Fertilizer production", "Disinfectant", "Food preservative", "Deodorant"],
+        correct: 0 // Fertilizer production
+    },
+    {
+        question: "What is the pH of an acidic solution?",
+        answers: ["Less than 7", "Greater than 7", "Equal to 7", "None of the above"],
+        correct: 0 // Less than 7
+    },
+    {
+        question: "Which element is represented by the symbol 'Na'?",
+        answers: ["Sodium", "Nitrogen", "Neon", "Nickel"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "What type of reaction occurs when two or more substances combine to form a more complex product?",
+        answers: ["Synthesis", "Decomposition", "Single displacement", "Double displacement"],
+        correct: 0 // Synthesis
+    },
+    {
+        question: "What is the pH of a neutral solution?",
+        answers: ["7", "14", "0", "10"],
+        correct: 0 // 7
+    },
+    {
+        question: "Which of the following is a characteristic of metals?",
+        answers: ["Good conductors of heat and electricity", "Brittle", "Low melting points", "Poor conductors of heat"],
+        correct: 0 // Good conductors of heat and electricity
+    },
+    {
+        question: "What is the name of the compound NH3?",
+        answers: ["Ammonia", "Ammonium", "Nitrogen dioxide", "Nitrous oxide"],
+        correct: 0 // Ammonia
+    },
+    {
+        question: "Which of the following compounds is an organic compound?",
+        answers: ["Methane", "Water", "Sodium chloride", "Ammonia"],
+        correct: 0 // Methane
+    },
+    {
+        question: "What is the symbol for the element oxygen?",
+        answers: ["O", "Ox", "O2", "O3"],
+        correct: 0 // O
+    },
+    {
+        question: "Which of the following gases is most abundant in Earth's atmosphere?",
+        answers: ["Nitrogen", "Oxygen", "Carbon dioxide", "Argon"],
+        correct: 0 // Nitrogen
+    },
+    {
+        question: "Which of the following gases is colorless and odorless?",
+        answers: ["Nitrogen", "Oxygen", "Carbon dioxide", "Hydrogen"],
+        correct: 0 // Nitrogen
+    },
+    {
+        question: "What is the chemical formula for potassium nitrate?",
+        answers: ["KNO3", "KCl", "NaCl", "Na2SO4"],
+        correct: 0 // KNO3
+    },
+    {
+        question: "What is the process of converting a solid directly into a gas called?",
+        answers: ["Sublimation", "Condensation", "Evaporation", "Freezing"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "Which of the following is the most reactive halogen?",
+        answers: ["Fluorine", "Chlorine", "Bromine", "Iodine"],
+        correct: 0 // Fluorine
+    },
+    {
+        question: "What is the chemical formula for calcium carbonate?",
+        answers: ["CaCO3", "CaCl2", "CaO", "Ca(OH)2"],
+        correct: 0 // CaCO3
+    },
+    {
+        question: "Which of the following is an example of a physical change?",
+        answers: ["Melting of ice", "Burning of wood", "Rusting of iron", "Digesting food"],
+        correct: 0 // Melting of ice
+    },
+    {
+        question: "What is the name of the process in which a gas turns into a liquid?",
+        answers: ["Condensation", "Vaporization", "Sublimation", "Freezing"],
+        correct: 0 // Condensation
+    },
+    {
+        question: "Which of the following is an example of a heterogeneous mixture?",
+        answers: ["Sand and water", "Salt dissolved in water", "Sugar dissolved in tea", "Air"],
+        correct: 0 // Sand and water
+    },
+    {
+        question: "What is the symbol for potassium?",
+        answers: ["K", "P", "Ka", "Po"],
+        correct: 0 // K
+    },  {
+        question: "What is the atomic number of carbon?",
+        answers: ["6", "8", "10", "12"],
+        correct: 0 // 6
+    },
+    {
+        question: "What is the chemical formula for acetic acid?",
+        answers: ["CH3COOH", "C2H5OH", "H2SO4", "CH4"],
+        correct: 0 // CH3COOH
+    },
+    {
+        question: "Which element has the symbol 'Au'?",
+        answers: ["Gold", "Silver", "Aluminum", "Uranium"],
+        correct: 0 // Gold
+    },
+    {
+        question: "What is the molar mass of CO2?",
+        answers: ["44 g/mol", "32 g/mol", "28 g/mol", "18 g/mol"],
+        correct: 0 // 44 g/mol
+    },
+    {
+        question: "Which of the following is a property of acids?",
+        answers: ["Sour taste", "Bitter taste", "Slippery", "Neutral pH"],
+        correct: 0 // Sour taste
+    },
+    {
+        question: "Which of the following is a halogen?",
+        answers: ["Chlorine", "Oxygen", "Nitrogen", "Argon"],
+        correct: 0 // Chlorine
+    },
+    {
+        question: "What is the molecular formula of glucose?",
+        answers: ["C6H12O6", "C6H6", "C5H10O5", "C12H22O11"],
+        correct: 0 // C6H12O6
+    },
+    {
+        question: "Which of the following is an example of a chemical change?",
+        answers: ["Burning wood", "Melting ice", "Boiling water", "Dissolving sugar in water"],
+        correct: 0 // Burning wood
+    },
+    {
+        question: "What is the process of a solid turning into a liquid called?",
+        answers: ["Melting", "Freezing", "Evaporation", "Sublimation"],
+        correct: 0 // Melting
+    },
+    {
+        question: "Which of the following is an example of an exothermic reaction?",
+        answers: ["Combustion of methane", "Melting of ice", "Dissolution of salt in water", "Boiling water"],
+        correct: 0 // Combustion of methane
+    },
+    {
+        question: "Which gas is used in the preparation of limewater?",
+        answers: ["Carbon dioxide", "Nitrogen", "Oxygen", "Hydrogen"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "What is the chemical formula of ammonia?",
+        answers: ["NH3", "NH4", "N2H4", "N3H6"],
+        correct: 0 // NH3
+    },
+    {
+        question: "Which of the following compounds is an alcohol?",
+        answers: ["Ethanol", "Acetone", "Methane", "Chlorine"],
+        correct: 0 // Ethanol
+    },
+    {
+        question: "Which of the following metals reacts with water to form hydrogen gas?",
+        answers: ["Sodium", "Iron", "Copper", "Zinc"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "Which of the following is an example of a base?",
+        answers: ["Sodium hydroxide", "Hydrochloric acid", "Acetic acid", "Sulfuric acid"],
+        correct: 0 // Sodium hydroxide
+    },
+    {
+        question: "What is the primary ingredient in baking soda?",
+        answers: ["Sodium bicarbonate", "Potassium chloride", "Calcium carbonate", "Magnesium sulfate"],
+        correct: 0 // Sodium bicarbonate
+    },
+    {
+        question: "What is the most abundant element in Earth's crust?",
+        answers: ["Oxygen", "Silicon", "Iron", "Calcium"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "Which of the following is used to test for the presence of starch?",
+        answers: ["Iodine solution", "Benedict's solution", "Silver nitrate", "Tollens' reagent"],
+        correct: 0 // Iodine solution
+    },
+    {
+        question: "What is the chemical formula for sulfuric acid?",
+        answers: ["H2SO4", "HCl", "HNO3", "CH3COOH"],
+        correct: 0 // H2SO4
+    },
+    {
+        question: "What is the main use of ozone in the Earth's atmosphere?",
+        answers: ["Protecting from UV rays", "Providing oxygen", "Producing carbon dioxide", "Creating air pressure"],
+        correct: 0 // Protecting from UV rays
+    },
+    {
+        question: "Which of the following is a common use of nitrogen gas?",
+        answers: ["Filling balloons", "Fueling cars", "Making explosives", "Displacing oxygen in packaging"],
+        correct: 0 // Filling balloons
+    },
+    {
+        question: "What is the chemical formula for methane?",
+        answers: ["CH4", "C2H6", "C3H8", "C4H10"],
+        correct: 0 // CH4
+    },
+    {
+        question: "Which element has the symbol 'Fe'?",
+        answers: ["Iron", "Fluorine", "Francium", "Flerovium"],
+        correct: 0 // Iron
+    },
+    {
+        question: "Which of the following is a property of a metal?",
+        answers: ["High electrical conductivity", "Poor conductivity of heat", "Brittle", "High ionization energy"],
+        correct: 0 // High electrical conductivity
+    },
+    {
+        question: "What is the process by which a liquid turns into a gas?",
+        answers: ["Evaporation", "Condensation", "Sublimation", "Melting"],
+        correct: 0 // Evaporation
+    },
+    {
+        question: "What is the main component of natural gas?",
+        answers: ["Methane", "Ethane", "Propane", "Butane"],
+        correct: 0 // Methane
+    },
+    {
+        question: "What is the chemical formula for carbon dioxide?",
+        answers: ["CO2", "CO", "C2H6O", "C2H4O2"],
+        correct: 0 // CO2
+    },
+    {
+        question: "What is the process of converting a gas directly into a solid called?",
+        answers: ["Deposition", "Sublimation", "Condensation", "Evaporation"],
+        correct: 0 // Deposition
+    },
+    {
+        question: "Which of the following is an example of a non-metal?",
+        answers: ["Oxygen", "Iron", "Copper", "Aluminum"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "What is the name of the compound NaOH?",
+        answers: ["Sodium hydroxide", "Sodium chloride", "Sodium sulfate", "Sodium bicarbonate"],
+        correct: 0 // Sodium hydroxide
+    },
+    {
+        question: "Which of the following is an example of a combustion reaction?",
+        answers: ["Burning of methane", "Melting of ice", "Boiling of water", "Dissolving of sugar in water"],
+        correct: 0 // Burning of methane
+    },
+    {
+        question: "What is the main constituent of the air we breathe?",
+        answers: ["Nitrogen", "Oxygen", "Carbon dioxide", "Argon"],
+        correct: 0 // Nitrogen
+    },
+    {
+        question: "Which of the following is a noble gas?",
+        answers: ["Argon", "Oxygen", "Hydrogen", "Nitrogen"],
+        correct: 0 // Argon
+    },
+    {
+        question: "What is the process in which a solid turns directly into a gas?",
+        answers: ["Sublimation", "Melting", "Condensation", "Evaporation"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "What is the chemical formula for potassium chloride?",
+        answers: ["KCl", "NaCl", "CaCl2", "MgCl2"],
+        correct: 0 // KCl
+    },
+    {
+        question: "Which of the following acids is used in car batteries?",
+        answers: ["Sulfuric acid", "Acetic acid", "Nitric acid", "Hydrochloric acid"],
+        correct: 0 // Sulfuric acid
+    },
+    {
+        question: "What is the atomic number of oxygen?",
+        answers: ["8", "6", "7", "9"],
+        correct: 0 // 8
+    },
+    {
+        question: "Which of the following is the chemical formula for sodium bicarbonate?",
+        answers: ["NaHCO3", "Na2CO3", "NaCl", "NaOH"],
+        correct: 0 // NaHCO3
+    },
+    {
+        question: "Which of the following elements is most commonly used in the production of semiconductors?",
+        answers: ["Silicon", "Aluminum", "Copper", "Iron"],
+        correct: 0 // Silicon
+    }, {
+        question: "What is the atomic number of nitrogen?",
+        answers: ["7", "8", "9", "10"],
+        correct: 0 // 7
+    },
+    {
+        question: "What is the chemical formula for methane?",
+        answers: ["CH4", "C2H6", "C3H8", "C4H10"],
+        correct: 0 // CH4
+    },
+    {
+        question: "Which element has the symbol 'Na'?",
+        answers: ["Sodium", "Neon", "Nitrogen", "Noble"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "Which compound is formed when sodium reacts with chlorine?",
+        answers: ["NaCl", "NaOH", "Na2CO3", "Na2SO4"],
+        correct: 0 // NaCl
+    },
+    {
+        question: "What is the pH of pure water?",
+        answers: ["7", "14", "0", "5"],
+        correct: 0 // 7
+    },
+    {
+        question: "Which gas is produced when hydrochloric acid reacts with zinc?",
+        answers: ["Hydrogen", "Oxygen", "Carbon dioxide", "Nitrogen"],
+        correct: 0 // Hydrogen
+    },
+    {
+        question: "What is the chemical formula for sodium hydroxide?",
+        answers: ["NaOH", "Na2O", "Na2CO3", "NaCl"],
+        correct: 0 // NaOH
+    },
+    {
+        question: "Which element has the symbol 'Mg'?",
+        answers: ["Magnesium", "Manganese", "Mercury", "Molybdenum"],
+        correct: 0 // Magnesium
+    },
+    {
+        question: "Which of the following is a noble gas?",
+        answers: ["Argon", "Oxygen", "Carbon", "Hydrogen"],
+        correct: 0 // Argon
+    },
+    {
+        question: "Which of the following is an example of an alkali metal?",
+        answers: ["Sodium", "Calcium", "Copper", "Iron"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "Which gas is used in the process of photosynthesis?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "Which of the following is an example of a physical change?",
+        answers: ["Boiling water", "Rusting of iron", "Burning of wood", "Dissolving sugar in water"],
+        correct: 0 // Boiling water
+    },
+    {
+        question: "What is the formula for calcium carbonate?",
+        answers: ["CaCO3", "CaCl2", "CaSO4", "CaO"],
+        correct: 0 // CaCO3
+    },
+    {
+        question: "What type of bond is formed when two atoms share electrons?",
+        answers: ["Covalent bond", "Ionic bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Covalent bond
+    },
+    {
+        question: "Which of the following is a property of metals?",
+        answers: ["High electrical conductivity", "Poor electrical conductivity", "Brittle", "High ionization energy"],
+        correct: 0 // High electrical conductivity
+    },
+    {
+        question: "What is the most abundant element in the Earth's atmosphere?",
+        answers: ["Nitrogen", "Oxygen", "Carbon dioxide", "Hydrogen"],
+        correct: 0 // Nitrogen
+    },
+    {
+        question: "Which of the following is an example of a non-metal?",
+        answers: ["Oxygen", "Iron", "Copper", "Aluminum"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "What is the chemical formula for sulfuric acid?",
+        answers: ["H2SO4", "HCl", "HNO3", "CH3COOH"],
+        correct: 0 // H2SO4
+    },
+    {
+        question: "Which of the following is the chemical formula for potassium nitrate?",
+        answers: ["KNO3", "NaNO3", "CaNO3", "MgNO3"],
+        correct: 0 // KNO3
+    },
+    {
+        question: "Which of the following elements is a metalloid?",
+        answers: ["Silicon", "Sodium", "Magnesium", "Sulfur"],
+        correct: 0 // Silicon
+    },
+    {
+        question: "What is the symbol for the element Gold?",
+        answers: ["Au", "Ag", "Fe", "Pb"],
+        correct: 0 // Au
+    },
+    {
+        question: "Which of the following is an example of an endothermic reaction?",
+        answers: ["Melting of ice", "Burning of wood", "Condensation of steam", "Rusting of iron"],
+        correct: 0 // Melting of ice
+    },
+    {
+        question: "Which of the following is a product of the combustion of methane?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Water"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "What is the chemical formula for ammonia?",
+        answers: ["NH3", "NH4", "N2H4", "NO2"],
+        correct: 0 // NH3
+    },
+    {
+        question: "What is the process by which a gas turns into a liquid?",
+        answers: ["Condensation", "Evaporation", "Sublimation", "Melting"],
+        correct: 0 // Condensation
+    },
+    {
+        question: "Which of the following is a compound?",
+        answers: ["Water", "Oxygen", "Nitrogen", "Carbon dioxide"],
+        correct: 0 // Water
+    },
+    {
+        question: "Which of the following compounds is an example of a carbohydrate?",
+        answers: ["Glucose", "Ethanol", "Acetone", "Methane"],
+        correct: 0 // Glucose
+    },
+    {
+        question: "Which of the following acids is commonly used in car batteries?",
+        answers: ["Sulfuric acid", "Hydrochloric acid", "Acetic acid", "Citric acid"],
+        correct: 0 // Sulfuric acid
+    },
+    {
+        question: "Which of the following is a non-metallic element?",
+        answers: ["Oxygen", "Sodium", "Calcium", "Magnesium"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "Which of the following is used in the process of photosynthesis?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Argon"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "What is the chemical formula for hydrochloric acid?",
+        answers: ["HCl", "H2SO4", "HNO3", "CH3COOH"],
+        correct: 0 // HCl
+    },
+    {
+        question: "Which of the following is a gas at room temperature?",
+        answers: ["Oxygen", "Water", "Sodium", "Iron"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "What is the most common state of matter in the universe?",
+        answers: ["Plasma", "Gas", "Solid", "Liquid"],
+        correct: 0 // Plasma
+    },
+    {
+        question: "What is the term for a substance that speeds up a chemical reaction?",
+        answers: ["Catalyst", "Reactant", "Product", "Solvent"],
+        correct: 0 // Catalyst
+    },
+    {
+        question: "What is the unit of measurement for the amount of a substance?",
+        answers: ["Mole", "Gram", "Liter", "Meter"],
+        correct: 0 // Mole
+    },
+    {
+        question: "What is the chemical symbol for sodium?",
+        answers: ["Na", "S", "N", "So"],
+        correct: 0 // Na
+    },
+    {
+        question: "Which of the following elements is a noble gas?",
+        answers: ["Helium", "Hydrogen", "Oxygen", "Nitrogen"],
+        correct: 0 // Helium
+    },
+    {
+        question: "Which element is the lightest in the periodic table?",
+        answers: ["Hydrogen", "Helium", "Lithium", "Oxygen"],
+        correct: 0 // Hydrogen
+    },
+    {
+        question: "What is the name of the compound NaOH?",
+        answers: ["Sodium hydroxide", "Sodium chloride", "Sodium sulfate", "Sodium bicarbonate"],
+        correct: 0 // Sodium hydroxide
+    },
+    {
+        question: "What is the process called when a gas turns into a liquid?",
+        answers: ["Condensation", "Evaporation", "Freezing", "Sublimation"],
+        correct: 0 // Condensation
+    },
+    {
+        question: "What type of bond is formed when two atoms transfer electrons?",
+        answers: ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Ionic bond
+    },
+    {
+        question: "Which gas is essential for respiration?",
+        answers: ["Oxygen", "Carbon dioxide", "Nitrogen", "Argon"],
+        correct: 0 // Oxygen
+    },{
+        question: "What is the chemical symbol for oxygen?",
+        answers: ["O", "O2", "Ox", "O3"],
+        correct: 0 // O
+    },
+    {
+        question: "Which element has the atomic number 6?",
+        answers: ["Carbon", "Oxygen", "Nitrogen", "Hydrogen"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "What is the chemical formula for water?",
+        answers: ["H2O", "O2H", "H2O2", "OH2"],
+        correct: 0 // H2O
+    },
+    {
+        question: "What is the most abundant element in the Earth's crust?",
+        answers: ["Oxygen", "Silicon", "Iron", "Aluminum"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "Which of the following is a noble gas?",
+        answers: ["Neon", "Nitrogen", "Oxygen", "Carbon"],
+        correct: 0 // Neon
+    },
+    {
+        question: "What type of bond is formed when electrons are shared between atoms?",
+        answers: ["Covalent bond", "Ionic bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Covalent bond
+    },
+    {
+        question: "Which of these elements is a halogen?",
+        answers: ["Fluorine", "Sodium", "Calcium", "Iron"],
+        correct: 0 // Fluorine
+    },
+    {
+        question: "What is the atomic number of calcium?",
+        answers: ["20", "12", "18", "8"],
+        correct: 0 // 20
+    },
+    {
+        question: "Which gas do plants absorb during photosynthesis?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "What is the chemical formula for carbon dioxide?",
+        answers: ["CO2", "CO", "C2O", "CO3"],
+        correct: 0 // CO2
+    },
+    {
+        question: "Which of the following is an example of a chemical change?",
+        answers: ["Burning wood", "Boiling water", "Freezing water", "Dissolving sugar in water"],
+        correct: 0 // Burning wood
+    },
+    {
+        question: "What is the chemical formula for hydrochloric acid?",
+        answers: ["HCl", "H2SO4", "HNO3", "CH3COOH"],
+        correct: 0 // HCl
+    },
+    {
+        question: "What is the atomic number of hydrogen?",
+        answers: ["1", "2", "8", "6"],
+        correct: 0 // 1
+    },
+    {
+        question: "Which element has the symbol 'Fe'?",
+        answers: ["Iron", "Fluorine", "Francium", "Flerovium"],
+        correct: 0 // Iron
+    },
+    {
+        question: "Which of these is a property of metals?",
+        answers: ["High conductivity", "Brittle", "Non-malleable", "Non-ductile"],
+        correct: 0 // High conductivity
+    },
+    {
+        question: "Which is the main component of natural gas?",
+        answers: ["Methane", "Ethane", "Propane", "Butane"],
+        correct: 0 // Methane
+    },
+    {
+        question: "What is the formula for sulfuric acid?",
+        answers: ["H2SO4", "HCl", "HNO3", "H2CO3"],
+        correct: 0 // H2SO4
+    },
+    {
+        question: "Which of the following is an alkali metal?",
+        answers: ["Sodium", "Magnesium", "Iron", "Calcium"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "What is the symbol for potassium?",
+        answers: ["K", "P", "Na", "Po"],
+        correct: 0 // K
+    },
+    {
+        question: "What element does 'He' represent?",
+        answers: ["Helium", "Hydrogen", "Hassium", "Holmium"],
+        correct: 0 // Helium
+    },
+    {
+        question: "What is the chemical formula for ammonia?",
+        answers: ["NH3", "NH4", "N2O", "NO3"],
+        correct: 0 // NH3
+    },
+    {
+        question: "Which of the following compounds is acidic?",
+        answers: ["HCl", "NaOH", "NaCl", "K2CO3"],
+        correct: 0 // HCl
+    },
+    {
+        question: "Which gas is commonly used in balloons?",
+        answers: ["Helium", "Hydrogen", "Nitrogen", "Oxygen"],
+        correct: 0 // Helium
+    },
+    {
+        question: "Which element is used in the production of steel?",
+        answers: ["Carbon", "Oxygen", "Nitrogen", "Sulfur"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "Which of the following is an example of a metal?",
+        answers: ["Copper", "Water", "Sulfur", "Oxygen"],
+        correct: 0 // Copper
+    },
+    {
+        question: "What is the chemical formula for sodium chloride?",
+        answers: ["NaCl", "Na2SO4", "NaOH", "NaNO3"],
+        correct: 0 // NaCl
+    },
+    {
+        question: "What is the primary gas in the Earth's atmosphere?",
+        answers: ["Nitrogen", "Oxygen", "Carbon dioxide", "Hydrogen"],
+        correct: 0 // Nitrogen
+    },
+    {
+        question: "What is the pH of hydrochloric acid?",
+        answers: ["1", "7", "10", "14"],
+        correct: 0 // 1
+    },
+    {
+        question: "What is the symbol for gold?",
+        answers: ["Au", "Ag", "Pb", "Fe"],
+        correct: 0 // Au
+    },
+    {
+        question: "Which of these is a common solvent?",
+        answers: ["Water", "Sugar", "Salt", "Oil"],
+        correct: 0 // Water
+    },
+    {
+        question: "What is the boiling point of water in Celsius?",
+        answers: ["100°C", "0°C", "50°C", "150°C"],
+        correct: 0 // 100°C
+    },
+    {
+        question: "What is the symbol for silver?",
+        answers: ["Ag", "Au", "Pb", "Sn"],
+        correct: 0 // Ag
+    },
+    {
+        question: "What is the unit of pressure in the metric system?",
+        answers: ["Pascal", "Joule", "Meter", "Liter"],
+        correct: 0 // Pascal
+    },
+    {
+        question: "Which of the following is an example of a physical change?",
+        answers: ["Melting ice", "Burning wood", "Rusting iron", "Baking a cake"],
+        correct: 0 // Melting ice
+    },
+    {
+        question: "Which of these elements is a noble gas?",
+        answers: ["Argon", "Nitrogen", "Oxygen", "Sulfur"],
+        correct: 0 // Argon
+    },
+    {
+        question: "What is the process by which a solid turns into a gas?",
+        answers: ["Sublimation", "Condensation", "Evaporation", "Freezing"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "What is the formula for hydrochloric acid?",
+        answers: ["HCl", "H2SO4", "HNO3", "NaOH"],
+        correct: 0 // HCl
+    },
+    {
+        question: "Which element is most abundant in the universe?",
+        answers: ["Hydrogen", "Oxygen", "Carbon", "Helium"],
+        correct: 0 // Hydrogen
+    },
+    {
+        question: "What is the molecular formula for glucose?",
+        answers: ["C6H12O6", "C12H22O11", "C6H6", "C12H24O12"],
+        correct: 0 // C6H12O6
+    },
+    {
+        question: "What is the process by which a liquid turns into a gas?",
+        answers: ["Evaporation", "Condensation", "Sublimation", "Freezing"],
+        correct: 0 // Evaporation
+    },
+    {
+        question: "Which of these is a chemical element?",
+        answers: ["Iron", "Wood", "Water", "Air"],
+        correct: 0 // Iron
+    },
+    {
+        question: "What is the atomic number of chlorine?",
+        answers: ["17", "15", "10", "9"],
+        correct: 0 // 17
+    },
+    {
+        question: "Which of these elements is a metal?",
+        answers: ["Copper", "Oxygen", "Sulfur", "Nitrogen"],
+        correct: 0 // Copper
+    },
+    {
+        question: "Which element is used to make the filament in light bulbs?",
+        answers: ["Tungsten", "Iron", "Carbon", "Aluminum"],
+        correct: 0 // Tungsten
+    },{
+        question: "What is the chemical symbol for oxygen?",
+        answers: ["O", "O2", "Ox", "O3"],
+        correct: 0 // O
+    },
+    {
+        question: "Which element has the atomic number 6?",
+        answers: ["Carbon", "Oxygen", "Nitrogen", "Hydrogen"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "What is the chemical formula for water?",
+        answers: ["H2O", "O2H", "H2O2", "OH2"],
+        correct: 0 // H2O
+    },
+    {
+        question: "What is the most abundant element in the Earth's crust?",
+        answers: ["Oxygen", "Silicon", "Iron", "Aluminum"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "Which of the following is a noble gas?",
+        answers: ["Neon", "Nitrogen", "Oxygen", "Carbon"],
+        correct: 0 // Neon
+    },
+    {
+        question: "What type of bond is formed when electrons are shared between atoms?",
+        answers: ["Covalent bond", "Ionic bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Covalent bond
+    },
+    {
+        question: "Which of these elements is a halogen?",
+        answers: ["Fluorine", "Sodium", "Calcium", "Iron"],
+        correct: 0 // Fluorine
+    },
+    {
+        question: "What is the atomic number of calcium?",
+        answers: ["20", "12", "18", "8"],
+        correct: 0 // 20
+    },
+    {
+        question: "Which gas do plants absorb during photosynthesis?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "What is the chemical formula for carbon dioxide?",
+        answers: ["CO2", "CO", "C2O", "CO3"],
+        correct: 0 // CO2
+    },
+    {
+        question: "Which of the following is an example of a chemical change?",
+        answers: ["Burning wood", "Boiling water", "Freezing water", "Dissolving sugar in water"],
+        correct: 0 // Burning wood
+    },
+    {
+        question: "What is the chemical formula for hydrochloric acid?",
+        answers: ["HCl", "H2SO4", "HNO3", "CH3COOH"],
+        correct: 0 // HCl
+    },
+    {
+        question: "What is the atomic number of hydrogen?",
+        answers: ["1", "2", "8", "6"],
+        correct: 0 // 1
+    },
+    {
+        question: "Which element has the symbol 'Fe'?",
+        answers: ["Iron", "Fluorine", "Francium", "Flerovium"],
+        correct: 0 // Iron
+    },
+    {
+        question: "Which of these is a property of metals?",
+        answers: ["High conductivity", "Brittle", "Non-malleable", "Non-ductile"],
+        correct: 0 // High conductivity
+    },
+    {
+        question: "Which is the main component of natural gas?",
+        answers: ["Methane", "Ethane", "Propane", "Butane"],
+        correct: 0 // Methane
+    },
+    {
+        question: "What is the formula for sulfuric acid?",
+        answers: ["H2SO4", "HCl", "HNO3", "H2CO3"],
+        correct: 0 // H2SO4
+    },
+    {
+        question: "Which of the following is an alkali metal?",
+        answers: ["Sodium", "Magnesium", "Iron", "Calcium"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "What is the symbol for potassium?",
+        answers: ["K", "P", "Na", "Po"],
+        correct: 0 // K
+    },
+    {
+        question: "What element does 'He' represent?",
+        answers: ["Helium", "Hydrogen", "Hassium", "Holmium"],
+        correct: 0 // Helium
+    },
+    {
+        question: "What is the chemical formula for ammonia?",
+        answers: ["NH3", "NH4", "N2O", "NO3"],
+        correct: 0 // NH3
+    },
+    {
+        question: "Which of the following compounds is acidic?",
+        answers: ["HCl", "NaOH", "NaCl", "K2CO3"],
+        correct: 0 // HCl
+    },
+    {
+        question: "Which gas is commonly used in balloons?",
+        answers: ["Helium", "Hydrogen", "Nitrogen", "Oxygen"],
+        correct: 0 // Helium
+    },
+    {
+        question: "Which element is used in the production of steel?",
+        answers: ["Carbon", "Oxygen", "Nitrogen", "Sulfur"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "Which of the following is an example of a metal?",
+        answers: ["Copper", "Water", "Sulfur", "Oxygen"],
+        correct: 0 // Copper
+    },
+    {
+        question: "What is the chemical formula for sodium chloride?",
+        answers: ["NaCl", "Na2SO4", "NaOH", "NaNO3"],
+        correct: 0 // NaCl
+    },
+    {
+        question: "What is the primary gas in the Earth's atmosphere?",
+        answers: ["Nitrogen", "Oxygen", "Carbon dioxide", "Hydrogen"],
+        correct: 0 // Nitrogen
+    },
+    {
+        question: "What is the pH of hydrochloric acid?",
+        answers: ["1", "7", "10", "14"],
+        correct: 0 // 1
+    },
+    {
+        question: "What is the symbol for gold?",
+        answers: ["Au", "Ag", "Pb", "Fe"],
+        correct: 0 // Au
+    },
+    {
+        question: "Which of these is a common solvent?",
+        answers: ["Water", "Sugar", "Salt", "Oil"],
+        correct: 0 // Water
+    },
+    {
+        question: "What is the boiling point of water in Celsius?",
+        answers: ["100°C", "0°C", "50°C", "150°C"],
+        correct: 0 // 100°C
+    },
+    {
+        question: "What is the symbol for silver?",
+        answers: ["Ag", "Au", "Pb", "Sn"],
+        correct: 0 // Ag
+    },
+    {
+        question: "What is the unit of pressure in the metric system?",
+        answers: ["Pascal", "Joule", "Meter", "Liter"],
+        correct: 0 // Pascal
+    },
+    {
+        question: "Which of the following is an example of a physical change?",
+        answers: ["Melting ice", "Burning wood", "Rusting iron", "Baking a cake"],
+        correct: 0 // Melting ice
+    },
+    {
+        question: "Which of these elements is a noble gas?",
+        answers: ["Argon", "Nitrogen", "Oxygen", "Sulfur"],
+        correct: 0 // Argon
+    },
+    {
+        question: "What is the process by which a solid turns into a gas?",
+        answers: ["Sublimation", "Condensation", "Evaporation", "Freezing"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "What is the formula for hydrochloric acid?",
+        answers: ["HCl", "H2SO4", "HNO3", "NaOH"],
+        correct: 0 // HCl
+    },
+    {
+        question: "Which element is most abundant in the universe?",
+        answers: ["Hydrogen", "Oxygen", "Carbon", "Helium"],
+        correct: 0 // Hydrogen
+    },
+    {
+        question: "What is the molecular formula for glucose?",
+        answers: ["C6H12O6", "C12H22O11", "C6H6", "C12H24O12"],
+        correct: 0 // C6H12O6
+    },
+    {
+        question: "What is the process by which a liquid turns into a gas?",
+        answers: ["Evaporation", "Condensation", "Sublimation", "Freezing"],
+        correct: 0 // Evaporation
+    },
+    {
+        question: "Which of these is a chemical element?",
+        answers: ["Iron", "Wood", "Water", "Air"],
+        correct: 0 // Iron
+    },
+    {
+        question: "What is the atomic number of chlorine?",
+        answers: ["17", "15", "10", "9"],
+        correct: 0 // 17
+    },
+    {
+        question: "Which of these elements is a metal?",
+        answers: ["Copper", "Oxygen", "Sulfur", "Nitrogen"],
+        correct: 0 // Copper
+    }, {
+        question: "What is the chemical formula for methane?",
+        answers: ["CH4", "C2H6", "C3H8", "CH2"],
+        correct: 0 // CH4
+    },
+    {
+        question: "What is the atomic number of nitrogen?",
+        answers: ["7", "8", "6", "10"],
+        correct: 0 // 7
+    },
+    {
+        question: "Which element is found in all organic compounds?",
+        answers: ["Carbon", "Oxygen", "Hydrogen", "Nitrogen"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "What is the formula for sulfur dioxide?",
+        answers: ["SO2", "SO3", "H2SO4", "H2O"],
+        correct: 0 // SO2
+    },
+    {
+        question: "Which type of bond involves the transfer of electrons?",
+        answers: ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Ionic bond
+    },
+    {
+        question: "Which of the following is an example of an ionic compound?",
+        answers: ["Sodium chloride", "Methane", "Carbon dioxide", "Water"],
+        correct: 0 // Sodium chloride
+    },
+    {
+        question: "What is the atomic number of oxygen?",
+        answers: ["8", "6", "10", "12"],
+        correct: 0 // 8
+    },
+    {
+        question: "What is the chemical formula for nitric acid?",
+        answers: ["HNO3", "H2SO4", "HCl", "HNO2"],
+        correct: 0 // HNO3
+    },
+    {
+        question: "What is the color of the flame when copper burns?",
+        answers: ["Green", "Red", "Blue", "Yellow"],
+        correct: 0 // Green
+    },
+    {
+        question: "What is the molecular formula for ethanol?",
+        answers: ["C2H5OH", "CH3OH", "C3H7OH", "C2H6O"],
+        correct: 0 // C2H5OH
+    },
+    {
+        question: "What is the pH of pure water?",
+        answers: ["7", "0", "14", "10"],
+        correct: 0 // 7
+    },
+    {
+        question: "Which of these elements is radioactive?",
+        answers: ["Uranium", "Gold", "Silver", "Iron"],
+        correct: 0 // Uranium
+    },
+    {
+        question: "What is the symbol for calcium?",
+        answers: ["Ca", "C", "Cl", "Co"],
+        correct: 0 // Ca
+    },
+    {
+        question: "What is the chemical formula for potassium nitrate?",
+        answers: ["KNO3", "K2SO4", "NaNO3", "NaCl"],
+        correct: 0 // KNO3
+    },
+    {
+        question: "Which element has the highest electronegativity?",
+        answers: ["Fluorine", "Oxygen", "Nitrogen", "Chlorine"],
+        correct: 0 // Fluorine
+    },
+    {
+        question: "Which compound is an example of a base?",
+        answers: ["NaOH", "HCl", "H2SO4", "CO2"],
+        correct: 0 // NaOH
+    },
+    {
+        question: "Which element has the symbol 'Na'?",
+        answers: ["Sodium", "Nitrogen", "Neon", "Nickel"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "Which of these gases is used in light bulbs?",
+        answers: ["Argon", "Oxygen", "Carbon dioxide", "Nitrogen"],
+        correct: 0 // Argon
+    },
+    {
+        question: "Which of the following is a liquid at room temperature?",
+        answers: ["Mercury", "Iron", "Gold", "Lead"],
+        correct: 0 // Mercury
+    },
+    {
+        question: "Which element is commonly used in batteries?",
+        answers: ["Lithium", "Oxygen", "Gold", "Iron"],
+        correct: 0 // Lithium
+    },
+    {
+        question: "What is the formula for acetic acid?",
+        answers: ["CH3COOH", "C2H5OH", "HNO3", "C6H12O6"],
+        correct: 0 // CH3COOH
+    },
+    {
+        question: "What is the term for a substance that speeds up a chemical reaction?",
+        answers: ["Catalyst", "Solvent", "Reactant", "Product"],
+        correct: 0 // Catalyst
+    },
+    {
+        question: "What is the atomic number of iron?",
+        answers: ["26", "24", "28", "32"],
+        correct: 0 // 26
+    },
+    {
+        question: "Which of the following is not an element?",
+        answers: ["Water", "Hydrogen", "Oxygen", "Carbon"],
+        correct: 0 // Water
+    },
+    {
+        question: "Which element is the main component of diamonds?",
+        answers: ["Carbon", "Silicon", "Iron", "Copper"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "What is the chemical formula for calcium carbonate?",
+        answers: ["CaCO3", "CaSO4", "NaCl", "MgCO3"],
+        correct: 0 // CaCO3
+    },
+    {
+        question: "What type of reaction occurs when a compound breaks down into two or more simpler substances?",
+        answers: ["Decomposition", "Synthesis", "Single displacement", "Double displacement"],
+        correct: 0 // Decomposition
+    },
+    {
+        question: "Which of the following is an alkali earth metal?",
+        answers: ["Calcium", "Sodium", "Magnesium", "Aluminum"],
+        correct: 0 // Calcium
+    },
+    {
+        question: "What is the process of heating a substance to a high temperature in the absence of air?",
+        answers: ["Pyrolysis", "Combustion", "Fusion", "Sublimation"],
+        correct: 0 // Pyrolysis
+    },
+    {
+        question: "Which of these elements is used in the production of batteries?",
+        answers: ["Lithium", "Gold", "Iron", "Lead"],
+        correct: 0 // Lithium
+    },
+    {
+        question: "What is the main product when a metal reacts with oxygen?",
+        answers: ["Metal oxide", "Metal salt", "Metal carbonate", "Metal hydroxide"],
+        correct: 0 // Metal oxide
+    },
+    {
+        question: "Which of the following is an example of a polymer?",
+        answers: ["Polyethylene", "Sodium chloride", "Glucose", "Methane"],
+        correct: 0 // Polyethylene
+    },
+    {
+        question: "What is the unit of atomic mass?",
+        answers: ["Atomic mass unit", "Gram", "Kilogram", "Mole"],
+        correct: 0 // Atomic mass unit
+    },
+    {
+        question: "Which gas is a product of cellular respiration?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "Which metal is liquid at room temperature?",
+        answers: ["Mercury", "Lead", "Sodium", "Gold"],
+        correct: 0 // Mercury
+    },
+    {
+        question: "Which of these is the most reactive element in the periodic table?",
+        answers: ["Fluorine", "Oxygen", "Hydrogen", "Neon"],
+        correct: 0 // Fluorine
+    },
+    {
+        question: "What is the process of turning a liquid into a gas called?",
+        answers: ["Evaporation", "Condensation", "Freezing", "Boiling"],
+        correct: 0 // Evaporation
+    },
+    {
+        question: "What is the pH level of a strong acid?",
+        answers: ["Below 7", "Above 7", "Exactly 7", "Equal to 14"],
+        correct: 0 // Below 7
+    },
+    {
+        question: "Which of the following is a noble gas?",
+        answers: ["Argon", "Nitrogen", "Hydrogen", "Carbon"],
+        correct: 0 // Argon
+    },
+    {
+        question: "What is the formula for hydrogen peroxide?",
+        answers: ["H2O2", "H2O", "CO2", "O3"],
+        correct: 0 // H2O2
+    },
+    {
+        question: "Which element is used in the making of pencils?",
+        answers: ["Graphite", "Iron", "Copper", "Carbon"],
+        correct: 0 // Graphite
+    },
+    {
+        question: "What is the name of the reaction where a molecule gains electrons?",
+        answers: ["Reduction", "Oxidation", "Combustion", "Substitution"],
+        correct: 0 // Reduction
+    },
+    {
+        question: "What type of bond is formed between two nonmetals?",
+        answers: ["Covalent bond", "Ionic bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Covalent bond
+    },
+    {
+        question: "What is the standard unit of energy in chemistry?",
+        answers: ["Joule", "Calorie", "Watt", "Electronvolt"],
+        correct: 0 // Joule
+    },
+    {
+        question: "Which of the following is not a halogen?",
+        answers: ["Argon", "Fluorine", "Chlorine", "Iodine"],
+        correct: 0 // Argon
+    },
+    {
+        question: "What type of bond is formed when electrons are shared equally?",
+        answers: ["Nonpolar covalent bond", "Ionic bond", "Polar covalent bond", "Metallic bond"],
+        correct: 0 // Nonpolar covalent bond
+    },
+    {
+        question: "Which of these is the lightest element in the periodic table?",
+        answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"],
+        correct: 0 // Hydrogen
+    },
+    {
+        question: "What is the main ingredient in common table salt?",
+        answers: ["Sodium chloride", "Sodium bicarbonate", "Calcium chloride", "Magnesium sulfate"],
+        correct: 0 // Sodium chloride
+    },
+    {
+        question: "Which of the following is a common use of sulfuric acid?",
+        answers: ["Battery acid", "Food preservation", "Cleaning agent", "Paint remover"],
+        correct: 0 // Battery acid
+    },
+    {
+        question: "Which of these elements is essential for the production of hemoglobin?",
+        answers: ["Iron", "Copper", "Magnesium", "Zinc"],
+        correct: 0 // Iron
+    },
+    {
+        question: "What is the chemical formula for water?",
+        answers: ["H2O", "O2H", "OH2", "H2O2"],
+        correct: 0 // H2O
+    },
+    {
+        question: "What is the process called when a solid turns directly into a gas?",
+        answers: ["Sublimation", "Melting", "Freezing", "Condensation"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "Which substance is known as a noble gas?",
+        answers: ["Neon", "Oxygen", "Nitrogen", "Carbon dioxide"],
+        correct: 0 // Neon
+    },
+    {
+        question: "Which of the following is an example of a physical change?",
+        answers: ["Melting ice", "Rusting of iron", "Burning paper", "Cooking an egg"],
+        correct: 0 // Melting ice
+    },
+    {
+        question: "What is the term for the amount of space occupied by an object?",
+        answers: ["Volume", "Mass", "Density", "Weight"],
+        correct: 0 // Volume
+    },
+    {
+        question: "What is the symbol for the element gold?",
+        answers: ["Au", "Ag", "Fe", "Pb"],
+        correct: 0 // Au
+    },
+    {
+        question: "What is the process of combining two or more substances to form a new substance called?",
+        answers: ["Chemical reaction", "Physical change", "Fusion", "Evaporation"],
+        correct: 0 // Chemical reaction
+    },
+    {
+        question: "What is the pH of a neutral substance?",
+        answers: ["7", "10", "5", "0"],
+        correct: 0 // 7
+    },
+    {
+        question: "Which element has the highest atomic number in the periodic table?",
+        answers: ["Oganesson", "Uranium", "Neptunium", "Plutonium"],
+        correct: 0 // Oganesson
+    },
+    {
+        question: "What type of bond is formed when electrons are transferred from one atom to another?",
+        answers: ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Ionic bond
+    },
+    {
+        question: "What is the chemical formula for glucose?",
+        answers: ["C6H12O6", "C12H22O11", "C2H6O", "C6H10O5"],
+        correct: 0 // C6H12O6
+    },
+    {
+        question: "Which element is known for its use in providing the red color in fireworks?",
+        answers: ["Strontium", "Barium", "Copper", "Sodium"],
+        correct: 0 // Strontium
+    },
+    {
+        question: "What is the chemical formula for ammonia?",
+        answers: ["NH3", "H2O", "CO2", "NaCl"],
+        correct: 0 // NH3
+    },
+    {
+        question: "Which element is essential for the process of photosynthesis?",
+        answers: ["Carbon", "Oxygen", "Hydrogen", "Nitrogen"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "What is the term for a mixture in which one substance dissolves in another?",
+        answers: ["Solution", "Suspension", "Emulsion", "Colloid"],
+        correct: 0 // Solution
+    },
+    {
+        question: "Which gas is most commonly used in balloons?",
+        answers: ["Helium", "Hydrogen", "Oxygen", "Nitrogen"],
+        correct: 0 // Helium
+    },
+    {
+        question: "What is the chemical symbol for the element iron?",
+        answers: ["Fe", "Ir", "I", "In"],
+        correct: 0 // Fe
+    },
+    {
+        question: "Which of these elements is an alkaline earth metal?",
+        answers: ["Calcium", "Sodium", "Potassium", "Magnesium"],
+        correct: 0 // Calcium
+    },
+    {
+        question: "What is the name of the reaction when an atom loses electrons?",
+        answers: ["Oxidation", "Reduction", "Condensation", "Hydration"],
+        correct: 0 // Oxidation
+    },
+    {
+        question: "What is the process called when a gas turns into a liquid?",
+        answers: ["Condensation", "Sublimation", "Evaporation", "Freezing"],
+        correct: 0 // Condensation
+    },
+    {
+        question: "Which of the following is a non-metal?",
+        answers: ["Oxygen", "Iron", "Copper", "Gold"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "What is the chemical formula for table sugar?",
+        answers: ["C12H22O11", "C6H12O6", "C6H10O5", "C2H5OH"],
+        correct: 0 // C12H22O11
+    },
+    {
+        question: "What is the element symbol for potassium?",
+        answers: ["K", "P", "Na", "Ca"],
+        correct: 0 // K
+    },
+    {
+        question: "Which gas is responsible for the greenhouse effect?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Methane"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "Which metal is the main component of steel?",
+        answers: ["Iron", "Copper", "Lead", "Zinc"],
+        correct: 0 // Iron
+    },
+    {
+        question: "What is the name of the acid found in vinegar?",
+        answers: ["Acetic acid", "Citric acid", "Lactic acid", "Sulfuric acid"],
+        correct: 0 // Acetic acid
+    },
+    {
+        question: "Which element is used to make semiconductors?",
+        answers: ["Silicon", "Oxygen", "Aluminum", "Iron"],
+        correct: 0 // Silicon
+    },
+    {
+        question: "What is the formula for calcium chloride?",
+        answers: ["CaCl2", "NaCl", "MgCl2", "KCl"],
+        correct: 0 // CaCl2
+    },
+    {
+        question: "What is the chemical symbol for the element oxygen?",
+        answers: ["O", "O2", "O3", "Ox"],
+        correct: 0 // O
+    },
+    {
+        question: "What type of bond is found in a molecule of water?",
+        answers: ["Polar covalent bond", "Nonpolar covalent bond", "Ionic bond", "Metallic bond"],
+        correct: 0 // Polar covalent bond
+    },
+    {
+        question: "What is the name of the process in which a solid becomes a liquid?",
+        answers: ["Melting", "Freezing", "Sublimation", "Evaporation"],
+        correct: 0 // Melting
+    },
+    {
+        question: "Which of the following is an example of a chemical change?",
+        answers: ["Burning paper", "Cutting wood", "Breaking glass", "Shaping clay"],
+        correct: 0 // Burning paper
+    },
+    {
+        question: "What is the formula for sodium chloride?",
+        answers: ["NaCl", "KCl", "NaOH", "KOH"],
+        correct: 0 // NaCl
+    },
+
+    {
+        question: "Which of the following is an alkali metal?",
+        answers: ["Calcium", "Sodium", "Magnesium", "Iron"],
+        correct: 1 // Sodium
+    },
+    {
+        question: "What is the pH of pure water?",
+        answers: ["7", "0", "14", "5"],
+        correct: 0 // 7
+    },{
+        question: "What is the standard unit of energy in chemistry?",
+        answers: ["Joule", "Calorie", "Watt", "Electronvolt"],
+        correct: 0 // Joule
+    },
+    {
+        question: "Which of the following is not a halogen?",
+        answers: ["Argon", "Fluorine", "Chlorine", "Iodine"],
+        correct: 0 // Argon
+    },
+    {
+        question: "What type of bond is formed when electrons are shared equally?",
+        answers: ["Nonpolar covalent bond", "Ionic bond", "Polar covalent bond", "Metallic bond"],
+        correct: 0 // Nonpolar covalent bond
+    },
+    {
+        question: "Which of these is the lightest element in the periodic table?",
+        answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"],
+        correct: 0 // Hydrogen
+    },
+    {
+        question: "What is the main ingredient in common table salt?",
+        answers: ["Sodium chloride", "Sodium bicarbonate", "Calcium chloride", "Magnesium sulfate"],
+        correct: 0 // Sodium chloride
+    },
+    {
+        question: "Which of the following is a common use of sulfuric acid?",
+        answers: ["Battery acid", "Food preservation", "Cleaning agent", "Paint remover"],
+        correct: 0 // Battery acid
+    },
+    {
+        question: "Which of these elements is essential for the production of hemoglobin?",
+        answers: ["Iron", "Copper", "Magnesium", "Zinc"],
+        correct: 0 // Iron
+    },
+    {
+        question: "What is the chemical formula for water?",
+        answers: ["H2O", "O2H", "OH2", "H2O2"],
+        correct: 0 // H2O
+    },
+    {
+        question: "What is the process called when a solid turns directly into a gas?",
+        answers: ["Sublimation", "Melting", "Freezing", "Condensation"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "Which substance is known as a noble gas?",
+        answers: ["Neon", "Oxygen", "Nitrogen", "Carbon dioxide"],
+        correct: 0 // Neon
+    },
+    {
+        question: "Which of the following is an example of a physical change?",
+        answers: ["Melting ice", "Rusting of iron", "Burning paper", "Cooking an egg"],
+        correct: 0 // Melting ice
+    },
+    {
+        question: "What is the term for the amount of space occupied by an object?",
+        answers: ["Volume", "Mass", "Density", "Weight"],
+        correct: 0 // Volume
+    },
+    {
+        question: "What is the symbol for the element gold?",
+        answers: ["Au", "Ag", "Fe", "Pb"],
+        correct: 0 // Au
+    },
+    {
+        question: "What is the process of combining two or more substances to form a new substance called?",
+        answers: ["Chemical reaction", "Physical change", "Fusion", "Evaporation"],
+        correct: 0 // Chemical reaction
+    },
+    {
+        question: "What is the pH of a neutral substance?",
+        answers: ["7", "10", "5", "0"],
+        correct: 0 // 7
+    },
+    {
+        question: "Which element has the highest atomic number in the periodic table?",
+        answers: ["Oganesson", "Uranium", "Neptunium", "Plutonium"],
+        correct: 0 // Oganesson
+    },
+    {
+        question: "What type of bond is found in a molecule of water?",
+        answers: ["Polar covalent bond", "Nonpolar covalent bond", "Ionic bond", "Metallic bond"],
+        correct: 0 // Polar covalent bond
+    },
+    {
+        question: "What is the chemical formula for glucose?",
+        answers: ["C6H12O6", "C12H22O11", "C2H6O", "C6H10O5"],
+        correct: 0 // C6H12O6
+    },
+    {
+        question: "Which element is known for its use in providing the red color in fireworks?",
+        answers: ["Strontium", "Barium", "Copper", "Sodium"],
+        correct: 0 // Strontium
+    },
+    {
+        question: "What is the chemical formula for ammonia?",
+        answers: ["NH3", "H2O", "CO2", "NaCl"],
+        correct: 0 // NH3
+    },
+    {
+        question: "Which element is essential for the process of photosynthesis?",
+        answers: ["Carbon", "Oxygen", "Hydrogen", "Nitrogen"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "What is the term for a mixture in which one substance dissolves in another?",
+        answers: ["Solution", "Suspension", "Emulsion", "Colloid"],
+        correct: 0 // Solution
+    },
+    {
+        question: "Which gas is most commonly used in balloons?",
+        answers: ["Helium", "Hydrogen", "Oxygen", "Nitrogen"],
+        correct: 0 // Helium
+    },
+    {
+        question: "What is the chemical symbol for the element iron?",
+        answers: ["Fe", "Ir", "I", "In"],
+        correct: 0 // Fe
+    },
+    {
+        question: "Which of these elements is an alkaline earth metal?",
+        answers: ["Calcium", "Sodium", "Potassium", "Magnesium"],
+        correct: 0 // Calcium
+    },
+    {
+        question: "What is the name of the reaction when an atom loses electrons?",
+        answers: ["Oxidation", "Reduction", "Condensation", "Hydration"],
+        correct: 0 // Oxidation
+    },
+    {
+        question: "What is the process called when a gas turns into a liquid?",
+        answers: ["Condensation", "Sublimation", "Evaporation", "Freezing"],
+        correct: 0 // Condensation
+    },
+    {
+        question: "Which of the following is a non-metal?",
+        answers: ["Oxygen", "Iron", "Copper", "Gold"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "What is the chemical formula for table sugar?",
+        answers: ["C12H22O11", "C6H12O6", "C6H10O5", "C2H5OH"],
+        correct: 0 // C12H22O11
+    },
+    {
+        question: "What is the element symbol for potassium?",
+        answers: ["K", "P", "Na", "Ca"],
+        correct: 0 // K
+    },
+    {
+        question: "Which gas is responsible for the greenhouse effect?",
+        answers: ["Carbon dioxide", "Oxygen", "Nitrogen", "Methane"],
+        correct: 0 // Carbon dioxide
+    },
+    {
+        question: "Which metal is the main component of steel?",
+        answers: ["Iron", "Copper", "Lead", "Zinc"],
+        correct: 0 // Iron
+    },
+    {
+        question: "What is the name of the acid found in vinegar?",
+        answers: ["Acetic acid", "Citric acid", "Lactic acid", "Sulfuric acid"],
+        correct: 0 // Acetic acid
+    },
+    {
+        question: "Which element is used to make semiconductors?",
+        answers: ["Silicon", "Oxygen", "Aluminum", "Iron"],
+        correct: 0 // Silicon
+    },
+    {
+        question: "What is the formula for calcium chloride?",
+        answers: ["CaCl2", "NaCl", "MgCl2", "KCl"],
+        correct: 0 // CaCl2
+    },
+    {
+        question: "What is the chemical symbol for the element oxygen?",
+        answers: ["O", "O2", "O3", "Ox"],
+        correct: 0 // O
+    },
+    {
+        question: "What type of bond is found in a molecule of water?",
+        answers: ["Polar covalent bond", "Nonpolar covalent bond", "Ionic bond", "Metallic bond"],
+        correct: 0 // Polar covalent bond
+    },
+    {
+        question: "What is the name of the process in which a solid becomes a liquid?",
+        answers: ["Melting", "Freezing", "Sublimation", "Evaporation"],
+        correct: 0 // Melting
+    },
+    {
+        question: "Which of the following is an example of a chemical change?",
+        answers: ["Burning paper", "Cutting wood", "Breaking glass", "Shaping clay"],
+        correct: 0 // Burning paper
+    },
+    {
+        question: "What is the formula for sodium chloride?",
+        answers: ["NaCl", "KCl", "NaOH", "KOH"],
+        correct: 0 // NaCl
+    },  {
+        question: "What is the molar mass of water (H2O)?",
+        answers: ["18 g/mol", "16 g/mol", "20 g/mol", "22 g/mol"],
+        correct: 0 // 18 g/mol
+    },
+    {
+        question: "Which of the following is a property of acids?",
+        answers: ["They turn blue litmus paper red", "They turn red litmus paper blue", "They are slippery", "They have a bitter taste"],
+        correct: 0 // They turn blue litmus paper red
+    },
+    {
+        question: "Which of these elements is a noble gas?",
+        answers: ["Neon", "Nitrogen", "Carbon", "Oxygen"],
+        correct: 0 // Neon
+    },
+    {
+        question: "What is the atomic number of Carbon?",
+        answers: ["6", "8", "12", "14"],
+        correct: 0 // 6
+    },
+    {
+        question: "Which of the following is not an alkaline earth metal?",
+        answers: ["Sodium", "Magnesium", "Calcium", "Barium"],
+        correct: 0 // Sodium
+    },
+    {
+        question: "Which gas is produced when an acid reacts with a metal?",
+        answers: ["Hydrogen", "Oxygen", "Nitrogen", "Carbon dioxide"],
+        correct: 0 // Hydrogen
+    },
+    {
+        question: "What is the pH of a neutral solution?",
+        answers: ["7", "0", "14", "3"],
+        correct: 0 // 7
+    },
+    {
+        question: "What is the chemical formula for methane?",
+        answers: ["CH4", "C2H6", "C3H8", "CH3OH"],
+        correct: 0 // CH4
+    },
+    {
+        question: "What is the boiling point of water?",
+        answers: ["100°C", "0°C", "50°C", "150°C"],
+        correct: 0 // 100°C
+    },
+    {
+        question: "Which of the following is a type of mixture?",
+        answers: ["Colloid", "Compound", "Element", "None of the above"],
+        correct: 0 // Colloid
+    },
+    {
+        question: "Which element is most commonly used in making semiconductors?",
+        answers: ["Silicon", "Oxygen", "Iron", "Copper"],
+        correct: 0 // Silicon
+    },
+    {
+        question: "What is the process of a liquid turning into a gas called?",
+        answers: ["Evaporation", "Condensation", "Freezing", "Melting"],
+        correct: 0 // Evaporation
+    },
+    {
+        question: "What is the electron configuration of oxygen (O)?",
+        answers: ["1s² 2s² 2p⁴", "1s² 2s² 2p³", "1s² 2p⁴", "1s² 2p⁶"],
+        correct: 0 // 1s² 2s² 2p⁴
+    },
+    {
+        question: "What is the chemical formula for sulfuric acid?",
+        answers: ["H2SO4", "HCl", "HNO3", "H2CO3"],
+        correct: 0 // H2SO4
+    },
+    {
+        question: "Which of the following is a property of metals?",
+        answers: ["They conduct electricity", "They are non-lustrous", "They are brittle", "They have low melting points"],
+        correct: 0 // They conduct electricity
+    },
+    {
+        question: "What is the atomic number of Sodium?",
+        answers: ["11", "12", "13", "10"],
+        correct: 0 // 11
+    },
+    {
+        question: "Which of the following is an example of a chemical reaction?",
+        answers: ["Burning wood", "Melting ice", "Boiling water", "Dissolving sugar in water"],
+        correct: 0 // Burning wood
+    },
+    {
+        question: "What is the mass of one mole of sodium (Na)?",
+        answers: ["23 g", "12 g", "32 g", "1 g"],
+        correct: 0 // 23 g
+    },
+    {
+        question: "Which element is essential for the formation of proteins?",
+        answers: ["Nitrogen", "Oxygen", "Hydrogen", "Carbon"],
+        correct: 0 // Nitrogen
+    },
+    {
+        question: "Which of the following is a non-metal?",
+        answers: ["Oxygen", "Iron", "Copper", "Aluminum"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "Which of the following is a strong acid?",
+        answers: ["Hydrochloric acid", "Acetic acid", "Citric acid", "Sulfuric acid"],
+        correct: 0 // Hydrochloric acid
+    },
+    {
+        question: "Which gas is produced when an alkali reacts with water?",
+        answers: ["Hydrogen", "Oxygen", "Nitrogen", "Helium"],
+        correct: 0 // Hydrogen
+    },
+    {
+        question: "What is the oxidation number of oxygen in most compounds?",
+        answers: ["-2", "0", "+1", "-1"],
+        correct: 0 // -2
+    },
+    {
+        question: "What is the chemical symbol for gold?",
+        answers: ["Au", "Ag", "Fe", "Pb"],
+        correct: 0 // Au
+    },
+    {
+        question: "What is the process of a gas turning into a solid called?",
+        answers: ["Deposition", "Sublimation", "Evaporation", "Freezing"],
+        correct: 0 // Deposition
+    },
+    {
+        question: "Which of the following elements is most abundant in the Earth's crust?",
+        answers: ["Oxygen", "Silicon", "Aluminum", "Iron"],
+        correct: 0 // Oxygen
+    },
+    {
+        question: "What is the term used for the energy required to break a bond?",
+        answers: ["Bond dissociation energy", "Ionization energy", "Activation energy", "Electron affinity"],
+        correct: 0 // Bond dissociation energy
+    },
+    {
+        question: "What is the chemical formula for potassium permanganate?",
+        answers: ["KMnO4", "K2SO4", "K2CO3", "KMnO2"],
+        correct: 0 // KMnO4
+    },
+    {
+        question: "Which of the following compounds is a base?",
+        answers: ["Sodium hydroxide", "Sulfuric acid", "Hydrochloric acid", "Nitric acid"],
+        correct: 0 // Sodium hydroxide
+    },
+    {
+        question: "What is the main component of natural gas?",
+        answers: ["Methane", "Ethane", "Propane", "Butane"],
+        correct: 0 // Methane
+    },
+    {
+        question: "What is the pH of hydrochloric acid (HCl) solution?",
+        answers: ["Less than 7", "Greater than 7", "Exactly 7", "It varies depending on concentration"],
+        correct: 0 // Less than 7
+    },
+    {
+        question: "What type of bond is found between sodium and chlorine in NaCl?",
+        answers: ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"],
+        correct: 0 // Ionic bond
+    },
+    {
+        question: "Which of these is a property of liquids?",
+        answers: ["They have a fixed volume but no fixed shape", "They have a fixed shape and volume", "They have neither fixed shape nor volume", "They have a fixed shape but no fixed volume"],
+        correct: 0 // They have a fixed volume but no fixed shape
+    },
+    {
+        question: "What is the process called when a liquid turns into a gas?",
+        answers: ["Boiling", "Condensation", "Freezing", "Melting"],
+        correct: 0 // Boiling
+    },
+    {
+        question: "What is the atomic mass of carbon?",
+        answers: ["12 u", "14 u", "16 u", "10 u"],
+        correct: 0 // 12 u
+    },
+    {
+        question: "Which of the following compounds contains a covalent bond?",
+        answers: ["H2O", "NaCl", "MgO", "CaO"],
+        correct: 0 // H2O
+    },
+    {
+        question: "What is the process called when a solid turns directly into a gas?",
+        answers: ["Sublimation", "Deposition", "Freezing", "Condensation"],
+        correct: 0 // Sublimation
+    },
+    {
+        question: "Which of the following is a characteristic of an exothermic reaction?",
+        answers: ["Release of heat", "Absorption of heat", "Release of light", "Absorption of light"],
+        correct: 0 // Release of heat
+    },
+    {
+        question: "What is the chemical symbol for silver?",
+        answers: ["Ag", "Au", "Pb", "Fe"],
+        correct: 0 // Ag
+    },
+    {
+        question: "Which of the following elements is a noble gas?",
+        answers: ["Oxygen", "Neon", "Carbon", "Nitrogen"],
+        correct: 1 // Neon
+    },
+    {
+        question: "The chemical formula of Methane is:",
+        answers: ["CH4", "C2H6", "C3H8", "C4H10"],
+        correct: 0 // CH4
+    },
+    {
+        question: "Which of the following compounds is used as a disinfectant?",
+        answers: ["Chlorine", "Oxygen", "Nitrogen", "Sulfur"],
+        correct: 0 // Chlorine
+    },
+    {
+        question: "Which of the following is a property of acids?",
+        answers: ["Bitter taste", "Slippery feel", "Turns red litmus paper blue", "Turns blue litmus paper red"],
+        correct: 3 // Turns blue litmus paper red
+    },
+    {
+        question: "What is the molar mass of water (H2O)?",
+        answers: ["18 g/mol", "20 g/mol", "16 g/mol", "22 g/mol"],
+        correct: 0 // 18 g/mol
+    },
+    {
+        question: "What type of bond is formed between two oxygen atoms?",
+        answers: ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond"],
+        correct: 1 // Covalent bond
+    },
+    {
+        question: "Which element is known for having the highest electronegativity?",
+        answers: ["Fluorine", "Oxygen", "Chlorine", "Nitrogen"],
+        correct: 0 // Fluorine
+    },
+    {
+        question: "What is the main product formed when methane reacts with chlorine?",
+        answers: ["Methanol", "Chloromethane", "Methane chloride", "Carbon dioxide"],
+        correct: 1 // Chloromethane
+    },
+    {
+        question: "The reaction between an acid and a base produces:",
+        answers: ["Water and salt", "Water and hydrogen", "Acid and salt", "Base and water"],
+        correct: 0 // Water and salt
+    },
+    {
+        question: "Which of the following is a characteristic of ionic compounds?",
+        answers: ["High melting point", "Low conductivity in molten state", "Gases at room temperature", "None of the above"],
+        correct: 0 // High melting point
+    },
+    {
+        question: "Which of the following is not a strong acid?",
+        answers: ["Hydrochloric acid", "Sulfuric acid", "Acetic acid", "Nitric acid"],
+        correct: 2 // Acetic acid
+    },
+    {
+        question: "What is the unit of the rate constant in a second-order reaction?",
+        answers: ["s^-1", "M^-1s^-1", "M/s", "s"],
+        correct: 1 // M^-1s^-1
+    },
+    {
+        question: "Which of the following is a property of metals?",
+        answers: ["Poor conductors of heat", "High melting points", "Brittle", "Non-malleable"],
+        correct: 1 // High melting points
+    },
+    {
+        question: "What is the IUPAC name of the compound CH3CH2OH?",
+        answers: ["Ethanol", "Methanol", "Propane", "Butanol"],
+        correct: 0 // Ethanol
+    },
+    {
+        question: "Which of the following is a correct statement about catalysts?",
+        answers: ["They are consumed in the reaction", "They increase the activation energy", "They speed up the rate of reaction", "They decrease the reaction rate"],
+        correct: 2 // They speed up the rate of reaction
+    },
+    {
+        question: "What is the main component of natural gas?",
+        answers: ["Ethane", "Methane", "Propane", "Butane"],
+        correct: 1 // Methane
+    },
+    {
+        question: "The process of changing a liquid to gas at temperatures below its boiling point is called:",
+        answers: ["Evaporation", "Boiling", "Condensation", "Sublimation"],
+        correct: 0 // Evaporation
+    },
+    {
+        question: "Which of the following is an example of an endothermic process?",
+        answers: ["Freezing of water", "Condensation of steam", "Evaporation of water", "Burning of coal"],
+        correct: 2 // Evaporation of water
+    },
+    {
+        question: "The atomic mass unit (amu) is based on the mass of which element?",
+        answers: ["Carbon", "Oxygen", "Hydrogen", "Nitrogen"],
+        correct: 0 // Carbon
+    },
+    {
+        question: "Which of the following gases is most commonly used in balloon inflation?",
+        answers: ["Hydrogen", "Helium", "Oxygen", "Nitrogen"],
+        correct: 1 // Helium
+    },
+    {
+        question: "Which of the following is the pH of a neutral solution?",
+        answers: ["5", "6", "7", "8"],
+        correct: 2 // 7
+    },
+    {
+        question: "The oxidation state of chlorine in KClO3 is:",
+        answers: ["+1", "+3", "+5", "+7"],
+        correct: 2 // +5
+    },
+    {
+        question: "Which of the following is a non-metal?",
+        answers: ["Calcium", "Sodium", "Oxygen", "Iron"],
+        correct: 2 // Oxygen
+    },
+    {
+        question: "The boiling point of water decreases with an increase in:",
+        answers: ["Pressure", "Temperature", "Altitude", "None of the above"],
+        correct: 2 // Altitude
+    },
+    {
+        question: "Which of the following substances is used in the preparation of a standard solution?",
+        answers: ["Distilled water", "Hydrochloric acid", "Sodium hydroxide", "Sodium chloride"],
+        correct: 3 // Sodium chloride
+    },
+    {
+        question: "Which of the following acids is found in vinegar?",
+        answers: ["Acetic acid", "Sulfuric acid", "Nitric acid", "Hydrochloric acid"],
+        correct: 0 // Acetic acid
+    },
+    {
+        question: "What type of bond is present in NaCl (sodium chloride)?",
+        answers: ["Covalent bond", "Ionic bond", "Hydrogen bond", "Metallic bond"],
+        correct: 1 // Ionic bond
+    },
+    {
+        question: "Which of the following elements has the highest ionization energy?",
+        answers: ["Sodium", "Oxygen", "Fluorine", "Neon"],
+        correct: 2 // Fluorine
+    },
+    {
+        question: "Which of the following compounds is an example of a hydrocarbon?",
+        answers: ["Methane", "Water", "Sodium chloride", "Ammonia"],
+        correct: 0 // Methane
+    },
+    {
+        question: "What is the electron configuration of sodium (Na)?",
+        answers: ["1s² 2s² 2p⁶ 3s¹", "1s² 2s² 2p⁶", "1s² 2s² 2p⁶ 3p¹", "1s² 2s² 3s¹"],
+        correct: 0 // 1s² 2s² 2p⁶ 3s¹
+    },
+    {
+        question: "Which of the following molecules is an example of a polar covalent bond?",
+        answers: ["H2", "O2", "H2O", "CH4"],
+        correct: 2 // H2O
+    },
+    {
+        question: "Which of the following is a correct statement about acids and bases?",
+        answers: ["Acids donate electrons", "Acids accept protons", "Bases donate protons", "Bases accept electrons"],
+        correct: 0 // Acids donate electrons
+    },
+    {
+        question: "What is the main cause of the greenhouse effect?",
+        answers: ["Ozone layer depletion", "Increase in carbon dioxide levels", "Reduction in nitrogen levels", "Increase in oxygen levels"],
+        correct: 1 // Increase in carbon dioxide levels
+    }
+   
+
+
+];
+
+  
+
+
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    
+    const questionText = document.getElementById('question-text');
+    const answerBtns = document.querySelectorAll('.answer-btn');
+    const feedback = document.getElementById('feedback');
+    const questionNumber = document.getElementById('question-number');
+    const finalScore = document.getElementById('finalScore');
+    const percentage = document.getElementById('percentage');
+    const resultContainer = document.querySelector('.result');
+    const viewResultBtn = document.getElementById('viewResultBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    
+    
+    
+    function displayQuestion() {
+        const currentQuestion = questions[currentQuestionIndex];
+        questionText.textContent = currentQuestion.question;
+        for (let i = 0; i < currentQuestion.answers.length; i++) {
+            answerBtns[i].textContent = currentQuestion.answers[i];
+        }
+        questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        feedback.textContent = "";
+        startTimer();
+    }
+    
+    function checkAnswer(selectedIndex) {
+        const currentQuestion = questions[currentQuestionIndex];
+        clearTimeout(timer);
+        if (selectedIndex === currentQuestion.correct) {
+            score++;
+            feedback.textContent = "Correct!";
+            feedback.className = "feedback-frame correct";
+        } else {
+            feedback.textContent = "Incorrect!";
+            feedback.className = "feedback-frame incorrect";
+        }
+        setTimeout(() => {
+            nextQuestion();
+        }, 1500);
+    }
+    
+    function nextQuestion() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+        } else {
+            showResults();
+        }
+    }
+    
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion();
+        }
+    }
+    
+    function showResults() {
+        const percentageScore = (score / questions.length) * 100;
+        finalScore.textContent = `Score: ${score} / ${questions.length}`;
+        percentage.textContent = `Percentage: ${percentageScore.toFixed(2)}%`;
+        
+        // Display the result section and hide the quiz
+        resultContainer.style.display = 'block';
+        document.querySelector('.question-container').style.display = 'none';
+        
+        // Chart.js for visual representation (pie and bar charts)
+        const ctxPie = document.getElementById('pieChart').getContext('2d');
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        
+        new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Correct', 'Incorrect'],
+                datasets: [{
+                    data: [score, questions.length - score],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            }
+        });
+
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Score'],
+                datasets: [{
+                    label: 'Your Score',
+                    data: [score],
+                    backgroundColor: '#28a745'
+                }]
+            }
+        });
+
+        viewResultBtn.style.display = 'none';
+    }
+
+    function stopQuiz() {
+        
+       
+        showResults();
+    }
+    
+    // Initialize the quiz
+    displayQuestion();
+    function checkAnswer(selectedIndex) {
+    const currentQuestion = questions[currentQuestionIndex];
+    clearInterval(timer);
+
+    // Check if the selected answer is correct
+    if (selectedIndex === currentQuestion.correct) {
+        score++;
+        feedback.textContent = "Correct!";
+        feedback.className = "feedback-frame correct";
+    } else {
+        feedback.textContent = `Incorrect! The correct answer is:   ${currentQuestion.answers[currentQuestion.correct]}`;
+        feedback.className = "feedback-frame incorrect";
+    }
+
+    setTimeout(() => {
+        nextQuestion();
+    }, 1500);
+}
+
+</script>
+
+
+
+  
+
+</body>
+</html> 
